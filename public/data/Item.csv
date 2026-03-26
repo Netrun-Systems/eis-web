@@ -1,0 +1,101 @@
+ItemID,ItemName,Description,ItemType,Effects,Value,Availability
+1001,Bread,"A loaf of bread.",Consumable,"Restores Hunger by 20.",5,Common
+1002,Water,"A bottle of water.",Consumable,"Restores Thirst by 30.",2,Common
+1003,Fish,"A fresh fish.",Consumable,"Restores Hunger by 15.",4,Common
+1004,Meat,"Cooked meat.",Consumable,"Restores Hunger by 25.",6,Uncommon
+1005,Healing Potion,"A potion that heals wounds.",Consumable,"Restores Health by 50.",15,Rare
+1006,Energy Drink,"A drink that boosts energy.",Consumable,"Restores Rest by 20.",7,Uncommon
+1007,Stimulant,"A drug that increases alertness.",Consumable,"Temporarily boosts Perception.",12,Rare
+1008,Antidote,"Cures poison.",Consumable,"Removes poison effects.",10,Rare
+1009,Ration Pack,"Pack of food and water.",Consumable,"Restores Hunger and Thirst by 30.",10,Uncommon
+1010,First Aid Kit,"Basic medical supplies.",Consumable,"Restores Health by 25.",10,Common
+1011,Nanobots,"Microscopic robots.",Consumable,"Used for advanced healing; Restores Health by 75.",50,Rare
+1012,Potion of Strength,"Enhances strength temporarily.",Consumable,"Increases Strength attribute.",25,Rare
+1013,Biofuel,"Fuel made from biological materials.",Material,"Used to power certain machines.",10,Common
+1014,Herbs,"Medicinal plants.",Material,"Used in medicine and alchemy.",6,Common
+1015,Wood,"Basic material for crafting.",Material,"Used in crafting and building.",1,Abundant
+1016,Iron Ore,"Raw iron ore for smelting.",Material,"Used to create metal items.",3,Uncommon
+1017,Steel,"Refined metal for crafting.",Material,"Used in advanced crafting.",5,Uncommon
+1018,Cloth,"Fabric material.",Material,"Used in crafting clothing.",2,Common
+1019,Leather,"Treated animal hide.",Material,"Used in crafting armor.",4,Common
+1020,Circuit Board,"Electronic component.",Material,"Used in tech crafting.",8,Uncommon
+1021,Battery,"Power source for devices.",Material,"Used to power tools and devices.",5,Common
+1022,Gunpowder,"Explosive powder.",Material,"Used in ammunition crafting.",3,Common
+1023,Energy Cell,"Energy source for energy weapons.",Material,"Powers energy weapons.",10,Uncommon
+1024,Mechanical Parts,"Parts for constructing machines.",Material,"Used in machine crafting.",15,Common
+1025,Vehicle Parts,"Parts used in vehicle construction.",Material,"Used to build or repair vehicles.",20,Uncommon
+1026,Energy Crystal,"A crystal that stores energy.",Material,"Used in advanced technology.",40,Rare
+1027,Sword,"A melee weapon.",Weapon,"Increases melee combat effectiveness.",25,Uncommon
+1028,Axe,"A heavy melee weapon.",Weapon,"High melee damage.",20,Common
+1029,Bow,"A weapon for ranged attacks.",Weapon,"Allows use of Archery skill.",20,Uncommon
+1030,Arrow,"Ammunition for bows.",Ammunition,"Required for bow attacks.",1,Common
+1031,Pistol,"A standard handgun.",Weapon,"Moderate ranged damage.",20,Common
+1032,Rifle,"A long-range firearm.",Weapon,"High ranged damage.",40,Uncommon
+1033,Shotgun,"A close-range firearm.",Weapon,"High damage at close range.",35,Uncommon
+1034,Energy Pistol,"A pistol that fires energy bolts.",Weapon,"Ranged energy weapon; Moderate damage.",40,Rare
+1035,Energy Rifle,"A rifle that fires energy beams.",Weapon,"High energy damage.",60,Rare
+1036,Custom-Made Blade,"A uniquely crafted blade.",Weapon,"Increases melee combat effectiveness.",30,Rare
+1037,Heavy Axe,"A large, heavy axe.",Weapon,"High melee damage; Slower attack speed.",40,Uncommon
+1038,Revolver,"A reliable sidearm.",Weapon,"Allows ranged attacks; Moderate damage.",35,Uncommon
+1039,Energy Dagger,"A dagger with an energy blade.",Weapon,"High melee damage; Fast attack speed.",35,Rare
+1040,Sidearm,"A small handgun.",Weapon,"Moderate damage; Quick draw.",20,Common
+1041,Staff,"A long staff; can be used for combat or magic.",Weapon,"Versatile weapon.",15,Common
+1042,Grenade,"An explosive device.",Weapon,"Deals area damage.",15,Uncommon
+1043,Flamethrower,"Weapon that projects fire.",Weapon,"Deals fire damage over an area.",70,Rare
+1044,Machine Gun,"Automatic firearm.",Weapon,"High rate of fire.",60,Uncommon
+1045,Rocket Launcher,"Weapon that fires rockets.",Weapon,"High explosive damage.",100,Rare
+1046,Stun Device,"A device that emits a stun charge.",Weapon,"Stuns targets temporarily.",25,Rare
+1047,Bio Scanner,"Device for scanning biological entities.",Tool,"Provides information on living beings.",35,Rare
+1048,Leather Armor,"Protective clothing.",Armor,"Reduces damage taken.",18,Common
+1049,Metal Armor,"Armor made of metal plates.",Armor,"Provides high protection.",30,Uncommon
+1050,Energy Shield,"A shield that projects an energy barrier.",Armor,"Blocks damage from attacks.",50,Rare
+1051,Helmet,"Protective headgear.",Armor,"Reduces damage to the head.",10,Common
+1052,Reinforced Armor,"Enhanced armor for better protection.",Armor,"Significantly reduces damage.",40,Rare
+1053,Stealth Cloak,"Cloak that enhances stealth.",Armor,"Increases stealth ability.",50,Rare
+1054,Cloak,"A cloak that offers some protection.",Armor,"Minor damage reduction; Increases Stealth.",12,Uncommon
+1055,Night Vision Goggles,"Enhances vision in the dark.",Tool,"Allows sight in darkness.",25,Uncommon
+1056,Old Locket,"A worn locket with a picture inside.",MiscItem,"Sentimental value.",5,Unique
+1057,Dog Tags,"Identification tags of soldiers.",MiscItem,"Sentimental value.",2,Unique
+1058,Gold Coin,"Currency used for trading.",Currency,"Used in transactions.",1,Common
+1059,Silver Coin,"Valuable currency.",Currency,"Used in transactions.",0.5,Common
+1060,Magic Stone,"A stone with magical properties.",QuestItem,"Used in quests; Special effects.",50,Rare
+1061,Ancient Artifact,"An artifact from ancient times.",QuestItem,"May have special properties.",100,Very Rare
+1062,Unknown Device,"A device with unknown functions.",QuestItem,"Effects are unpredictable.",80,Very Rare
+1063,Encrypted Data Fragments,"Fragments of encrypted data.",QuestItem,"May contain valuable information.",50,Rare
+1064,Artifact Fragment,"A fragment of an ancient artifact.",QuestItem,"Collect multiple for a quest.",30,Rare
+1065,Map,"A map of the local area.",KnowledgeItem,"Reveals locations; Improves navigation.",10,Uncommon
+1066,Cryptic Map,"A map with cryptic markings.",KnowledgeItem,"Reveals hidden locations.",60,Rare
+1067,Data Pad,"A portable data storage device.",KnowledgeItem,"Contains data; Can be analyzed.",10,Uncommon
+1068,Enclave Schematics,"Schematics of the enclave.",KnowledgeItem,"Provides structural information.",50,Unique
+1069,Ancient Texts,"Old texts with historical information.",KnowledgeItem,"Provides historical knowledge.",30,Rare
+1070,Book of Alchemy,"A book containing alchemy recipes.",KnowledgeItem,"Provides Alchemy knowledge.",30,Rare
+1071,Journal,"A personal journal.",KnowledgeItem,"May contain useful information.",5,Common
+1072,Blueprints,"Blueprints for constructing items.",KnowledgeItem,"Allows crafting of new items.",15,Uncommon
+1073,Map with Strategic Points,"A map highlighting strategic locations.",KnowledgeItem,"Useful for planning.",40,Rare
+1074,Encrypted Data,"Encrypted data requiring decryption.",QuestItem,"May contain valuable intel.",50,Rare
+1075,Spell Book,"Contains magical spells.",KnowledgeItem,"Allows casting of spells.",60,Very Rare
+1076,Torch,"A source of light.",Tool,"Illuminates dark areas.",3,Common
+1077,Toolkit,"A set of tools.",Tool,"Required for repairing and crafting.",15,Common
+1078,Engineering Kit,"A kit for engineering tasks.",Tool,"Required for engineering activities.",20,Uncommon
+1079,Programming Tools,"Tools for programming tasks.",Tool,"Required for software development.",15,Uncommon
+1080,Interface Device,"Device for interfacing with machines.",Tool,"Allows interaction with machines.",25,Rare
+1081,Analytical Instruments,"Instruments used for analysis.",Tool,"Assists in research activities.",25,Uncommon
+1082,Diagnostic Device,"Device for diagnosing technical issues.",Tool,"Assists in troubleshooting.",15,Uncommon
+1083,Communication Device,"A device used for communication.",Tool,"Enables long-range communication.",20,Uncommon
+1084,Prototype Communication Device,"An advanced communication device prototype.",Tool,"Enables secure communication.",30,Rare
+1085,Encryption/Decryption Devices,"Devices for encrypting and decrypting data.",Tool,"Enables secure communication.",30,Uncommon
+1086,Portable Computer,"A compact computing device.",Tool,"Used for data analysis.",45,Uncommon
+1087,Battery Pack,"High-capacity battery.",Tool,"Powers devices and equipment.",15,Common
+1088,Medical Kit,"A kit for treating injuries.",Tool,"Allows healing of wounds.",25,Uncommon
+1089,Resource Scanner,"Device for locating resources.",Tool,"Helps find resources in the environment.",30,Rare
+1090,Energy Generator,"Portable energy generator.",Tool,"Provides power in the field.",50,Rare
+1091,Repair Drone,"A drone that assists in repairs.",Tool,"Automates repair tasks.",60,Rare
+1092,Harvesting Tool,"Tool used for gathering resources.",Tool,"Increases resource gathering efficiency.",10,Common
+1093,Crafting Station,"Station for crafting items.",Tool,"Required for crafting advanced items.",100,Rare
+1094,Drone Controller,"Device to control drones.",Tool,"Enables drone operation.",40,Rare
+1095,Survival Kit,"Kit with essential survival tools.",Tool,"Improves survival capabilities.",30,Common
+1096,Bio Scanner,"Device for scanning biological entities.",Tool,"Provides information on living beings.",35,Rare
+1097,Energy Field Generator,"Generates a protective energy field.",Tool,"Reduces incoming damage.",70,Very Rare
+1098,Night Vision Goggles,"Enhances vision in the dark.",Tool,"Allows sight in darkness.",25,Uncommon
+1099,Disguise Kit,"Allows the user to change appearance.",Tool,"Useful for infiltration.",20,Uncommon
+1100,Bionic Implant,"Enhances physical abilities.",Upgrade,"Increases specific attributes.",80,Rare

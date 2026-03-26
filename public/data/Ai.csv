@@ -1,0 +1,6 @@
+ParameterID,NPCType,UpdateInterval,BehaviorProbabilities,StateDefinitions
+1701,PassiveNPC,10,"Idle:50%; Move:30%; Interact:20%","Simplified states for off-screen processing."
+1702,ActiveNPC,5,"Idle:20%; Move:40%; Interact:40%","Includes more frequent updates."
+1703,HostileNPC,3,"Idle:10%; Move:30%; Attack:60%","Focus on combat behaviors."
+1704,TraderNPC,8,"Idle:30%; Trade:50%; Move:20%","Prioritize trading actions."
+1705,ChildNPC,12,"Play:60%; Move:30%; Rest:10%","Simplified behaviors for children."

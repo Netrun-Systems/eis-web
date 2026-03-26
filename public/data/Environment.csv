@@ -1,0 +1,11 @@
+EnvironmentID,ConditionName,Description,EffectsOnBehaviors,Duration,TriggerConditions
+901,RainyWeather,"Continuous rainfall.","Increases Thirst need; Decreases outdoor activities.",Variable,"Weather patterns."
+902,Nighttime,"Period of darkness.","Decreases visibility; Increases Rest behaviors.",12 hours,"Day-night cycle."
+903,Heatwave,"Unusually high temperatures.","Increases Thirst and Rest needs.",Variable,"Weather anomalies."
+904,Winter,"Cold season with snow.","Increases Hunger need; Slows movement.",3 months,"Seasonal cycle."
+905,Eclipse,"Solar eclipse occurrence.","Causes fear in some NPCs; Halts activities.",Few hours,"Astronomical events."
+906,FertileSeason,"Optimal conditions for farming.","Increases crop yields; Boosts morale.",1 month,"Seasonal changes."
+907,Drought,"Extended period without rain.","Reduces water sources; Increases Thirst need.",Variable,"Weather patterns."
+908,Plague,"Spread of disease in the environment.","Increases Rest need; Decreases Health.",Variable,"Disease outbreak."
+909,PeaceTime,"Period without conflicts.","Reduces aggression behaviors; Increases trading.",Variable,"Political stability."
+910,WarTime,"Active conflicts occurring.","Increases aggression; Decreases safety.",Variable,"Political tensions."

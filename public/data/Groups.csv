@@ -1,0 +1,11 @@
+GroupPairID,GroupA,GroupB,RelationshipStatus,TrustLevel,HistoryNotes
+1301,MerchantGuild,Bandits,Hostile,2,"Bandits frequently attack merchant caravans."
+1302,NomadicTribe,FarmerCommunity,Allied,7,"Regular trade agreements and mutual aid."
+1303,WarriorClan,ScholarsConsortium,Neutral,5,"Respectful but distant relationship."
+1304,ReligiousOrder,MerchantGuild,Allied,6,"Merchants donate to religious causes."
+1305,Bandits,Guards,Hostile,1,"Guards are actively pursuing bandits."
+1306,VillageA,VillageB,Neutral,5,"Occasional trade but limited interaction."
+1307,FarmerCommunity,WarriorClan,Allied,6,"Warriors protect farmers in exchange for supplies."
+1308,ScholarsConsortium,ReligiousOrder,Allied,8,"Shared pursuit of knowledge and wisdom."
+1309,FishermanGuild,MerchantGuild,Allied,7,"Fishermen supply goods to merchants."
+1310,Bandits,Bandits,Rival,2,"Different bandit groups compete for territory."

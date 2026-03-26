@@ -1,0 +1,21 @@
+ObjectID,ObjectName,ObjectType,InteractionRange,bRequiresQuest,RequiredQuestIDs,bWeatherResponsive,WeatherResponses,bPersistent,InventoryCapacity,bGenerateLoot,LootTable,FactionLootModifiers,ZoneID,LocationX,LocationY,LocationZ
+2001,"Village Chest",0,200,0,"",1,"HeavyRain:Closes;Storm:Closes",1,20,1,"1001:0.8;1002:0.6;1003:0.4","101:1.5;102:0.8",1001,1000,2000,100
+2002,"Tavern Door",1,150,0,"",1,"Storm:Locks;Blizzard:Locks",1,0,0,"","",1001,1200,2100,105
+2003,"Well",0,250,0,"",1,"HeavyRain:RefillsFaster;Drought:Slower",1,50,1,"1010:1.0;1011:0.9","",1001,800,1800,98
+2004,"Blacksmith Forge",4,180,0,"",1,"HeavyRain:Extinguishes;Snow:Slower",1,0,0,"","",1001,1500,2200,102
+2005,"Quest Statue",3,120,1,"5001;5002",0,"",1,0,0,"","",1001,900,1900,110
+2006,"Merchant Stall",5,200,0,"",1,"HeavyRain:Closes;Storm:Closes",1,30,1,"1020:0.7;1021:0.5;1022:0.3","103:1.2;104:1.1",1001,1100,2000,100
+2007,"Guard Tower Door",1,130,1,"5010",1,"Storm:Reinforces;Night:ExtraGuards",1,0,0,"","",1001,1800,2400,120
+2008,"Ancient Shrine",6,300,1,"5020;5021",0,"",1,0,1,"1050:0.2;1051:0.15","105:2.0",1002,3000,4000,150
+2009,"Bandit Cache",0,150,0,"",1,"Clear:Visible;Fog:Hidden",1,15,1,"1030:0.9;1031:0.7","106:1.8",1003,5000,1000,80
+2010,"Magic Portal",7,100,1,"5030",0,"",1,0,0,"","",1002,3200,4100,155
+2011,"Crafting Table",4,160,0,"",1,"HeavyRain:Slower;Clear:Faster",1,0,0,"","",1001,1300,2050,103
+2012,"Storage Barrel",0,180,0,"",1,"HeavyRain:Swells;Rot:Faster",1,25,1,"1040:0.6;1041:0.4","",1001,1400,2000,100
+2013,"Lumber Mill",4,220,0,"",1,"HeavyRain:Stops;Dry:Faster",1,0,0,"","",1004,6000,3000,90
+2014,"Mine Entrance",1,200,1,"5040",1,"Flood:Closes;Dry:Safe",1,0,0,"","",1005,7000,2000,50
+2015,"Abandoned Hut Door",1,140,0,"",1,"Storm:Creaks;Clear:Sturdy",1,10,1,"1005:0.3;1006:0.2","107:0.5",1003,4800,800,85
+2016,"Fishing Spot",9,300,0,"",1,"HeavyRain:BetterCatch;Drought:NoCatch",0,0,1,"1060:0.8;1061:0.6","",1006,8000,5000,0
+2017,"Herb Garden",9,250,0,"",1,"LightRain:Grows;Drought:Withers",0,0,1,"1070:0.9;1071:0.7","",1001,1600,1900,100
+2018,"Watchtower",0,120,1,"5050",1,"Clear:BetterView;Fog:Blind",1,5,0,"","",1001,2000,2500,200
+2019,"Dungeon Entrance",7,180,1,"5060;5061",0,"",1,0,0,"","",1007,9000,1000,0
+2020,"Traveling Cart",5,200,0,"",1,"HeavyRain:Seeks shelter;Clear:Travels",0,40,1,"1080:0.5;1081:0.3","103:1.0;104:1.0",0,0,0,0

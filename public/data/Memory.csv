@@ -1,0 +1,11 @@
+MemoryID,KnowledgeType,Description,AssociatedData,Expiration
+1901,KnownRisk,"Knowledge of a wolf pack location.","RiskID:701; Location:ForestArea1","Does not expire"
+1902,KnownResource,"Location of a berry bush.","ItemID:411; Location:Meadow2","Expires in 7 days"
+1903,KnownNPC,"Information about Merchant_002.","NPCID:Merchant_002; Relationship:Friendly","Does not expire"
+1904,SkillKnowledge,"Proficiency in Archery Level 2.","SkillID:301; Level:2","Updated upon skill change"
+1905,EventReminder,"Upcoming HarvestFestival date.","EventID:601; Date:NextMonth","Expires after event"
+1906,QuestInformation,"Details about 'GatherHerbs' quest.","QuestID:1601; Objectives","Expires upon completion"
+1907,KnownRecipe,"Recipe for HealingPotion.","ItemID:405; Ingredients","Does not expire"
+1908,LocationKnowledge,"Map of CaveSystem1.","Location:CaveSystem1; MapData","Does not expire"
+1909,Warning,"Alert about bandit activity.","RiskID:703; Area:RoadToVillageB","Expires in 3 days"
+1910,Gossip,"Rumor about Noble's secret.","NPCID:Noble; Information","Expires in 5 days"

@@ -1,0 +1,11 @@
+RoleID,RoleName,Description,PreferredAttributes,MinimumAttributes,PreferredSkills,PersonaTraitsPreferences,TrainingRequired
+1401,Warrior,"Combat specialist.","Strength >= 7; Endurance >= 6","Strength >= 5","Swordsmanship; Archery","Bravery >= 6; Aggression >= 5","Yes"
+1402,Merchant,"Trader of goods.","Charisma >= 7; Intelligence >= 6","Charisma >= 5","Trading; Negotiation","Greed >= 5; Friendliness >= 6","No"
+1403,Scholar,"Seeker of knowledge.","Intelligence >= 8","Intelligence >= 6","Reading; Alchemy","Curiosity >= 7; Conscientiousness >= 6","Yes"
+1404,Healer,"Provider of medical aid.","Compassion >= 7; Intelligence >= 6","Compassion >= 5","Medicine; Herbalism","Friendliness >= 6; Patience >= 5","Yes"
+1405,Farmer,"Cultivator of land.","Endurance >= 7","Endurance >= 5","Farming; Animal Husbandry","Conscientiousness >= 6; Patience >= 5","No"
+1406,Hunter,"Tracker and gatherer of food.","Perception >= 7; Dexterity >= 6","Perception >= 5","Hunting; Archery","Curiosity >= 5; Patience >= 6","Yes"
+1407,Guard,"Protector of people and places.","Strength >= 6; Endurance >= 6","Strength >= 5","CombatSkill; Perception","Bravery >= 6; Conscientiousness >= 5","Yes"
+1408,Blacksmith,"Crafter of metal goods.","Strength >= 7; Intelligence >= 5","Strength >= 5","Crafting; Metalworking","Determination >= 6; Conscientiousness >= 6","Yes"
+1409,Innkeeper,"Manager of lodging and food.","Charisma >= 6; Endurance >= 5","Charisma >= 5","Cooking; Trading","Friendliness >= 7; Patience >= 6","No"
+1410,Bandit,"Outlaw and thief.","Dexterity >= 6; Stealth >= 5","Dexterity >= 5","Stealth; CombatSkill","Aggression >= 5; Greed >= 6","No"

@@ -1,0 +1,16 @@
+RecipeID,RecipeName,Description,RequiredIngredients,CraftedItemID,CraftedQuantity,SkillRequirements,CraftingTime,FactionRestriction,bIsDiscovered,RecipeRarity,BaseSuccessChance,CriticalSuccessChance,OptionalCatalysts
+1001,Iron Sword,A basic iron sword crafted from steel and wood,"1017:3,1015:1",2001,1,Blacksmithing:25,30.0,,true,Common,90.0,5.0,
+1002,Healing Potion,A potion that restores health,"1014:2,1002:1",1005,1,Herbalism:15,10.0,,true,Common,95.0,10.0,1016:1
+1003,Steel Armor,Protective armor made from refined steel,"1017:5,1019:2",3001,1,Blacksmithing:35,45.0,,true,Uncommon,85.0,3.0,
+1004,Energy Drink,A stimulating beverage,"1014:1,1002:2,1013:1",1006,2,Cooking:10,5.0,,true,Common,98.0,15.0,
+1005,Iron Axe,A sturdy tool and weapon,"1017:2,1015:1",2002,1,Blacksmithing:20,25.0,,true,Common,92.0,8.0,
+1006,Leather Armor,Light protective gear,"1019:4,1018:1",3002,1,Crafting:20,20.0,,true,Common,90.0,5.0,
+1007,Ration Pack,Preserved food for travel,"1001:2,1003:1,1002:1",1009,3,Cooking:15,15.0,,true,Common,95.0,10.0,
+1008,Antidote,Cures various poisons,"1014:3,1011:1",1008,1,Medicine:25,20.0,,true,Rare,80.0,5.0,
+1009,Biofuel,Fuel for machinery,"1015:5,1014:2",1013,5,Engineering:30,40.0,,false,Uncommon,85.0,10.0,
+1010,Steel Tools,High-quality crafting tools,"1017:4,1015:2",4001,1,Blacksmithing:40,50.0,MerchantGuild,false,Rare,75.0,8.0,1016:2
+1011,Nanobots,Advanced healing technology,"1011:3,1016:2,1017:1",1011,2,Engineering:50,60.0,ScientistFaction,false,Epic,60.0,15.0,
+1012,Strength Potion,Enhances physical capabilities,"1014:3,1005:1,1016:1",1012,1,Alchemy:35,25.0,,false,Rare,70.0,12.0,
+1013,Advanced Weapon,High-tech combat equipment,"1017:6,1011:2,1016:3",2003,1,Engineering:45,90.0,WarriorClan,false,Epic,65.0,20.0,
+1014,Herbal Medicine,Natural healing remedy,"1014:4,1002:1",1010,3,Herbalism:20,12.0,Healers,true,Common,88.0,15.0,
+1015,Cloth Armor,Basic protective clothing,"1018:6,1019:1",3003,1,Tailoring:15,18.0,,true,Common,92.0,7.0,

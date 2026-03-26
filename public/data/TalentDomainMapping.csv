@@ -1,0 +1,5 @@
+DomainID,DomainName,Drive,GameplayRole,TalentCount,TalentIDs,ComplementaryDomain,ContrastingDomain
+DOM01,Executing,"Task-Oriented: Makes things happen",Warrior/Tank/Engineer,9,"T001;T002;T003;T004;T005;T006;T007;T008;T009",Strategic Thinking,Relationship Building
+DOM02,Strategic Thinking,"Task-Oriented: Analyzes and anticipates",Mage/Rogue/Analyst,8,"T010;T011;T012;T013;T014;T015;T016;T017",Executing,Influencing
+DOM03,Influencing,"People-Oriented: Mobilizes others",Bard/Diplomat/Leader,8,"T018;T019;T020;T021;T022;T023;T024;T025",Relationship Building,Strategic Thinking
+DOM04,Relationship Building,"People-Oriented: Connects and supports",Healer/Cleric/Support,9,"T026;T027;T028;T029;T030;T031;T032;T033;T034",Influencing,Executing

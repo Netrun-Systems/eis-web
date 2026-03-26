@@ -1,0 +1,11 @@
+TraitID,TraitName,Description,EffectOnBehaviors,DefaultValue,RangeMin,RangeMax
+201,Aggression,"Tendency to be hostile.","Increases likelihood of initiating combat.",5,1,10
+202,Friendliness,"Tendency to be friendly.","Increases positive social interactions.",7,1,10
+203,Curiosity,"Desire to explore and learn.","Increases exploration behaviors.",6,1,10
+204,Sociability,"Preference for social interactions.","Increases social behaviors.",6,1,10
+205,Fearfulness,"Tendency to be afraid.","Increases likelihood to flee.",4,1,10
+206,Conscientiousness,"Attention to detail and hygiene.","Increases hygiene-maintaining behaviors.",5,1,10
+207,Playfulness,"Desire for fun activities.","Increases entertainment-seeking behaviors.",5,1,10
+208,Determination,"Persistence in achieving goals.","Increases training and self-improvement behaviors.",6,1,10
+209,Bravery,"Willingness to face danger.","Decreases likelihood to flee; Increases combat engagement.",5,1,10
+210,Greed,"Desire for wealth and possessions.","Increases trading and resource accumulation behaviors.",4,1,10

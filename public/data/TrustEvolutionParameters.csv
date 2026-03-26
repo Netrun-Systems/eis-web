@@ -1,0 +1,11 @@
+ParameterID,EventType,BaseTrustChange,PersonalityMultiplier,TimeDecayFactor,DiminishingReturnsFactor,MaxChangePerEvent,RecoveryDifficulty,WitnessImpactMultiplier,FactionInfluenceWeight
+1,PositiveInteraction,5.0,1.0,0.01,0.8,15.0,1.0,0.3,0.5
+2,NegativeInteraction,-7.0,1.2,0.01,0.8,20.0,1.0,0.4,0.6
+3,Betrayal,-25.0,2.0,0.005,0.9,50.0,3.0,0.8,0.7
+4,Favor,8.0,0.9,0.01,0.7,20.0,0.8,0.5,0.4
+5,Conflict,-15.0,1.5,0.015,0.85,30.0,2.0,0.6,0.8
+6,SharedExperience,12.0,1.1,0.005,0.75,25.0,0.5,0.4,0.3
+7,WitnessedAction,3.0,0.8,0.01,0.9,10.0,1.0,1.0,0.2
+8,TimeDecay,-0.5,0.5,1.0,1.0,2.0,1.0,0.0,0.1
+9,RecoveryAttempt,4.0,1.3,0.008,0.6,15.0,0.8,0.3,0.4
+10,FactionAction,6.0,0.7,0.012,0.8,20.0,1.2,0.5,1.0

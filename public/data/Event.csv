@@ -1,0 +1,7 @@
+EventID,EventName,Description,Schedule,RequiredRoles,Benefits,ParticipationRequirements
+601,HarvestFestival,"Celebration of the harvest.","Every autumn.","Farmers; Entertainers.","Boosts morale; Improves relationships.","Members of the community."
+602,WarriorTrials,"Tests of strength and skill.","Every spring.","Warriors; Judges.","Identifies elite warriors; Increases reputation.","Warriors with skill level >= 5."
+603,MigrationFestival,"Celebration before moving to new lands.","Every season change.","All tribe members.","Strengthens community bonds.","Tribe members."
+604,AnnualTradeFair,"Large market event for trading.","Mid-summer.","Merchants; Guards.","Increases wealth; Networking opportunities.","Open to all traders."
+605,KnowledgeSummit,"Gathering of scholars to share knowledge.","Every five years.","Scholars; Alchemists.","Advances knowledge; Collaboration.","Scholars with Reading skill >= 2."
+606,SacredCeremony,"Religious ritual for blessings.","Full moon nights.","Clergy; Devotees.","Spiritual fulfillment; Community harmony.","Believers of the faith."

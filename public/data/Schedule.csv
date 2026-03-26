@@ -1,0 +1,11 @@
+ScheduleID,ScheduleName,Description,TimeSlots,AssociatedRoles,Conditions
+1001,FarmerDailyRoutine,"Typical day for a farmer.","Morning: Farming; Afternoon: Rest; Evening: Socialize; Night: Sleep.","Farmer","None"
+1002,GuardPatrol,"Patrol schedule for guards.","Morning: Patrol East; Afternoon: Patrol West; Evening: Guard Gate; Night: Rest.","Guard","Active threats increase patrol frequency."
+1003,MerchantDay,"Daily activities for a merchant.","Morning: Open Shop; Afternoon: Trade; Evening: Inventory Management; Night: Sleep.","Merchant","Market days adjust schedule."
+1004,ScholarStudy,"Study routine for scholars.","Morning: Research; Afternoon: Teach; Evening: Read; Night: Rest.","Scholar","Access to library required."
+1005,HunterSchedule,"Daily plan for hunters.","Morning: Prepare Gear; Afternoon: Hunt; Evening: Process Game; Night: Rest.","Hunter","Weather affects hunting times."
+1006,ChildRoutine,"Activities for child NPCs.","Morning: Learn; Afternoon: Play; Evening: Family Time; Night: Sleep.","Child","School days adjust schedule."
+1007,ClergyDuties,"Daily duties for clergy members.","Morning: Meditation; Afternoon: Services; Evening: Charity Work; Night: Rest.","Clergy","Religious events modify activities."
+1008,BanditOperations,"Typical day for bandits.","Morning: Plan Heists; Afternoon: Execute Heists; Evening: Hideout; Night: Rest.","Bandit","Increased guard presence alters plans."
+1009,FishermanRoutine,"Daily schedule for fishermen.","Early Morning: Fish; Afternoon: Sell Catch; Evening: Repair Equipment; Night: Rest.","Fisherman","Weather and tides affect fishing."
+1010,InnkeeperSchedule,"Activities for innkeepers.","Morning: Prepare Inn; Afternoon: Serve Guests; Evening: Entertainment; Night: Clean Up.","Innkeeper","Festivals increase workload."

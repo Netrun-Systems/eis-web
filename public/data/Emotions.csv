@@ -1,0 +1,11 @@
+EmotionID,EmotionName,Description,Triggers,EffectsOnBehaviors,Duration
+1801,Happy,"Feeling joy and contentment.","Positive social interactions; Needs satisfied.","Increases sociability; Decreases aggression.",Variable
+1802,Angry,"Feeling irritation or rage.","Conflict; Needs unmet.","Increases aggression; Decreases cooperation.",Variable
+1803,Fearful,"Feeling afraid or anxious.","Presence of threats; Low safety need.","Increases likelihood to flee; Decreases exploration.",Variable
+1804,Sad,"Feeling unhappy or sorrowful.","Loss; Negative events.","Decreases activity; Lowers sociability.",Variable
+1805,Confident,"Feeling self-assured.","Success in tasks; High skill levels.","Increases bravery; Increases initiative.",Variable
+1806,Bored,"Feeling uninterested.","Lack of stimulation; Needs unmet.","Increases seeking entertainment; Decreases focus.",Variable
+1807,Jealous,"Feeling envious of others.","Observing others' advantages.","Increases aggression; May lead to theft.",Variable
+1808,Relaxed,"Feeling calm and at ease.","Safe environment; Needs met.","Increases patience; Decreases stress behaviors.",Variable
+1809,Stressed,"Feeling under pressure.","Overwhelming tasks; Needs unmet.","Decreases efficiency; Increases mistakes.",Variable
+1810,Curious,"Feeling eager to learn or explore.","New environments; Unfamiliar events.","Increases exploration behaviors.",Variable

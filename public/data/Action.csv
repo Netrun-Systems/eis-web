@@ -1,0 +1,11 @@
+ActionID,ActionName,Description,AffectedNeeds,AttributeChanges,RelationshipImpact,BehaviorID
+1101,Eating,"Consuming food.","Reduces Hunger need.","None","None",101
+1102,Drinking,"Consuming water.","Reduces Thirst need.","None","None",101
+1103,Sleeping,"Resting to regain energy.","Reduces Rest need.","None","None",103
+1104,Trading,"Exchanging goods.","May affect Economic need.","Increases Wealth","Improves or worsens relationships based on fairness.",102
+1105,Healing,"Treating injuries or illness.","Restores Health attribute.","None","Improves relationship with healed individual.",104
+1106,Training,"Practicing skills.","None","Increases SkillLevel","None",107
+1107,Socializing,"Interacting with others.","Reduces SocialInteraction need.","None","Improves relationships.",104
+1108,Fighting,"Engaging in combat.","None","May reduce Health; Increases CombatSkill","Worsens relationship with opponent.",105
+1109,Stealing,"Taking items without permission.","May affect Economic need.","None","Worsens relationship if caught.",106
+1110,Helping,"Assisting others in tasks.","May reduce relevant need.","None","Improves relationship with recipient.",104

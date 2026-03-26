@@ -1,0 +1,22 @@
+EntryID,FactionA,FactionB,ReputationLevel,ReputationChangeRate,ReputationDecayRate,PublicStanding,TradeRelationshipModifier,HostilityThreshold,AllianceThreshold,ReputationMomentum,LastSignificantEvent,EventImpactDecayRate
+1,Raiders,Remnants,25.0,0.3,0.02,30.0,0.4,20.0,75.0,-2.5,"Recent territorial conflicts over scavenging rights",0.03
+2,Raiders,Machines,15.0,0.4,0.015,20.0,0.2,15.0,80.0,-3.0,"Machine sentinels destroyed raider outpost",0.025
+3,Raiders,Neutrals,45.0,0.2,0.025,50.0,0.8,25.0,70.0,1.0,"Raiders provided protection to neutral settlement",0.035
+4,Raiders,Wildlife,35.0,0.1,0.01,40.0,1.0,30.0,60.0,0.5,"Ongoing territorial disputes with mutant packs",0.02
+5,Remnants,Machines,40.0,0.35,0.02,45.0,0.7,25.0,75.0,0.0,"Cautious technological exchange attempts",0.03
+6,Remnants,Neutrals,65.0,0.25,0.03,70.0,1.2,20.0,80.0,2.0,"Remnants shared medical knowledge with villages",0.04
+7,Remnants,Wildlife,50.0,0.15,0.015,55.0,1.0,30.0,65.0,0.0,"Neutral coexistence in non-overlapping territories",0.025
+8,Machines,Neutrals,30.0,0.3,0.02,35.0,0.5,20.0,75.0,-1.5,"Machine patrols avoid neutral settlements",0.03
+9,Machines,Wildlife,25.0,0.2,0.01,30.0,1.0,25.0,70.0,-1.0,"Machines eliminate wildlife threats in their zones",0.02
+10,Machines,RogueAI,10.0,0.5,0.005,15.0,0.1,10.0,85.0,-5.0,"Rogue AIs actively sabotage machine networks",0.01
+11,Neutrals,Wildlife,55.0,0.2,0.025,60.0,1.1,25.0,70.0,1.5,"Peaceful coexistence and mutual non-interference",0.04
+12,Raiders,RogueAI,20.0,0.4,0.02,25.0,0.3,15.0,80.0,-2.0,"Rogue AIs attempted to manipulate raider leadership",0.025
+13,Remnants,RogueAI,35.0,0.45,0.015,40.0,0.4,20.0,75.0,-1.0,"Remnants developed countermeasures against AI infiltration",0.02
+14,Neutrals,RogueAI,40.0,0.25,0.03,45.0,0.6,25.0,70.0,0.5,"Limited neutral settlements affected by rogue AI activity",0.035
+15,Wildlife,RogueAI,60.0,0.1,0.01,65.0,1.0,30.0,65.0,0.0,"Wildlife largely unaffected by AI conflicts",0.02
+16,Raiders,Reclaimers,50.0,0.3,0.025,55.0,0.9,25.0,75.0,1.0,"Recent cooperation on technology salvage operations",0.03
+17,Remnants,Reclaimers,75.0,0.2,0.03,80.0,1.4,15.0,85.0,3.0,"Strong alliance based on shared technological goals",0.04
+18,Machines,Reclaimers,45.0,0.35,0.02,50.0,0.8,20.0,80.0,0.5,"Cautious technological cooperation and data exchange",0.025
+19,Neutrals,Reclaimers,60.0,0.2,0.03,65.0,1.1,20.0,75.0,2.0,"Reclaimers help maintain neutral settlement technology",0.035
+20,Wildlife,Reclaimers,50.0,0.15,0.02,55.0,1.0,30.0,65.0,0.0,"Peaceful coexistence with minimal territorial overlap",0.03
+21,RogueAI,Reclaimers,25.0,0.4,0.015,30.0,0.3,15.0,80.0,-2.5,"Rogue AIs view Reclaimers as threat to AI supremacy",0.02

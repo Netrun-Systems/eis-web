@@ -1,0 +1,26 @@
+Name,Trait1,Trait2,PairingType,EmergentBehavior,GameplayEffects,StrengthMultiplier,MinimumInnateLevel
+ComplementaryPairing_01,Aggression,Confidence,Complementary,Dominant Leader,+20% command radius;Can intimidate AND inspire;Rally troops with aggressive confidence,1.3,5
+ComplementaryPairing_02,Intelligence,Curiosity,Complementary,Brilliant Scholar,+30% learning speed;+25% puzzle-solving;Can deduce complex patterns instantly,1.25,5
+ComplementaryPairing_03,Loyalty,Empathy,Complementary,True Companion,+40% relationship depth;Can sense ally pain;Will sacrifice for friends,1.3,5
+ComplementaryPairing_04,Resourcefulness,Intelligence,Complementary,Master Engineer,+35% crafting effectiveness;Can improvise advanced tech;Breakthrough inventions,1.25,5
+ComplementaryPairing_05,Charisma,Friendliness,Complementary,Social Magnet,+50% relationship gain;Attracts followers naturally;Can unite factions,1.3,5
+ComplementaryPairing_06,Generosity,Empathy,Complementary,Selfless Healer,+40% healing effectiveness;Can heal emotional trauma;Sacrifice self for others,1.25,5
+ComplementaryPairing_07,Greed,Resourcefulness,Complementary,Wealthy Survivor,+30% wealth generation;+25% scavenging;Turn trash to treasure,1.2,5
+ComplementaryPairing_08,SurvivalInstinct,Fearfulness,Complementary,Paranoid Survivor,+50% danger detection;+30% trap avoidance;Prepared for anything,1.25,5
+ComplementaryPairing_09,Independence,Confidence,Complementary,Maverick Hero,+35% solo effectiveness;Can defy authority;Lone wolf superiority,1.3,5
+ComplementaryPairing_10,Honesty,Loyalty,Complementary,Ethical Guardian,+25% ally trust;Cannot be corrupted;Unshakeable principles,1.2,5
+ContrastingPairing_01,Aggression,Patience,Contrasting,Controlled Fury,Fast execution after careful setup;+40% critical damage after waiting 5s;Measured violence,1.4,6
+ContrastingPairing_02,Curiosity,Fearfulness,Contrasting,Cautious Explorer,Explores safely;+30% secret discovery with -50% trap damage;Careful curiosity,1.3,6
+ContrastingPairing_03,Greed,Generosity,Contrasting,Strategic Philanthropist,Invests wealth wisely for greater return;Can profit from charity;Calculated kindness,1.35,6
+ContrastingPairing_04,Independence,Loyalty,Contrasting,Selective Devotion,Fiercely independent but loyal to chosen few;+50% effectiveness with trusted ally only,1.4,7
+ContrastingPairing_05,Aggression,Empathy,Contrasting,Compassionate Warrior,Fights to protect not destroy;+35% damage vs. oppressors;-25% damage to innocents,1.3,6
+ContrastingPairing_06,Confidence,Fearfulness,Contrasting,Brave Coward,Confident despite fear;+30% courage when afraid;Can act decisively while terrified,1.35,6
+ContrastingPairing_07,Honesty,Resourcefulness,Contrasting,Principled Survivor,Survives without compromising ethics;+25% ethical resource gain;Won't cheat to win,1.25,6
+ContrastingPairing_08,Charisma,Independence,Contrasting,Charismatic Loner,Influences from afar;+30% social influence without commitment;Inspire then disappear,1.3,6
+ContrastingPairing_09,Intelligence,Aggression,Contrasting,Calculated Destroyer,Smart violence;+40% tactical damage;Plan then execute with precision,1.35,6
+ContrastingPairing_10,Patience,SurvivalInstinct,Contrasting,Patient Hunter,Waits for perfect moment to strike;+50% ambush damage;Can wait days for opportunity,1.4,7
+RarePairing_01,Curiosity,Independence,Complementary,Lone Researcher,Discovers alone;+40% solo research;Breakthrough discoveries without collaboration,1.3,7
+RarePairing_02,Empathy,Greed,Contrasting,Empathic Merchant,Understands customer needs perfectly;+35% merchant profit through empathy;Fair exploitation,1.4,7
+RarePairing_03,Confidence,Generosity,Complementary,Inspiring Benefactor,Confident charity that uplifts communities;+30% settlement morale;Create self-sufficient societies,1.25,6
+RarePairing_04,Loyalty,Greed,Contrasting,Mercenary with Honor,Expensive but loyal once hired;+40% reward demand;+50% mission success for paying clients,1.35,7
+RarePairing_05,Friendliness,Aggression,Contrasting,Friendly Brawler,Fights cheerfully;+25% combat morale;Can befriend enemies mid-battle,1.3,6

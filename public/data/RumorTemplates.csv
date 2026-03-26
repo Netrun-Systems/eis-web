@@ -1,0 +1,26 @@
+RumorID,RumorName,RumorTemplate,SubjectCategories,RequiredTrustLevel,CredibilityDecay,CorruptionChance,MaxPropagationHops,SpreadRate,FactionBias
+RUMOR_001,General_Gossip,I heard that {SUBJECT} {ACTION} {OBJECT},Personal|General,25.0,0.05,0.02,8,1.2,Neutral
+RUMOR_002,Trade_Intel,Word is that {SUBJECT} has {TRADE_ITEM} and is looking to make a deal,Trade|Commerce,40.0,0.03,0.01,12,1.5,Neutral
+RUMOR_003,Faction_Politics,They say {SUBJECT} is planning to {POLITICAL_ACTION} against {TARGET_FACTION},Politics|Faction,60.0,0.08,0.05,6,0.8,Faction_Specific
+RUMOR_004,Romantic_Scandal,Have you heard? {SUBJECT} and {ROMANTIC_TARGET} have been seen together,Romance|Personal,35.0,0.10,0.08,5,1.8,Neutral
+RUMOR_005,Military_Intel,Intelligence suggests that {SUBJECT} is mobilizing forces near {LOCATION},Military|Strategic,75.0,0.02,0.01,4,0.6,Faction_Specific
+RUMOR_006,Medical_Emergency,I heard {SUBJECT} has been afflicted with {MEDICAL_CONDITION} and needs treatment,Medical|Health,50.0,0.04,0.03,7,1.1,Neutral
+RUMOR_007,Technology_Discovery,Rumor has it that {SUBJECT} found some {TECH_TYPE} in the ruins of {LOCATION},Technology|Discovery,45.0,0.06,0.04,10,1.0,Neutral
+RUMOR_008,Threat_Warning,Be careful - {SUBJECT} reported seeing {THREAT_TYPE} near {LOCATION},Safety|Threat,30.0,0.03,0.02,15,2.0,Neutral
+RUMOR_009,Resource_Discovery,Word is {SUBJECT} discovered a cache of {RESOURCE_TYPE} hidden in {LOCATION},Resources|Discovery,55.0,0.07,0.06,8,0.9,Neutral
+RUMOR_010,Betrayal_Accusation,They say {SUBJECT} betrayed {VICTIM} by {BETRAYAL_ACTION},Betrayal|Trust,70.0,0.12,0.10,4,0.7,Faction_Specific
+RUMOR_011,Supernatural_Sighting,{SUBJECT} claims to have seen {SUPERNATURAL_ENTITY} near {LOCATION},Supernatural|Mystery,20.0,0.15,0.12,6,1.5,Neutral
+RUMOR_012,Death_Report,Tragic news - {SUBJECT} was found dead near {LOCATION} under suspicious circumstances,Death|Tragedy,40.0,0.04,0.02,12,1.3,Neutral
+RUMOR_013,Alliance_Formation,I heard {FACTION_A} and {FACTION_B} are forming an alliance against {TARGET_FACTION},Politics|Alliance,65.0,0.05,0.03,8,0.8,Faction_Specific
+RUMOR_014,Corruption_Scandal,Word is that {SUBJECT} has been taking bribes from {CORRUPT_SOURCE},Corruption|Politics,80.0,0.09,0.07,5,0.6,Faction_Specific
+RUMOR_015,Treasure_Map,{SUBJECT} supposedly has a map leading to {TREASURE_TYPE} buried in {LOCATION},Treasure|Adventure,30.0,0.08,0.09,10,1.4,Neutral
+RUMOR_016,Plague_Outbreak,Concerning reports that {DISEASE_TYPE} has been spreading from {LOCATION},Disease|Health,60.0,0.02,0.01,20,2.5,Neutral
+RUMOR_017,Raider_Movement,Scout reports indicate {RAIDER_GROUP} is planning to attack {TARGET_LOCATION},Military|Raider,50.0,0.04,0.02,12,1.7,Raiders
+RUMOR_018,Lost_Expedition,The expedition to {LOCATION} led by {SUBJECT} has not returned as expected,Exploration|Mystery,45.0,0.06,0.05,9,1.1,Neutral
+RUMOR_019,Secret_Meeting,{SUBJECT} was seen having a clandestine meeting with {MYSTERIOUS_CONTACT},Secret|Politics,70.0,0.11,0.08,6,0.7,Faction_Specific
+RUMOR_020,Artifact_Power,They say the {ARTIFACT_NAME} that {SUBJECT} found has strange powers,Artifact|Supernatural,25.0,0.13,0.15,8,1.6,Neutral
+RUMOR_021,Remnant_Research,The Remnants are apparently researching {RESEARCH_TOPIC} in their hidden facility,Technology|Remnants,65.0,0.03,0.02,7,0.9,Remnants
+RUMOR_022,AI_Malfunction,{AI_SUBJECT} has been experiencing critical system errors and may be unreliable,Technology|AI,55.0,0.05,0.03,8,1.2,Neutral
+RUMOR_023,Mutant_Evolution,Disturbing reports of {MUTANT_TYPE} showing increased intelligence near {LOCATION},Mutant|Evolution,40.0,0.07,0.04,11,1.3,Neutral
+RUMOR_024,Weather_Prediction,{SUBJECT} claims the upcoming storm will be worse than usual based on {INDICATOR},Weather|Environment,35.0,0.04,0.03,15,1.8,Neutral
+RUMOR_025,Hidden_Passage,{SUBJECT} discovered a secret passage connecting {LOCATION_A} to {LOCATION_B},Discovery|Secret,50.0,0.08,0.06,9,1.0,Neutral

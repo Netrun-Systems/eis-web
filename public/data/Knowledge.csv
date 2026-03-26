@@ -1,0 +1,49 @@
+Faction,Knowledge Type,Knowledge Description,How It Can Be Learned or Exchanged,Impact on Plot Development
+Raiders,Skill,Raiders' Combat Tactics,"Complete Raider combat missions, train with Raider warriors",Enhances combat abilities; unlocks aggressive dialogue options
+Raiders,Crafting Plan,Improvised Explosives Recipe,"Gain trust and request training from Raider engineers",Allows crafting of explosives; enables sabotage missions
+Raiders,Location,Hidden Raider Supply Cache Locations,"Assist in resource raids, earn a Raider's trust",Access to rare resources and weapons; strengthens Raider alliance
+Raiders,History,Raven's Rise to Power,"Discuss with veteran Raiders, find old Raider logs",Provides leverage in negotiations; reveals internal Raider conflicts
+Raiders,Skill,Fearsome Reputation,"Complete high-profile missions for the Raiders",Increases intimidation in dialogues; affects interactions with other factions
+Raiders,Crafting Plan,Modified Armor Plating,"Trade or assist Raider blacksmiths",Improves defense stats; essential for survival in tough battles
+Raiders,Location,Rival Faction Weak Points,"Gather intel during Raider espionage missions",Enables strategic assaults; impacts faction power balance
+Raiders,History,Old World Weapon Stashes,"Discover maps or decode Raider hints",Leads to powerful weapons; shifts combat advantage
+Remnants,Skill,Advanced Engineering,"Participate in Remnant tech restoration projects",Allows crafting/repairing advanced tech; crucial for tech-based quests
+Remnants,Crafting Plan,Energy Weapon Schematics,"Recover data drives for Dr. Elara Whitlock",Enables crafting energy weapons; provides edge against machines
+Remnants,Location,Pre-War Libraries and Labs,"Earn Remnant trust to access archives",Unlocks extensive lore; essential for understanding the Great Machine War
+Remnants,History,Causes of the Great Machine War,"Study Remnant records, attend lectures",Influences decisions about AI; unlocks diplomatic options with Alpha-7
+Remnants,Skill,Encryption and Decryption,"Assist in data recovery missions",Enhances hacking abilities; necessary for infiltrating machine networks
+Remnants,Crafting Plan,Medical Nanobot Designs,"Help in medical research",Enables crafting advanced healing items; boosts survival chances
+Remnants,Location,Underground Bunkers,"Complete exploration missions",Provides safe havens; access to rare materials
+Remnants,History,Secrets of the Ark Project,"Decode hidden files, discuss with Dr. Whitlock",Reveals mankind's past; affects major plot choices
+Reclaimers,Skill,Machine Reprogramming Techniques,"Train under Sophia Reyes, complete key missions",Allows reprogramming machines; pivotal for Redemption Protocol quests
+Reclaimers,Crafting Plan,Redemption Protocol Code Segments,"Assist in compiling the protocol",Essential for reprogramming Alpha-7; impacts game endings
+Reclaimers,Location,Reclaimer Hidden Labs,"Earn high trust, prove loyalty",Access to cutting-edge tech; unlocks advanced crafting options
+Reclaimers,History,Pre-War AI Ethics,"Study archived documents, engage in discussions",Informs ethical decisions; influences interactions with machines
+Reclaimers,Skill,Advanced Hacking,"Participate in cyber warfare missions",Improves ability to hack machines; critical for certain quests
+Reclaimers,Crafting Plan,AI Integration Modules,"Aid in tech development projects",Allows integration of AI into equipment; enhances gear capabilities
+Reclaimers,Location,Machine Graveyards,"Explore designated areas with Reclaimer guides",Source of rare machine parts; aids in crafting and repairs
+Reclaimers,History,Sophia Reyes' Research Notes,"Gain her trust, assist in personal missions",Deepens understanding of AI; opens unique dialogue paths
+Autonomous Machines,Skill,Machine Language Comprehension,"Hack machine terminals, learn from Alpha-7",Enables communication with machines; unlocks unique quests
+Autonomous Machines,Crafting Plan,Machine Interface Device,"Extract data from machines, reverse-engineer",Allows direct interface with AI; critical for main storyline
+Autonomous Machines,Location,Core Machine Facilities,"Gain Alpha-7's trust, decrypt navigation data",Access to key machine sites; necessary for high-level missions
+Autonomous Machines,History,Alpha-7's Origin Story,"Decode core data logs, engage with Alpha-7",Reveals motivations; influences major plot decisions
+Autonomous Machines,Skill,Advanced Cybernetics,"Assist in machine maintenance tasks",Enhances abilities with cybernetic upgrades; affects gameplay
+Autonomous Machines,Crafting Plan,Self-Sustaining Power Cells,"Learn from machine blueprints",Creates efficient power sources; useful for equipment and settlements
+Autonomous Machines,Location,Network Relay Towers,"Hack location data, follow machine units",Controls machine communications; strategic advantage in conflicts
+Autonomous Machines,History,Hidden Machine Directives,"Uncover encrypted files, gain Alpha-7's confidence",Provides insight into machine plans; crucial for decision-making
+Wraiths,Skill,Wraith Behavioral Understanding,"Study Wraiths with experts, observe in the field",Improves survival chances; essential for Wraith-related missions
+Wraiths,Crafting Plan,Wraith Pheromone Lure,"Collect samples, experiment in labs",Creates items to distract or repel Wraiths; aids in exploration
+Wraiths,Location,Wraith Nest Locations,"Track movements, decode environmental signs",Allows preemptive action; impacts Wraith threat level
+Wraiths,History,Origins of Wraith Mutations,"Research in contaminated zones, analyze DNA",May unlock cures or deterrents; affects environmental quests
+Wraiths,Skill,Wraith Combat Techniques,"Learn from Wraith hunters, survive encounters",Enhances combat efficiency against Wraiths; vital for survival
+Wraiths,Crafting Plan,Anti-Wraith Armor Coating,"Develop with collected materials",Improves defense against Wraith attacks; beneficial for dangerous areas
+Wraiths,Location,Subterranean Tunnels,"Discover entrances, map networks",Opens new travel routes; strategic for missions and evasion
+Wraiths,History,Impact of Human Activity on Mutations,"Uncover environmental reports",Raises ethical questions; influences faction relationships
+Raiders & Remnants,History,Potential for Alliance,"Gather intel, foster dialogue between factions",Enables alliance options; alters faction dynamics
+Remnants & Reclaimers,Skill,Joint Technological Innovations,"Participate in collaborative projects",Advances tech level; unlocks new gameplay mechanics
+Alpha-7 & Reclaimers,Knowledge,Mutual Understanding of Sentience,"Facilitate discussions, share findings",Critical for peaceful resolutions; affects game endings
+Player's Tribe,History,Lost Traditions and Skills,"Recover artifacts from your tribe, flashbacks",Personal backstory development; influences player motivations
+Hidden History,Knowledge,Mankind's Role in the Great Machine War,"Discover ancient archives, piece together clues",Reveals the truth; impacts major plot choices
+Global,Location,Ark Project Launch Site,"Decode coordinates, survive journey",Access to ultimate secrets; potential for game-changing revelations
+Global,Skill,Multi-Faction Diplomacy,"Successfully navigate faction politics",Enables unique alliances; opens special missions and endings
+Global,Crafting Plan,Ultimate Survival Gear,"Combine knowledge from all factions",Creates powerful equipment; significant gameplay advantages

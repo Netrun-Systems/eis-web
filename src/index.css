@@ -1,0 +1,64 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #0f1419;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #2a3544;
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #3a4554;
+  }
+}
+
+@layer components {
+  .eis-card {
+    @apply bg-eis-bg-card border border-eis-border rounded-lg p-4;
+  }
+
+  .eis-btn {
+    @apply px-4 py-2 rounded-md font-medium transition-colors duration-150;
+  }
+
+  .eis-btn-primary {
+    @apply eis-btn bg-eis-green text-eis-bg hover:bg-eis-green-dark;
+  }
+
+  .eis-btn-secondary {
+    @apply eis-btn bg-eis-bg-hover text-eis-text hover:bg-eis-border;
+  }
+
+  .eis-btn-danger {
+    @apply eis-btn bg-eis-danger/20 text-eis-danger hover:bg-eis-danger/30;
+  }
+
+  .eis-btn-sm {
+    @apply px-2 py-1 text-xs rounded font-medium transition-colors duration-150
+           bg-eis-bg-hover text-eis-text-secondary hover:text-eis-text hover:bg-eis-border;
+  }
+
+  .eis-input {
+    @apply bg-eis-bg border border-eis-border rounded-md px-3 py-2 text-eis-text
+           focus:outline-none focus:border-eis-green focus:ring-1 focus:ring-eis-green/50;
+  }
+
+  .eis-badge {
+    @apply inline-flex items-center px-2 py-0.5 rounded text-xs font-medium;
+  }
+}

@@ -1,0 +1,9 @@
+NeedID,NeedName,Description,DefaultValue,IncreaseRate,PriorityWeight,Modifiers,SatisfactionThresholds
+1,Hunger,"The need to eat food.",50,0.1,10,"Environment: Cold increases hunger rate",80
+2,Thirst,"The need to drink water.",50,0.2,9,"Environment: Hot increases thirst rate",80
+3,Rest,"The need for sleep or rest.",50,0.05,8,"TimeOfDay: Night decreases rest need",70
+4,SocialInteraction,"The need for social contact.",50,0.05,5,"Isolation increases need",70
+5,Safety,"The need to feel safe and secure.",70,0.02,7,"Presence of risks increases need",90
+6,SelfActualization,"The need for personal growth.",30,0.01,4,"Achievement decreases need",50
+7,Hygiene,"The need for cleanliness.",50,0.03,6,"Dirty environments increase need",75
+8,Entertainment,"The need for fun and enjoyment.",40,0.04,3,"Boredom increases need",65

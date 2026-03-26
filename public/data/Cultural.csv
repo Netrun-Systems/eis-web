@@ -1,0 +1,7 @@
+CultureID,CultureName,Description,ValuesAndBeliefs,PreferredBehaviors,CulturalEvents
+501,NomadicTribe,"A tribe that moves frequently.","Values freedom and harmony with nature.","Hunting; Gathering; Trading.","MigrationFestival"
+502,MerchantGuild,"An organization of traders.","Values wealth and trade expansion.","Trading; Negotiation; Exploration.","AnnualTradeFair"
+503,WarriorClan,"A clan of skilled warriors.","Values honor and strength.","Combat training; Defense; Competitions.","WarriorTrials"
+504,ScholarsConsortium,"A group dedicated to knowledge.","Values learning and wisdom.","Research; Teaching; Alchemy.","KnowledgeSummit"
+505,FarmerCommunity,"A community focused on agriculture.","Values hard work and sustainability.","Farming; Animal Husbandry; Trading surplus.","HarvestFestival"
+506,ReligiousOrder,"A group devoted to spiritual practices.","Values faith and rituals.","Meditation; Rituals; Charity.","SacredCeremony"

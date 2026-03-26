@@ -1,0 +1,11 @@
+BehaviorID,BehaviorName,Description,AssociatedNeeds,RequiredAttributesSkills,PersonaTraitsInfluence,Conditions,Effects,AnimationActionReferences
+101,FindFood,"Searches for food to satisfy hunger.",1,"Perception >= 5","Curiosity >= 3","Environment: Has accessible food sources","Satisfies Hunger by 30","SearchAnimation"
+102,Trade,"Engages in trading with others.",6,"Charisma >= 4; TradingSkill >= 2","Sociability >= 5","Has items to trade; Nearby traders","Increases Wealth; Improves Relationships","TradeAnimation"
+103,Rest,"Rests to regain energy.",3,"Endurance <= 5","None","TimeOfDay: Night","Restores Rest need by 50","RestAnimation"
+104,Socialize,"Interacts with other NPCs.",4,"Charisma >= 3","Sociability >= 6","Nearby NPCs available","Improves relationships; Satisfies SocialInteraction need","TalkAnimation"
+105,Defend,"Protects self or others from threats.",5,"Strength >= 5; CombatSkill >= 3","Aggression >= 5","Presence of threats","Maintains Safety need; May affect health","CombatAnimation"
+106,Explore,"Investigates new areas.",6,"Perception >= 4","Curiosity >= 7","Unknown areas nearby","Gains Knowledge; May find resources","ExploreAnimation"
+107,TrainSkill,"Practices to improve a skill.",6,"Relevant SkillLevel < MaxLevel","Determination >= 6","Access to training equipment","Increases SkillLevel","TrainAnimation"
+108,SeekEntertainment,"Engages in enjoyable activities.",8,"None","Playfulness >= 5","Entertainment sources available","Satisfies Entertainment need","PlayAnimation"
+109,MaintainHygiene,"Cleans self to maintain hygiene.",7,"None","Conscientiousness >= 5","Access to water or facilities","Satisfies Hygiene need","WashAnimation"
+110,Flee,"Escapes from danger to ensure safety.",5,"Speed >= 5","Fearfulness >= 7","Presence of threats","Maintains Safety need","RunAnimation"

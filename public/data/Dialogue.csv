@@ -1,0 +1,11 @@
+DialogueID,DialogueText,SpeakerRole,Conditions,Responses,Effects
+1201,"Hello, traveler! Care to trade?",Merchant,"Has items to trade","Yes; No","Initiates trading; Improves relationship if positive."
+1202,"We need to prepare for the harvest.",Farmer,"TimeOfYear: Autumn","Offer help; Decline","Improves relationship if helps."
+1203,"Stay vigilant, there are bandits about.",Guard,"Presence of threats","Thank you; Ignore","Increases safety awareness."
+1204,"Can you teach me about alchemy?",Player,"Has Reading skill >= 2","Yes; No","Grants Alchemy knowledge if yes."
+1205,"You look injured. Do you need help?",Healer,"Target Health < 50%","Accept help; Refuse","Restores health if accepted."
+1206,"This area is dangerous at night.",Villager,"TimeOfDay: Night","Heed warning; Dismiss","Affects safety behaviors."
+1207,"Join us for the festival tonight!",Villager,"Event: HarvestFestival","Attend; Decline","Improves relationships if attends."
+1208,"I have a task for you, if you're interested.",QuestGiver,"None","Accept; Decline","Starts a quest if accepted."
+1209,"What brings you to these parts?",Stranger,"First meeting","Chat; Walk away","Potential to start new relationship."
+1210,"I don't trust outsiders.",SuspiciousNPC,"TrustLevel < 3","Build trust; Leave","Must build trust to interact further."

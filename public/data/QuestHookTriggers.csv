@@ -1,0 +1,26 @@
+HookID,HookName,HookDescription,TriggerConditions,RequiredNPCs,RequiredFactions,QuestType,UrgencyLevel,HookCooldown,PlayerProximityRequired
+HOOK_001,Mediation_Needed,A dispute between two NPCs requires intervention,Trust_Below_-30|Recent_Hostile_Conversation,"{NPC1},{NPC2}","",Mediation,Medium,1800.0,500.0
+HOOK_002,Trade_Route_Disruption,Bandits are threatening trade routes and merchants need protection,Raider_Activity_High|Merchant_Complaints,"{MERCHANT_NPC}","Traders",Escort,High,3600.0,0.0
+HOOK_003,Missing_Person,Someone has gone missing and needs to be found,NPC_Missing_Timer>24hours|Family_Concern,"{MISSING_NPC},{FAMILY_NPC}","",Search_Rescue,High,7200.0,1000.0
+HOOK_004,Faction_Tension_Rising,Tensions between factions are escalating toward conflict,Faction_Reputation_Difference>50|Recent_Conflicts,"{FACTION_LEADER_1},{FACTION_LEADER_2}","Raiders,Remnants",Diplomacy,Critical,10800.0,0.0
+HOOK_005,Medical_Emergency,Someone urgently needs medical supplies or treatment,Health_Below_25|Medical_Condition_Critical,"{PATIENT_NPC},{MEDIC_NPC}","",Delivery,Critical,900.0,200.0
+HOOK_006,Technology_Malfunction,Important technology has malfunctioned and needs repair,Tech_Status_Broken|Community_Dependent,"{TECH_SPECIALIST}","Remnants",Repair,Medium,2400.0,300.0
+HOOK_007,Resource_Shortage,Critical resources are running low and need to be obtained,Resource_Level<20|Community_Needs,"{QUARTERMASTER_NPC}","",Gathering,High,1200.0,0.0
+HOOK_008,Supernatural_Investigation,Strange phenomena need investigation,Supernatural_Reports>3|Fear_Level_High,"{INVESTIGATOR_NPC}","",Investigation,Medium,4800.0,800.0
+HOOK_009,Betrayal_Revenge,Someone seeks revenge for a perceived betrayal,Trust_Lost>50|Betrayal_Event_Recent,"{BETRAYER_NPC},{VICTIM_NPC}","",Revenge,High,3600.0,600.0
+HOOK_010,Alliance_Opportunity,Conditions are right for forming a new alliance,Mutual_Trust>70|Common_Enemy_Present,"{DIPLOMAT_1},{DIPLOMAT_2}","",Diplomacy,Medium,7200.0,0.0
+HOOK_011,Artifact_Recovery,A valuable artifact has been lost or stolen,Artifact_Missing|Historical_Importance,"{SCHOLAR_NPC}","Remnants",Recovery,Medium,5400.0,0.0
+HOOK_012,Settlement_Defense,A settlement is under threat and needs defenders,Threat_Level_High|Defense_Capability_Low,"{MILITIA_LEADER}","",Defense,Critical,1800.0,1500.0
+HOOK_013,Knowledge_Preservation,Important knowledge is at risk of being lost,Knowledge_Bearer_Old|Information_Rare,"{KNOWLEDGE_KEEPER}","Remnants",Preservation,Low,14400.0,100.0
+HOOK_014,Corruption_Exposed,Evidence of corruption has been discovered,Corruption_Evidence_Found|Community_Trust_Low,"{WHISTLEBLOWER_NPC}","",Justice,High,3600.0,400.0
+HOOK_015,Environmental_Crisis,Environmental hazard threatens the community,Radiation_High|Contamination_Spreading,"{ENVIRONMENTAL_EXPERT}","",Environmental,Critical,7200.0,0.0
+HOOK_016,Raider_Infiltration,Raiders have infiltrated a peaceful settlement,Raider_Presence_Hidden|Security_Compromised,"{SECURITY_CHIEF}","Raiders",Infiltration,High,2400.0,750.0
+HOOK_017,AI_Consciousness_Question,An AI is showing signs of true consciousness,AI_Behavior_Unusual|Consciousness_Indicators,"{AI_NPC},{AI_EXPERT}","",Philosophical,Low,10800.0,0.0
+HOOK_018,Mutant_Integration,A peaceful mutant wants to join a human community,Mutant_Peaceful|Community_Prejudice_High,"{MUTANT_NPC},{COMMUNITY_LEADER}","",Social,Medium,5400.0,300.0
+HOOK_019,Historical_Discovery,Ancient ruins have been discovered with potential secrets,Ruins_Discovered|Archaeological_Value,"{ARCHAEOLOGIST}","Remnants",Exploration,Medium,7200.0,0.0
+HOOK_020,Communication_Breakdown,Communication systems have failed isolating communities,Communication_Down|Isolation_Time>48hours,"{TECHNICIAN_NPC}","",Technical,High,1800.0,0.0
+HOOK_021,Territorial_Dispute,Two groups claim the same territory,Territory_Claimed_By_Multiple|Resource_Rich_Area,"{TERRITORY_CLAIMANT_1},{TERRITORY_CLAIMANT_2}","",Territorial,Medium,3600.0,1000.0
+HOOK_022,Plague_Containment,A disease outbreak needs to be contained,Disease_Outbreak|Infection_Rate_Rising,"{MEDICAL_OFFICER}","",Medical,Critical,600.0,0.0
+HOOK_023,Lost_Technology,Pre-war technology has been discovered but is dangerous,Ancient_Tech_Found|Danger_Level_Unknown,"{TECH_SAFETY_EXPERT}","Remnants",Safety,High,4800.0,500.0
+HOOK_024,Social_Uprising,Oppressed people are planning to revolt,Oppression_Level_High|Revolutionary_Sentiment,"{REBEL_LEADER},{OPPRESSOR}","",Revolution,High,5400.0,200.0
+HOOK_025,Time_Sensitive_Delivery,Critical supplies must be delivered before a deadline,Deadline_Approaching|Supply_Critical,"{COURIER_NPC}","",Time_Critical,Critical,300.0,0.0
