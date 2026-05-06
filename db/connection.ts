@@ -38,7 +38,7 @@ function buildSqlClient() {
   // Local dev or DATABASE_URL override
   const DATABASE_URL =
     process.env.DATABASE_URL ||
-    'postgresql://postgres:YUVsfGI3a2Yll4jeIgRUiA@127.0.0.1:5499/eis_simulation';
+    'postgresql://postgres:REDACTED-ROTATED-2026-05-06-USE-GCP-SECRET-MANAGER@127.0.0.1:5499/eis_simulation';
 
   return postgres(DATABASE_URL, {
     max:             10,
