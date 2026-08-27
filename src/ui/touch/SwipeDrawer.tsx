@@ -41,7 +41,7 @@ export function SwipeDrawer({ isOpen, onClose, side, children, title }: SwipeDra
       {/* Drawer */}
       <animated.div
         className={`
-          fixed top-0 bottom-0 z-40 bg-eis-bg-card border-eis-border overflow-y-auto
+          fixed top-0 bottom-0 z-40 bg-dust-0 dark:bg-dust-800 border-dust-200 dark:border-dust-700 overflow-y-auto
           ${side === 'left' ? 'left-0 border-r' : 'right-0 border-l'}
         `}
         style={{
@@ -51,11 +51,11 @@ export function SwipeDrawer({ isOpen, onClose, side, children, title }: SwipeDra
       >
         {/* Header */}
         {title && (
-          <div className="flex items-center justify-between px-4 py-3 border-b border-eis-border">
-            <h2 className="text-sm font-bold text-eis-text">{title}</h2>
+          <div className="flex items-center justify-between px-4 py-3 border-b border-dust-200 dark:border-dust-700">
+            <h2 className="text-sm font-bold text-dust-900 dark:text-dust-100">{title}</h2>
             <button
               onClick={onClose}
-              className="w-8 h-8 flex items-center justify-center text-eis-text-muted hover:text-eis-text rounded"
+              className="w-8 h-8 flex items-center justify-center text-dust-600 dark:text-dust-400 hover:text-dust-900 dark:hover:text-dust-100 rounded"
             >
               {'\u{2716}'}
             </button>

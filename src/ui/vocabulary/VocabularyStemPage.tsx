@@ -31,7 +31,7 @@ export function VocabularyStemPage() {
   return (
     <div className="max-w-6xl space-y-4">
       <div className="flex flex-wrap items-center gap-3 text-xs">
-        <Link to="/vocabulary" className="text-petrol-light hover:text-petrol hover:underline">
+        <Link to="/vocabulary" className="text-petrol-ink dark:text-petrol-light hover:text-petrol-dark dark:hover:text-petrol hover:underline">
           &larr; All vocabularies
         </Link>
         <StageIndicator stageId={stem} />
@@ -144,15 +144,16 @@ function StemEditor({ data, reload }: { data: WorldgenWebResponse; reload: () =>
 
   return (
     <>
-      <header className="space-y-1">
-        <div className="flex flex-wrap items-baseline gap-2">
-          <h2 className="text-xl font-bold text-dust-100">{stem}</h2>
-          <span className="font-mono text-xs text-dust-500">
+      <header className="space-y-1.5 border-b border-dust-200 pb-3 dark:border-dust-700">
+        <p className="eyebrow">Author the vocabulary</p>
+        <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+          <h2 className="page-title normal-case tracking-normal">{stem}</h2>
+          <span className="font-mono text-xs text-dust-600 dark:text-dust-400">
             {columns.length} columns · prefix {prefix || '(none)'}
           </span>
           <Link
             to={`/tables/Data/WorldGen/${stem}.csv`}
-            className="text-xs text-petrol-light hover:text-petrol hover:underline"
+            className="text-xs text-petrol-ink dark:text-petrol-light hover:text-petrol-dark dark:hover:text-petrol hover:underline"
           >
             view generated table
           </Link>
@@ -160,32 +161,32 @@ function StemEditor({ data, reload }: { data: WorldgenWebResponse; reload: () =>
       </header>
 
       {/* ---- base + ext rows (read-only) ---- */}
-      <section className="space-y-2 rounded border border-dust-700 bg-dust-800 p-3">
+      <section className="space-y-2 rounded border border-dust-200 dark:border-dust-700 bg-dust-0 dark:bg-dust-800 p-3">
         <div className="flex flex-wrap items-center gap-2">
-          <h3 className="text-sm font-semibold text-dust-100">
-            Existing rows <span className="font-mono text-xs text-dust-500">({baseRows.length})</span>
+          <h3 className="text-sm font-semibold text-dust-900 dark:text-dust-100">
+            Existing rows <span className="font-mono text-xs text-dust-600 dark:text-dust-400">({baseRows.length})</span>
           </h3>
           <input
             type="text"
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
             placeholder="filter…"
-            className="rounded border border-dust-700 bg-dust-900 px-2 py-1 text-xs text-dust-300"
+            className="rounded border border-dust-200 dark:border-dust-700 bg-dust-0 dark:bg-dust-900 px-2 py-1 text-xs text-dust-600 dark:text-dust-300"
           />
-          <span className="text-xs text-dust-500">
+          <span className="text-xs text-dust-600 dark:text-dust-400">
             read-only — owned by the base package or the ext scripts; amend via a patch
           </span>
         </div>
-        <ul className="max-h-64 divide-y divide-dust-700/60 overflow-y-auto">
+        <ul className="max-h-64 divide-y divide-dust-200/70 dark:divide-dust-700/60 overflow-y-auto">
           {filteredBase.map((b) => (
             <li key={b.rowName} className="flex items-center gap-2 py-1 text-xs">
-              <code className="font-mono text-dust-100">{b.rowName}</code>
-              <span className="text-dust-300">{b.displayName}</span>
+              <code className="font-mono text-dust-900 dark:text-dust-100">{b.rowName}</code>
+              <span className="text-dust-600 dark:text-dust-300">{b.displayName}</span>
               <span
                 className={`rounded border px-1 font-mono text-[10px] ${
                   b.owner === 'ext'
-                    ? 'border-petrol-dark text-petrol-light'
-                    : 'border-dust-700 text-dust-500'
+                    ? 'border-petrol/40 dark:border-petrol-dark text-petrol-ink dark:text-petrol-light'
+                    : 'border-dust-200 dark:border-dust-700 text-dust-600 dark:text-dust-400'
                 }`}
               >
                 {b.owner}
@@ -193,32 +194,32 @@ function StemEditor({ data, reload }: { data: WorldgenWebResponse; reload: () =>
               <button
                 type="button"
                 onClick={() => setPatchSeed(b.rowName)}
-                className="ml-auto rounded border border-dust-700 px-1.5 text-[11px] text-dust-300 hover:border-petrol-dark hover:text-petrol-light"
+                className="ml-auto rounded border border-dust-200 dark:border-dust-700 px-1.5 text-[11px] text-dust-600 dark:text-dust-300 hover:border-petrol dark:hover:border-petrol-dark hover:text-petrol-dark dark:hover:text-petrol-light"
               >
                 patch…
               </button>
             </li>
           ))}
           {filteredBase.length === 0 && (
-            <li className="py-1 text-xs text-dust-500">no rows match the filter</li>
+            <li className="py-1 text-xs text-dust-600 dark:text-dust-400">no rows match the filter</li>
           )}
         </ul>
       </section>
 
       {/* ---- web rows (editable) ---- */}
-      <section className="space-y-2 rounded border border-dust-700 bg-dust-800 p-3">
+      <section className="space-y-2 rounded border border-dust-200 dark:border-dust-700 bg-dust-0 dark:bg-dust-800 p-3">
         <div className="flex flex-wrap items-center gap-2">
-          <h3 className="text-sm font-semibold text-dust-100">
-            Web rows <span className="font-mono text-xs text-dust-500">({webRows.length})</span>
+          <h3 className="text-sm font-semibold text-dust-900 dark:text-dust-100">
+            Web rows <span className="font-mono text-xs text-dust-600 dark:text-dust-400">({webRows.length})</span>
           </h3>
-          <span className="text-xs text-dust-500">
+          <span className="text-xs text-dust-600 dark:text-dust-400">
             stored in Documentation/WorldGen_Extensions/{stem}.web.csv
           </span>
           {form.mode === 'closed' && (
             <button
               type="button"
               onClick={() => setForm({ mode: 'add' })}
-              className="ml-auto rounded border border-petrol-dark bg-petrol-tint px-2.5 py-1 text-xs text-petrol-light hover:bg-petrol-dark"
+              className="ml-auto rounded border border-petrol/40 dark:border-petrol-dark bg-petrol-wash dark:bg-petrol-tint px-2.5 py-1 text-xs text-petrol-ink dark:text-petrol-light hover:bg-petrol/20 dark:hover:bg-petrol-dark"
             >
               Add row
             </button>
@@ -226,24 +227,24 @@ function StemEditor({ data, reload }: { data: WorldgenWebResponse; reload: () =>
         </div>
 
         {webRows.length > 0 && (
-          <ul className="divide-y divide-dust-700/60">
+          <ul className="divide-y divide-dust-200/70 dark:divide-dust-700/60">
             {webRows.map((r, i) => (
               <li key={`${r[nameI]}-${i}`} className="flex items-center gap-2 py-1 text-xs">
-                <code className="font-mono text-petrol-light">{r[nameI]}</code>
-                <span className="text-dust-300">
+                <code className="font-mono text-petrol-ink dark:text-petrol-light">{r[nameI]}</code>
+                <span className="text-dust-600 dark:text-dust-300">
                   {columns.indexOf('DisplayName') >= 0 ? r[columns.indexOf('DisplayName')] : ''}
                 </span>
                 <button
                   type="button"
                   onClick={() => setForm({ mode: 'edit', index: i })}
-                  className="ml-auto rounded border border-dust-700 px-1.5 text-[11px] text-dust-300 hover:border-petrol-dark hover:text-petrol-light"
+                  className="ml-auto rounded border border-dust-200 dark:border-dust-700 px-1.5 text-[11px] text-dust-600 dark:text-dust-300 hover:border-petrol dark:hover:border-petrol-dark hover:text-petrol-dark dark:hover:text-petrol-light"
                 >
                   edit
                 </button>
                 <button
                   type="button"
                   onClick={() => setWebRows((prev) => prev.filter((_, j) => j !== i))}
-                  className="rounded border border-dust-700 px-1.5 text-[11px] text-dust-300 hover:border-rust-dark hover:text-rust-light"
+                  className="rounded border border-dust-200 dark:border-dust-700 px-1.5 text-[11px] text-dust-600 dark:text-dust-300 hover:border-rust dark:hover:border-rust-dark hover:text-rust dark:hover:text-rust-light"
                 >
                   remove
                 </button>
@@ -252,7 +253,7 @@ function StemEditor({ data, reload }: { data: WorldgenWebResponse; reload: () =>
           </ul>
         )}
         {webRows.length === 0 && form.mode === 'closed' && (
-          <p className="text-xs text-dust-500">
+          <p className="text-xs text-dust-600 dark:text-dust-400">
             No web-owned rows yet — the fragment file does not exist until one is saved.
           </p>
         )}
@@ -287,17 +288,17 @@ function StemEditor({ data, reload }: { data: WorldgenWebResponse; reload: () =>
       />
 
       {/* ---- save ---- */}
-      <section className="space-y-2 rounded border border-dust-700 bg-dust-800 p-3">
+      <section className="space-y-2 rounded border border-dust-200 dark:border-dust-700 bg-dust-0 dark:bg-dust-800 p-3">
         <div className="flex flex-wrap items-center gap-3">
           <button
             type="button"
             onClick={save}
             disabled={saving}
-            className="rounded border border-petrol-dark bg-petrol-tint px-3 py-1.5 text-sm text-petrol-light hover:bg-petrol-dark disabled:cursor-not-allowed disabled:text-dust-500"
+            className="rounded border border-petrol/40 dark:border-petrol-dark bg-petrol-wash dark:bg-petrol-tint px-3 py-1.5 text-sm text-petrol-ink dark:text-petrol-light hover:bg-petrol/20 dark:hover:bg-petrol-dark disabled:cursor-not-allowed disabled:text-dust-500"
           >
             {saving ? 'Saving — running the generator chain…' : 'Save to EISCORE'}
           </button>
-          <span className="text-xs text-dust-500">
+          <span className="text-xs text-dust-600 dark:text-dust-400">
             {dirty
               ? 'unsaved changes — save writes the fragments, re-runs normalize → group tokens → validator, and commits'
               : 'no unsaved changes'}
@@ -357,12 +358,12 @@ function PatchEditor({
           : null;
 
   return (
-    <section className="space-y-2 rounded border border-dust-700 bg-dust-800 p-3">
+    <section className="space-y-2 rounded border border-dust-200 dark:border-dust-700 bg-dust-0 dark:bg-dust-800 p-3">
       <div className="flex flex-wrap items-center gap-2">
-        <h3 className="text-sm font-semibold text-dust-100">
-          Web patches <span className="font-mono text-xs text-dust-500">({webPatches.length})</span>
+        <h3 className="text-sm font-semibold text-dust-900 dark:text-dust-100">
+          Web patches <span className="font-mono text-xs text-dust-600 dark:text-dust-400">({webPatches.length})</span>
         </h3>
-        <span className="text-xs text-dust-500">
+        <span className="text-xs text-dust-600 dark:text-dust-400">
           column edits to existing rows — stored in {stem}.web.patch.csv; append adds |-tokens, set
           replaces the cell
         </span>
@@ -370,7 +371,7 @@ function PatchEditor({
           <button
             type="button"
             onClick={() => setOpen(true)}
-            className="ml-auto rounded border border-petrol-dark bg-petrol-tint px-2.5 py-1 text-xs text-petrol-light hover:bg-petrol-dark"
+            className="ml-auto rounded border border-petrol/40 dark:border-petrol-dark bg-petrol-wash dark:bg-petrol-tint px-2.5 py-1 text-xs text-petrol-ink dark:text-petrol-light hover:bg-petrol/20 dark:hover:bg-petrol-dark"
           >
             Add patch
           </button>
@@ -378,21 +379,21 @@ function PatchEditor({
       </div>
 
       {webPatches.length > 0 && (
-        <ul className="divide-y divide-dust-700/60">
+        <ul className="divide-y divide-dust-200/70 dark:divide-dust-700/60">
           {webPatches.map((p, i) => (
             <li key={i} className="flex flex-wrap items-baseline gap-2 py-1 text-xs">
-              <code className="font-mono text-dust-100">{p.rowName}</code>
-              <span className="text-dust-500">·</span>
-              <code className="font-mono text-dust-300">{p.column}</code>
-              <span className="rounded border border-dust-700 px-1 font-mono text-[10px] text-petrol-light">
+              <code className="font-mono text-dust-900 dark:text-dust-100">{p.rowName}</code>
+              <span className="text-dust-600 dark:text-dust-400">·</span>
+              <code className="font-mono text-dust-600 dark:text-dust-300">{p.column}</code>
+              <span className="rounded border border-dust-200 dark:border-dust-700 px-1 font-mono text-[10px] text-petrol-ink dark:text-petrol-light">
                 {p.op}
               </span>
-              <code className="font-mono text-dust-300">{p.value}</code>
-              <span className="text-dust-500">— {p.reason}</span>
+              <code className="font-mono text-dust-600 dark:text-dust-300">{p.value}</code>
+              <span className="text-dust-600 dark:text-dust-400">— {p.reason}</span>
               <button
                 type="button"
                 onClick={() => setWebPatches((prev) => prev.filter((_, j) => j !== i))}
-                className="ml-auto rounded border border-dust-700 px-1.5 text-[11px] text-dust-300 hover:border-rust-dark hover:text-rust-light"
+                className="ml-auto rounded border border-dust-200 dark:border-dust-700 px-1.5 text-[11px] text-dust-600 dark:text-dust-300 hover:border-rust dark:hover:border-rust-dark hover:text-rust dark:hover:text-rust-light"
               >
                 remove
               </button>
@@ -402,14 +403,14 @@ function PatchEditor({
       )}
 
       {open && (
-        <div className="space-y-2 rounded border border-petrol-dark bg-dust-900/40 p-2">
+        <div className="space-y-2 rounded border border-petrol/40 dark:border-petrol-dark bg-dust-100/50 dark:bg-dust-900/40 p-2">
           <div className="grid grid-cols-1 gap-2 md:grid-cols-4">
             <label className="block text-xs">
-              <span className="mb-0.5 block font-semibold text-dust-100">Row</span>
+              <span className="mb-0.5 block font-semibold text-dust-900 dark:text-dust-100">Row</span>
               <select
                 value={draft.rowName}
                 onChange={(e) => setDraft({ ...draft, rowName: e.target.value })}
-                className="w-full rounded border border-dust-700 bg-dust-900 px-1.5 py-1 font-mono text-xs text-dust-300"
+                className="w-full rounded border border-dust-200 dark:border-dust-700 bg-dust-0 dark:bg-dust-900 px-1.5 py-1 font-mono text-xs text-dust-600 dark:text-dust-300"
               >
                 <option value="">—</option>
                 {patchableNames.map((n) => (
@@ -420,11 +421,11 @@ function PatchEditor({
               </select>
             </label>
             <label className="block text-xs">
-              <span className="mb-0.5 block font-semibold text-dust-100">Column</span>
+              <span className="mb-0.5 block font-semibold text-dust-900 dark:text-dust-100">Column</span>
               <select
                 value={draft.column}
                 onChange={(e) => setDraft({ ...draft, column: e.target.value, value: '' })}
-                className="w-full rounded border border-dust-700 bg-dust-900 px-1.5 py-1 font-mono text-xs text-dust-300"
+                className="w-full rounded border border-dust-200 dark:border-dust-700 bg-dust-0 dark:bg-dust-900 px-1.5 py-1 font-mono text-xs text-dust-600 dark:text-dust-300"
               >
                 <option value="">—</option>
                 {columns
@@ -437,29 +438,29 @@ function PatchEditor({
               </select>
             </label>
             <label className="block text-xs">
-              <span className="mb-0.5 block font-semibold text-dust-100">Op</span>
+              <span className="mb-0.5 block font-semibold text-dust-900 dark:text-dust-100">Op</span>
               <select
                 value={draft.op}
                 onChange={(e) => setDraft({ ...draft, op: e.target.value })}
-                className="w-full rounded border border-dust-700 bg-dust-900 px-1.5 py-1 font-mono text-xs text-dust-300"
+                className="w-full rounded border border-dust-200 dark:border-dust-700 bg-dust-0 dark:bg-dust-900 px-1.5 py-1 font-mono text-xs text-dust-600 dark:text-dust-300"
               >
                 <option value="append">append (add |-tokens)</option>
                 <option value="set">set (replace cell)</option>
               </select>
             </label>
             <label className="block text-xs">
-              <span className="mb-0.5 block font-semibold text-dust-100">Reason (required)</span>
+              <span className="mb-0.5 block font-semibold text-dust-900 dark:text-dust-100">Reason (required)</span>
               <input
                 type="text"
                 value={draft.reason}
                 onChange={(e) => setDraft({ ...draft, reason: e.target.value })}
                 placeholder="why this amendment?"
-                className="w-full rounded border border-dust-700 bg-dust-900 px-2 py-1 text-xs text-dust-300"
+                className="w-full rounded border border-dust-200 dark:border-dust-700 bg-dust-0 dark:bg-dust-900 px-2 py-1 text-xs text-dust-600 dark:text-dust-300"
               />
             </label>
           </div>
           <label className="block text-xs">
-            <span className="mb-0.5 block font-semibold text-dust-100">Value</span>
+            <span className="mb-0.5 block font-semibold text-dust-900 dark:text-dust-100">Value</span>
             {fk ? (
               <FkMultiPicker
                 fk={fk}
@@ -472,7 +473,7 @@ function PatchEditor({
                 type="text"
                 value={draft.value}
                 onChange={(e) => setDraft({ ...draft, value: e.target.value })}
-                className="w-full rounded border border-dust-700 bg-dust-900 px-2 py-1 font-mono text-xs text-dust-300"
+                className="w-full rounded border border-dust-200 dark:border-dust-700 bg-dust-0 dark:bg-dust-900 px-2 py-1 font-mono text-xs text-dust-600 dark:text-dust-300"
               />
             )}
           </label>
@@ -485,7 +486,7 @@ function PatchEditor({
                 setDraft(empty);
                 setOpen(false);
               }}
-              className="rounded border border-petrol-dark bg-petrol-tint px-3 py-1 text-sm text-petrol-light hover:bg-petrol-dark disabled:cursor-not-allowed disabled:border-dust-700 disabled:bg-dust-800 disabled:text-dust-500"
+              className="rounded border border-petrol/40 dark:border-petrol-dark bg-petrol-wash dark:bg-petrol-tint px-3 py-1 text-sm text-petrol-ink dark:text-petrol-light hover:bg-petrol/20 dark:hover:bg-petrol-dark disabled:cursor-not-allowed disabled:border-dust-200 dark:disabled:border-dust-700 disabled:bg-dust-100 dark:disabled:bg-dust-800 disabled:text-dust-500"
             >
               Add patch
             </button>
@@ -495,11 +496,11 @@ function PatchEditor({
                 setDraft(empty);
                 setOpen(false);
               }}
-              className="rounded border border-dust-700 px-3 py-1 text-sm text-dust-300 hover:bg-dust-800/60"
+              className="rounded border border-dust-200 dark:border-dust-700 px-3 py-1 text-sm text-dust-600 dark:text-dust-300 hover:bg-dust-100 dark:hover:bg-dust-800/60"
             >
               Cancel
             </button>
-            {draftError !== null && <span className="text-xs text-dust-500">{draftError}</span>}
+            {draftError !== null && <span className="text-xs text-dust-600 dark:text-dust-400">{draftError}</span>}
           </div>
         </div>
       )}
@@ -515,12 +516,12 @@ function PatchEditor({
 function SaveResultPanel({ result }: { result: WorldgenPutResponse }) {
   if (result.success) {
     return (
-      <div className="space-y-2 rounded border border-petrol-dark bg-petrol-tint/30 p-2">
-        <p className="text-sm text-dust-100">
+      <div className="space-y-2 rounded border border-petrol/40 dark:border-petrol-dark bg-petrol-wash/50 dark:bg-petrol-tint/30 p-2">
+        <p className="text-sm text-dust-900 dark:text-dust-100">
           Saved.{' '}
           {result.commit !== null ? (
             <>
-              Commit <code className="font-mono text-petrol-light">{result.commit}</code> in
+              Commit <code className="font-mono text-petrol-ink dark:text-petrol-light">{result.commit}</code> in
               EISCORE — fragments + regenerated tables.
             </>
           ) : (
@@ -529,12 +530,12 @@ function SaveResultPanel({ result }: { result: WorldgenPutResponse }) {
         </p>
         <FindingCountsStrip counts={result.summaryCounts} ranAt={new Date().toISOString()} />
         {result.normalizeOutput !== '' && (
-          <pre className="overflow-x-auto rounded border border-dust-700 bg-dust-900 p-2 font-mono text-[11px] leading-4 text-dust-300">
+          <pre className="overflow-x-auto rounded border border-dust-200 dark:border-dust-700 bg-dust-100/60 dark:bg-dust-900 p-2 font-mono text-[11px] leading-4 text-dust-700 dark:text-dust-300">
             {result.normalizeOutput}
           </pre>
         )}
         {result.findings.length > 0 && (
-          <ul className="divide-y divide-dust-700/60">
+          <ul className="divide-y divide-dust-200/70 dark:divide-dust-700/60">
             {result.findings.map((f, i) => (
               <FindingListItem key={i} finding={f} />
             ))}
@@ -544,8 +545,8 @@ function SaveResultPanel({ result }: { result: WorldgenPutResponse }) {
     );
   }
   return (
-    <div className="space-y-2 rounded border border-rust-dark bg-rust-tint p-2">
-      <p className="text-sm text-rust-light">
+    <div className="space-y-2 rounded border border-rust/50 dark:border-rust-dark bg-rust-wash dark:bg-rust-tint p-2">
+      <p className="text-sm text-rust-dark dark:text-rust-light">
         {result.reason === 'validation_errors' ? (
           <>
             Refused: the validator found errors, so the EISCORE tree was rolled back — nothing was
@@ -559,7 +560,7 @@ function SaveResultPanel({ result }: { result: WorldgenPutResponse }) {
         )}
       </p>
       {typeof result.detail === 'object' && result.detail !== null && (
-        <pre className="overflow-x-auto rounded border border-dust-700 bg-dust-900 p-2 font-mono text-[11px] leading-4 text-dust-300">
+        <pre className="overflow-x-auto rounded border border-dust-200 dark:border-dust-700 bg-dust-100/60 dark:bg-dust-900 p-2 font-mono text-[11px] leading-4 text-dust-700 dark:text-dust-300">
           {JSON.stringify(result.detail, null, 2)}
         </pre>
       )}
@@ -567,7 +568,7 @@ function SaveResultPanel({ result }: { result: WorldgenPutResponse }) {
         <FindingCountsStrip counts={result.summaryCounts} ranAt={new Date().toISOString()} />
       )}
       {result.findings && result.findings.length > 0 && (
-        <ul className="divide-y divide-dust-700/60">
+        <ul className="divide-y divide-dust-200/70 dark:divide-dust-700/60">
           {result.findings.map((f, i) => (
             <FindingListItem key={i} finding={f} />
           ))}

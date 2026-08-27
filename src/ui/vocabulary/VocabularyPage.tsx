@@ -6,6 +6,7 @@ import type { WorldgenSourceEntry } from '../../api/types';
 import { METHOD_STAGES } from '../../content/method';
 import { MethodContext } from '../method/MethodContext';
 import { ErrorBox, LoadingBox } from '../tables/badges';
+import { PageHeader } from '../layout/PageHeader';
 
 /**
  * WEB-006 — stem picker for the vocabulary editor. One card per normalized
@@ -27,16 +28,19 @@ export function VocabularyPage() {
   }, [state.data]);
 
   return (
-    <div className="max-w-6xl space-y-4">
-      <header className="space-y-1">
-        <h2 className="text-xl font-bold text-dust-100">Vocabulary</h2>
-        <p className="text-sm text-dust-300">
-          The world-generation vocabulary tables, in authoring order. Rows added here are written
-          to web-owned source fragments (<code className="font-mono text-xs">*.web.csv</code> /{' '}
-          <code className="font-mono text-xs">*.web.patch.csv</code>), then the generator chain
-          re-runs and the result is committed — the generated tables are never edited directly.
-        </p>
-      </header>
+    <div className="max-w-6xl space-y-5">
+      <PageHeader
+        eyebrow="Author the vocabulary"
+        title="Vocabulary"
+        context={
+          <>
+            The world-generation vocabulary tables, in authoring order. Rows added here are written
+            to web-owned source fragments (<code className="font-mono text-xs">*.web.csv</code> /{' '}
+            <code className="font-mono text-xs">*.web.patch.csv</code>), then the generator chain
+            re-runs and the result is committed — the generated tables are never edited directly.
+          </>
+        }
+      />
 
       <MethodContext surface="vocabulary-root" />
 
@@ -64,34 +68,36 @@ function StemCard({ entry, stageNo }: { entry: WorldgenSourceEntry; stageNo: num
   return (
     <Link
       to={`/vocabulary/${stem}`}
-      className="block rounded border border-dust-700 bg-dust-800 p-3 hover:border-petrol-dark hover:bg-dust-800/60"
+      className="panel block p-3 transition-colors hover:border-petrol dark:hover:border-petrol-dark"
     >
       <div className="flex items-baseline justify-between gap-2">
-        <span className="flex items-baseline gap-1.5 font-semibold text-dust-100">
+        <span className="flex items-baseline gap-2 font-semibold text-dust-900 dark:text-dust-100">
           {stageNo > 0 && (
-            <span className="font-mono text-[10px] text-petrol-light">{stageNo}</span>
+            <span className="font-display text-base font-bold leading-none text-petrol-ink dark:text-petrol-light">
+              {stageNo}
+            </span>
           )}
-          {stem}
+          <span className="font-mono text-sm">{stem}</span>
         </span>
-        <span className="font-mono text-xs text-dust-500">
+        <span className="font-mono text-xs tabular-nums text-dust-600 dark:text-dust-400">
           {base.exists ? `${count(base.rowCount)} rows` : 'not generated'}
         </span>
       </div>
-      <dl className="mt-2 grid grid-cols-2 gap-x-3 gap-y-0.5 text-xs">
-        <dt className="text-dust-500">script ext</dt>
-        <dd className="font-mono text-dust-300">
+      <dl className="mt-2 grid grid-cols-2 gap-x-3 gap-y-0.5 text-xs tabular-nums">
+        <dt className="text-dust-600 dark:text-dust-400">script ext</dt>
+        <dd className="font-mono text-dust-600 dark:text-dust-300">
           {fragments.ext.exists ? `+${count(fragments.ext.rowCount)} rows` : '—'}
         </dd>
-        <dt className="text-dust-500">script patches</dt>
-        <dd className="font-mono text-dust-300">
+        <dt className="text-dust-600 dark:text-dust-400">script patches</dt>
+        <dd className="font-mono text-dust-600 dark:text-dust-300">
           {fragments.patch.exists ? count(fragments.patch.rowCount) : '—'}
         </dd>
-        <dt className="text-petrol-light">web rows</dt>
-        <dd className="font-mono text-petrol-light">
+        <dt className="text-petrol-ink dark:text-petrol-light">web rows</dt>
+        <dd className="font-mono text-petrol-ink dark:text-petrol-light">
           {fragments.web.exists ? `+${count(fragments.web.rowCount)}` : '0'}
         </dd>
-        <dt className="text-petrol-light">web patches</dt>
-        <dd className="font-mono text-petrol-light">
+        <dt className="text-petrol-ink dark:text-petrol-light">web patches</dt>
+        <dd className="font-mono text-petrol-ink dark:text-petrol-light">
           {fragments.webPatch.exists ? count(fragments.webPatch.rowCount) : '0'}
         </dd>
       </dl>

@@ -17,6 +17,7 @@ import { ErrorBox, LoadingBox } from '../tables/badges';
 import { FindingCountsStrip } from '../validation/findings';
 import { CiteLink, MethodQuote } from '../method/MethodContext';
 import { ApiHealthStrip } from '../StatusPage';
+import { PageHeader } from '../layout/PageHeader';
 
 /**
  * WEB-014 — the workflow spine and the app's landing page. The philosophy's
@@ -25,6 +26,9 @@ import { ApiHealthStrip } from '../StatusPage';
  * the right authoring surface, and offers "Validate now" between stages —
  * because §20 mandates validating after each step. Stages whose tables carry
  * ERROR findings in the loaded run are highlighted in rust.
+ *
+ * WEB-015 — this page is the app's one identity moment: display-face stage
+ * numerals on a continuous spine line, the product's thesis drawn as a form.
  */
 
 interface StemFindingCounts {
@@ -74,48 +78,59 @@ export function WorkflowPage() {
   }, [result]);
 
   return (
-    <div className="max-w-4xl space-y-4">
-      <header className="space-y-1">
-        <h2 className="text-xl font-bold text-dust-100">The Workflow</h2>
-        <p className="text-sm leading-relaxed text-dust-300">
-          This app is the software expression of one methodology:{' '}
-          <Link to={PHILOSOPHY_ROUTE} className="text-petrol-light hover:text-petrol hover:underline">
-            Procedural Spatial Infrastructure
-          </Link>{' '}
-          ({PHILOSOPHY_DOC_VERSION}). Designers author <em>vocabulary</em> — what can exist and
-          what makes a result valid — and generators produce instances (
-          <CiteLink cite={{ label: '§1.2', anchor: 's1-2' }} />
-          ). Author in the dependency order below: each layer constrains the next, and authoring
-          out of order produces tables that reference rows nobody has written (
-          <CiteLink cite={{ label: '§3', anchor: 's3' }} />
-          ).
-        </p>
-      </header>
+    <div className="max-w-4xl space-y-5">
+      <PageHeader
+        eyebrow="The Method"
+        title="The Workflow"
+        context={
+          <>
+            This app is the software expression of one methodology:{' '}
+            <Link
+              to={PHILOSOPHY_ROUTE}
+              className="text-petrol-ink hover:text-petrol-dark hover:underline dark:text-petrol-light dark:hover:text-petrol"
+            >
+              Procedural Spatial Infrastructure
+            </Link>{' '}
+            ({PHILOSOPHY_DOC_VERSION}). Designers author <em>vocabulary</em> — what can exist and
+            what makes a result valid — and generators produce instances (
+            <CiteLink cite={{ label: '§1.2', anchor: 's1-2' }} />
+            ). Author in the dependency order below: each layer constrains the next, and authoring
+            out of order produces tables that reference rows nobody has written (
+            <CiteLink cite={{ label: '§3', anchor: 's3' }} />
+            ).
+          </>
+        }
+      />
 
       <ApiHealthStrip />
 
       {/* Validation summary, near the top on purpose — §20's mandate. */}
-      <section className="space-y-2 rounded border border-dust-700 bg-dust-800 p-3">
+      <section className="panel space-y-2 p-3">
         <div className="flex flex-wrap items-center gap-3">
-          <h3 className="text-sm font-semibold text-dust-100">Reference health</h3>
+          <h3 className="text-sm font-semibold text-dust-900 dark:text-dust-100">
+            Reference health
+          </h3>
           <button
             type="button"
             onClick={runValidation}
             disabled={running}
-            className="rounded border border-petrol-dark bg-petrol-tint px-3 py-1.5 text-sm text-petrol-light hover:bg-petrol-dark disabled:cursor-not-allowed disabled:text-dust-500"
+            className="btn-primary px-3 py-1.5 text-sm"
           >
             {running ? 'Running…' : 'Run WorldGen validation'}
           </button>
           {result && (
             <FindingCountsStrip counts={result.summaryCounts} ranAt={result.ranAt} exitCode={result.exitCode} />
           )}
-          <Link to="/data" className="ml-auto text-xs text-petrol-light hover:text-petrol hover:underline">
+          <Link
+            to="/data"
+            className="ml-auto text-xs text-petrol-ink hover:text-petrol-dark hover:underline dark:text-petrol-light dark:hover:text-petrol"
+          >
             full findings &amp; data health →
           </Link>
         </div>
         {error != null && <ErrorBox error={error} />}
         {result === null && error == null && !running && (
-          <p className="text-xs text-dust-500">
+          <p className="text-xs text-dust-600 dark:text-dust-400">
             No run loaded yet — run it to light up the stages below. &ldquo;Reference health should
             read <em>0 unresolved</em> before you move on.&rdquo;{' '}
             <CiteLink cite={{ label: '§20', anchor: 's20' }} />
@@ -126,8 +141,8 @@ export function WorkflowPage() {
       {manifestState.loading && <LoadingBox label="Loading manifest" />}
       {manifestState.error != null && <ErrorBox error={manifestState.error} />}
 
-      {/* ---- the stepper ---- */}
-      <ol className="space-y-0">
+      {/* ---- the stepper: stage cards on a continuous spine ---- */}
+      <ol className="relative space-y-3 before:absolute before:bottom-6 before:left-5 before:top-6 before:w-px before:bg-dust-200 before:content-[''] dark:before:bg-dust-700">
         {METHOD_STAGES.map((stage, idx) => (
           <React.Fragment key={stage.id}>
             {idx > 0 && (
@@ -148,12 +163,12 @@ export function WorkflowPage() {
       </ol>
 
       {/* §45 — when has the methodology transferred? */}
-      <details className="rounded border border-dust-700 bg-dust-800 p-3">
-        <summary className="cursor-pointer text-sm font-semibold text-dust-100">
+      <details className="panel p-3">
+        <summary className="cursor-pointer text-sm font-semibold text-dust-900 dark:text-dust-100">
           When is the vocabulary done? The portability checklist{' '}
           <CiteLink cite={PORTABILITY_CITE} />
         </summary>
-        <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-dust-300">
+        <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-dust-600 dark:text-dust-300">
           {PORTABILITY_CHECKLIST.map((c, i) => (
             <li key={i}>{c.text}</li>
           ))}
@@ -163,7 +178,8 @@ export function WorkflowPage() {
   );
 }
 
-/** The between-stages affordance: §20 mandates validating after each step. */
+/** The between-stages affordance: §20 mandates validating after each step.
+ * Sits ON the spine — a small node marks the pause between stages. */
 function ValidateDivider({
   running,
   onValidate,
@@ -174,24 +190,52 @@ function ValidateDivider({
   first?: boolean;
 }) {
   return (
-    <li className="flex items-center gap-3 py-1 pl-5" aria-hidden={false}>
-      <span className="font-mono text-dust-500">↓</span>
+    <li className="relative flex items-center gap-3 py-0.5 pl-14" aria-hidden={false}>
+      <span
+        aria-hidden
+        className="absolute left-5 top-1/2 h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-dust-300 dark:bg-dust-500"
+      />
       <button
         type="button"
         onClick={onValidate}
         disabled={running}
-        className="rounded border border-dust-700 px-2 py-0.5 text-[11px] text-dust-500 hover:border-petrol-dark hover:text-petrol-light disabled:cursor-not-allowed"
+        className="btn-quiet px-2 py-0.5 text-[11px]"
         title={`"${VALIDATE_BETWEEN_QUOTE.text}" (${VALIDATE_BETWEEN_QUOTE.cite.label})`}
       >
         {running ? 'validating…' : 'Validate now'}
       </button>
       {first && (
-        <span className="hidden text-[11px] italic text-dust-500 sm:inline">
+        <span className="hidden text-[11px] italic text-dust-600 dark:text-dust-400 sm:inline">
           &ldquo;{VALIDATE_BETWEEN_QUOTE.text}&rdquo;{' '}
           <CiteLink cite={VALIDATE_BETWEEN_QUOTE.cite} />
         </span>
       )}
     </li>
+  );
+}
+
+/** The display-face stage numeral, sitting on the spine. Page-ground fill so
+ * the line passes visually behind it. */
+function StageMarker({
+  children,
+  tone,
+}: {
+  children: React.ReactNode;
+  tone: 'ok' | 'error' | 'muted';
+}) {
+  const toneCls =
+    tone === 'error'
+      ? 'border-rust text-rust-dark dark:border-rust-dark dark:text-rust-light'
+      : tone === 'muted'
+        ? 'border-dust-300 text-dust-600 dark:border-dust-700 dark:text-dust-400'
+        : 'border-petrol/60 text-petrol-ink dark:border-petrol-dark dark:text-petrol-light';
+  return (
+    <span
+      aria-hidden
+      className={`absolute left-0 top-2.5 flex h-10 w-10 items-center justify-center rounded-full border-2 bg-dust-50 font-display text-xl font-bold dark:bg-dust-900 ${toneCls}`}
+    >
+      {children}
+    </span>
   );
 }
 
@@ -217,88 +261,90 @@ function StageCard({
       : undefined;
 
   return (
-    <li
-      className={`rounded border p-3 ${
-        hasErrors ? 'border-rust-dark bg-rust-tint/40' : 'border-dust-700 bg-dust-800'
-      }`}
-    >
-      <div className="flex flex-wrap items-baseline gap-2">
-        <span
-          className={`inline-flex h-6 w-6 items-center justify-center rounded-full border font-mono text-xs ${
-            hasErrors
-              ? 'border-rust-dark text-rust-light'
-              : 'border-petrol-dark text-petrol-light'
-          }`}
-        >
-          {index + 1}
-        </span>
-        <h3 className="text-base font-semibold text-dust-100">{stage.title}</h3>
-        {stage.cites.map((c, i) => (
-          <CiteLink key={i} cite={c} />
-        ))}
+    <li className="relative pl-14">
+      <StageMarker tone={hasErrors ? 'error' : 'ok'}>{index + 1}</StageMarker>
+      <div
+        className={`rounded border p-3 ${
+          hasErrors
+            ? 'border-rust/50 bg-rust-wash/50 dark:border-rust-dark dark:bg-rust-tint/40'
+            : 'panel'
+        }`}
+      >
+        <div className="flex flex-wrap items-baseline gap-2">
+          <p className="eyebrow w-full !text-[10px]">Stage {index + 1}</p>
+          <h3 className="text-base font-semibold text-dust-900 dark:text-dust-100">
+            {stage.title}
+          </h3>
+          {stage.cites.map((c, i) => (
+            <CiteLink key={i} cite={c} />
+          ))}
 
-        {/* live state */}
-        <span className="ml-auto flex flex-wrap items-center gap-2 font-mono text-xs">
-          {stage.stem !== undefined && (
-            <span className="text-dust-500">
-              {rowCount !== undefined ? `${rowCount} rows` : 'rows: ?'}
+          {/* live state */}
+          <span className="ml-auto flex flex-wrap items-center gap-2 font-mono text-xs tabular-nums">
+            {stage.stem !== undefined && (
+              <span className="text-dust-600 dark:text-dust-400">
+                {rowCount !== undefined ? `${rowCount} rows` : 'rows: ?'}
+              </span>
+            )}
+            {hasRun && stage.stem !== undefined && (
+              <>
+                {(findings?.error ?? 0) > 0 && (
+                  <span className="font-semibold text-rust-dark dark:text-rust-light">
+                    {findings!.error} ERROR
+                  </span>
+                )}
+                {(findings?.warn ?? 0) > 0 && (
+                  <span className="text-amber-ink dark:text-amber-light">
+                    {findings!.warn} WARN
+                  </span>
+                )}
+                {(findings?.error ?? 0) === 0 && (findings?.warn ?? 0) === 0 && (
+                  <span className="text-petrol-ink dark:text-petrol-light">0 findings</span>
+                )}
+              </>
+            )}
+          </span>
+        </div>
+
+        <p className="mt-2 max-w-[65ch] text-sm leading-relaxed text-dust-600 dark:text-dust-300">
+          {stage.role}
+        </p>
+
+        {stage.quote && (
+          <div className="mt-2">
+            <MethodQuote text={stage.quote.text} cite={stage.quote.cite} />
+          </div>
+        )}
+
+        <dl className="mt-3 grid grid-cols-1 gap-x-4 gap-y-1 text-xs sm:grid-cols-2">
+          <div>
+            <dt className="font-semibold text-dust-600 dark:text-dust-400">Depends on</dt>
+            <dd className="text-dust-600 dark:text-dust-300">{stage.dependsOn}</dd>
+          </div>
+          <div>
+            <dt className="font-semibold text-dust-600 dark:text-dust-400">What depends on it</dt>
+            <dd className="text-dust-600 dark:text-dust-300">{stage.enables}</dd>
+          </div>
+        </dl>
+
+        <div className="mt-3 flex flex-wrap items-center gap-3 text-sm">
+          <Link to={stage.route} className="btn-primary px-3 py-1">
+            Author &rarr;
+          </Link>
+          {tablePath !== undefined && (
+            <Link
+              to={`/tables/${tablePath}`}
+              className="text-xs text-petrol-ink hover:text-petrol-dark hover:underline dark:text-petrol-light dark:hover:text-petrol"
+            >
+              inspect the generated table
+            </Link>
+          )}
+          {stage.stopWhen !== undefined && (
+            <span className="text-xs text-dust-600 dark:text-dust-400">
+              Stop when: <em>{stage.stopWhen}</em>
             </span>
           )}
-          {hasRun && stage.stem !== undefined && (
-            <>
-              {(findings?.error ?? 0) > 0 && (
-                <span className="font-semibold text-rust-light">{findings!.error} ERROR</span>
-              )}
-              {(findings?.warn ?? 0) > 0 && (
-                <span className="text-amber-light">{findings!.warn} WARN</span>
-              )}
-              {(findings?.error ?? 0) === 0 && (findings?.warn ?? 0) === 0 && (
-                <span className="text-petrol-light">0 findings</span>
-              )}
-            </>
-          )}
-        </span>
-      </div>
-
-      <p className="mt-2 text-sm leading-relaxed text-dust-300">{stage.role}</p>
-
-      {stage.quote && (
-        <div className="mt-2">
-          <MethodQuote text={stage.quote.text} cite={stage.quote.cite} />
         </div>
-      )}
-
-      <dl className="mt-2 grid grid-cols-1 gap-x-4 gap-y-1 text-xs sm:grid-cols-2">
-        <div>
-          <dt className="font-semibold text-dust-500">Depends on</dt>
-          <dd className="text-dust-300">{stage.dependsOn}</dd>
-        </div>
-        <div>
-          <dt className="font-semibold text-dust-500">What depends on it</dt>
-          <dd className="text-dust-300">{stage.enables}</dd>
-        </div>
-      </dl>
-
-      <div className="mt-3 flex flex-wrap items-center gap-3 text-sm">
-        <Link
-          to={stage.route}
-          className="rounded border border-petrol-dark bg-petrol-tint px-3 py-1 text-petrol-light hover:bg-petrol-dark"
-        >
-          Author &rarr;
-        </Link>
-        {tablePath !== undefined && (
-          <Link
-            to={`/tables/${tablePath}`}
-            className="text-xs text-petrol-light hover:text-petrol hover:underline"
-          >
-            inspect the generated table
-          </Link>
-        )}
-        {stage.stopWhen !== undefined && (
-          <span className="text-xs text-dust-500">
-            Stop when: <em>{stage.stopWhen}</em>
-          </span>
-        )}
       </div>
     </li>
   );
@@ -307,29 +353,33 @@ function StageCard({
 /** The honest terminus: generation happens in the Unreal editor, not here. */
 function GenerateCard() {
   return (
-    <li className="rounded border border-dashed border-dust-700 bg-dust-800/60 p-3">
-      <div className="flex flex-wrap items-baseline gap-2">
-        <span className="inline-flex h-6 w-6 items-center justify-center rounded-full border border-dust-700 font-mono text-xs text-dust-500">
-          ⟳
-        </span>
-        <h3 className="text-base font-semibold text-dust-100">{GENERATE_STAGE.title}</h3>
-        {GENERATE_STAGE.cites.map((c, i) => (
-          <CiteLink key={i} cite={c} />
-        ))}
-        <span className="ml-auto rounded border border-dust-700 px-1.5 font-mono text-[10px] uppercase text-dust-500">
-          in the Unreal editor
-        </span>
+    <li className="relative pl-14">
+      <StageMarker tone="muted">⟳</StageMarker>
+      <div className="rounded border border-dashed border-dust-300 bg-dust-0/60 p-3 dark:border-dust-700 dark:bg-dust-800/60">
+        <div className="flex flex-wrap items-baseline gap-2">
+          <h3 className="text-base font-semibold text-dust-900 dark:text-dust-100">
+            {GENERATE_STAGE.title}
+          </h3>
+          {GENERATE_STAGE.cites.map((c, i) => (
+            <CiteLink key={i} cite={c} />
+          ))}
+          <span className="chip chip-dust ml-auto !text-[10px] uppercase tracking-eyebrow">
+            in the Unreal editor
+          </span>
+        </div>
+        <p className="mt-2 max-w-[65ch] text-sm leading-relaxed text-dust-600 dark:text-dust-300">
+          {GENERATE_STAGE.role}
+        </p>
+        <p className="mt-2 text-xs text-dust-600 dark:text-dust-400">
+          Procedural does not mean procedural-only — a generated location supports the designer
+          verbs{' '}
+          <code className="font-mono text-[11px] text-dust-700 dark:text-dust-300">
+            {GENERATE_STAGE.designerVerbs.join(' · ')}
+          </code>{' '}
+          <CiteLink cite={GENERATE_STAGE.designerVerbsCite} />, as persistent per-instance
+          annotations.
+        </p>
       </div>
-      <p className="mt-2 text-sm leading-relaxed text-dust-300">{GENERATE_STAGE.role}</p>
-      <p className="mt-2 text-xs text-dust-500">
-        Procedural does not mean procedural-only — a generated location supports the designer
-        verbs{' '}
-        <code className="font-mono text-[11px] text-dust-300">
-          {GENERATE_STAGE.designerVerbs.join(' · ')}
-        </code>{' '}
-        <CiteLink cite={GENERATE_STAGE.designerVerbsCite} />, as persistent per-instance
-        annotations.
-      </p>
     </li>
   );
 }

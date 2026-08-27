@@ -2,63 +2,133 @@
 @tailwind components;
 @tailwind utilities;
 
+/* WEB-015 — the app's base sheet. Light-first with `media`-strategy dark
+   mode; the token conventions live in tailwind.config.js. */
+
 @layer base {
   body {
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
     -webkit-font-smoothing: antialiased;
   }
 
+  /* Keyboard focus is visible everywhere, in petrol, on both grounds. */
+  :focus-visible {
+    outline: 2px solid theme('colors.petrol.DEFAULT');
+    outline-offset: 2px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :focus-visible {
+      outline-color: theme('colors.petrol.light');
+    }
+  }
+
+  /* Any transition/animation this app declares collapses under
+     prefers-reduced-motion. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  /* Scrollbars follow the ground. */
   ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
   }
-
   ::-webkit-scrollbar-track {
-    background: #0f1419;
+    background: theme('colors.dust.50');
   }
-
   ::-webkit-scrollbar-thumb {
-    background: #2a3544;
+    background: theme('colors.dust.200');
     border-radius: 4px;
   }
-
   ::-webkit-scrollbar-thumb:hover {
-    background: #3a4554;
+    background: theme('colors.dust.300');
+  }
+  @media (prefers-color-scheme: dark) {
+    ::-webkit-scrollbar-track {
+      background: theme('colors.dust.900');
+    }
+    ::-webkit-scrollbar-thumb {
+      background: theme('colors.dust.700');
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: theme('colors.dust.500');
+    }
   }
 }
 
 @layer components {
-  .eis-card {
-    @apply bg-eis-bg-card border border-eis-border rounded-lg p-4;
+  /* ---- page-header pattern: eyebrow / title / context line ---- */
+  .eyebrow {
+    @apply font-mono text-[11px] font-medium uppercase tracking-eyebrow text-dust-600 dark:text-dust-400;
+  }
+  .page-title {
+    @apply font-display text-3xl font-bold uppercase leading-none tracking-wide text-dust-900 dark:text-dust-100;
   }
 
-  .eis-btn {
-    @apply px-4 py-2 rounded-md font-medium transition-colors duration-150;
+  /* ---- long-form reading (the /philosophy reader) ---- */
+  .longform {
+    max-width: 70ch;
+  }
+  .longform p,
+  .longform li,
+  .longform blockquote {
+    font-family: theme('fontFamily.serif');
+    font-size: 0.9575rem;
+    line-height: 1.65;
   }
 
-  .eis-btn-primary {
-    @apply eis-btn bg-eis-green text-eis-bg hover:bg-eis-green-dark;
+  /* ---- buttons ---- */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-1.5 rounded border transition-colors
+      border-petrol/40 bg-petrol-wash text-petrol-ink hover:bg-petrol/20
+      disabled:cursor-not-allowed disabled:border-dust-200 disabled:bg-dust-100 disabled:text-dust-500
+      dark:border-petrol-dark dark:bg-petrol-tint dark:text-petrol-light dark:hover:bg-petrol-dark
+      dark:disabled:border-dust-700 dark:disabled:bg-dust-800 dark:disabled:text-dust-500;
+  }
+  .btn-quiet {
+    @apply inline-flex items-center justify-center gap-1.5 rounded border transition-colors
+      border-dust-200 bg-dust-0 text-dust-600 hover:border-petrol hover:text-petrol-ink
+      disabled:cursor-not-allowed disabled:text-dust-500 disabled:hover:border-dust-200
+      dark:border-dust-700 dark:bg-dust-800 dark:text-dust-300 dark:hover:border-petrol-dark
+      dark:hover:text-petrol-light dark:disabled:text-dust-500 dark:disabled:hover:border-dust-700;
   }
 
-  .eis-btn-secondary {
-    @apply eis-btn bg-eis-bg-hover text-eis-text hover:bg-eis-border;
+  /* ---- one chip system: classification, hazard, severity, verdict ---- */
+  .chip {
+    @apply inline-flex items-center whitespace-nowrap rounded-sm border px-1.5 py-0.5 font-mono text-[11px] leading-4;
+  }
+  .chip-petrol {
+    @apply border-petrol/40 bg-petrol-wash text-petrol-ink dark:border-petrol-dark dark:bg-petrol-tint dark:text-petrol-light;
+  }
+  .chip-rust {
+    @apply border-rust/50 bg-rust-wash text-rust-dark dark:border-rust-dark dark:bg-rust-tint dark:text-rust-light;
+  }
+  .chip-amber {
+    @apply border-amber/50 bg-amber-wash text-amber-ink dark:border-amber-dark dark:bg-amber-tint dark:text-amber-light;
+  }
+  .chip-info {
+    @apply border-info/50 bg-info-wash text-info-ink dark:border-info-dark dark:bg-info-tint dark:text-info-light;
+  }
+  .chip-dust {
+    @apply border-dust-200 bg-dust-100 text-dust-600 dark:border-dust-700 dark:bg-dust-800 dark:text-dust-300;
   }
 
-  .eis-btn-danger {
-    @apply eis-btn bg-eis-danger/20 text-eis-danger hover:bg-eis-danger/30;
+  /* ---- inputs (size + face set at the call site) ---- */
+  .field {
+    @apply rounded border border-dust-200 bg-dust-0 text-dust-800 placeholder:text-dust-500
+      focus:border-petrol focus:outline-none
+      dark:border-dust-700 dark:bg-dust-900 dark:text-dust-100 dark:placeholder:text-dust-500
+      dark:focus:border-petrol-dark;
   }
 
-  .eis-btn-sm {
-    @apply px-2 py-1 text-xs rounded font-medium transition-colors duration-150
-           bg-eis-bg-hover text-eis-text-secondary hover:text-eis-text hover:bg-eis-border;
-  }
-
-  .eis-input {
-    @apply bg-eis-bg border border-eis-border rounded-md px-3 py-2 text-eis-text
-           focus:outline-none focus:border-eis-green focus:ring-1 focus:ring-eis-green/50;
-  }
-
-  .eis-badge {
-    @apply inline-flex items-center px-2 py-0.5 rounded text-xs font-medium;
+  /* ---- cards / panels ---- */
+  .panel {
+    @apply rounded border border-dust-200 bg-dust-0 dark:border-dust-700 dark:bg-dust-800;
   }
 }

@@ -71,7 +71,7 @@ function splitInline(text: string, key = 0): React.ReactNode[] {
     if (part === '') return;
     if (part.startsWith('`') && part.endsWith('`') && part.length > 2) {
       out.push(
-        <code key={`${key}-c${i}`} className="rounded bg-dust-900 px-1 font-mono text-[0.9em] text-petrol-light">
+        <code key={`${key}-c${i}`} className="rounded bg-dust-100 dark:bg-dust-900 px-1 font-mono text-[0.9em] text-petrol-ink dark:text-petrol-light">
           {part.slice(1, -1)}
         </code>,
       );
@@ -89,7 +89,7 @@ function splitEmphasis(text: string, key: string): React.ReactNode[] {
     if (part === '') return;
     if (part.startsWith('**') && part.endsWith('**') && part.length > 4) {
       out.push(
-        <strong key={`${key}-b${i}`} className="font-semibold text-dust-100">
+        <strong key={`${key}-b${i}`} className="font-semibold text-dust-900 dark:text-dust-100">
           {part.slice(2, -2)}
         </strong>,
       );
@@ -138,7 +138,7 @@ export function Markdown({ source, withAnchors = false }: { source: string; with
     // Horizontal rule (--- / ***) — must not swallow table separators, which
     // are only reached via the pipe-table branch below.
     if (/^\s*(-{3,}|\*{3,})\s*$/.test(line)) {
-      blocks.push(<hr key={key++} className="border-dust-700" />);
+      blocks.push(<hr key={key++} className="border-dust-200 dark:border-dust-700" />);
       i += 1;
       continue;
     }
@@ -153,7 +153,7 @@ export function Markdown({ source, withAnchors = false }: { source: string; with
       blocks.push(
         <blockquote
           key={key++}
-          className="border-l-2 border-petrol-dark pl-3 text-sm italic leading-relaxed text-dust-100"
+          className="border-l-2 border-petrol/40 dark:border-petrol-dark pl-3 text-sm italic leading-relaxed text-dust-900 dark:text-dust-100"
         >
           {splitInline(buf.join(' ').trim(), key)}
         </blockquote>,
@@ -169,7 +169,7 @@ export function Markdown({ source, withAnchors = false }: { source: string; with
         i += 1;
       }
       blocks.push(
-        <ol key={key++} className="list-decimal space-y-1 pl-5 text-sm text-dust-300">
+        <ol key={key++} className="list-decimal space-y-1 pl-5 text-sm text-dust-600 dark:text-dust-300">
           {items.map((item, j) => (
             <li key={j}>{splitInline(item, j)}</li>
           ))}
@@ -190,7 +190,7 @@ export function Markdown({ source, withAnchors = false }: { source: string; with
       blocks.push(
         <pre
           key={key++}
-          className="overflow-x-auto rounded border border-dust-700 bg-dust-900 p-3 font-mono text-xs leading-5 text-dust-300"
+          className="overflow-x-auto rounded border border-dust-200 dark:border-dust-700 bg-dust-100/60 dark:bg-dust-900 p-3 font-mono text-xs leading-5 text-dust-700 dark:text-dust-300"
         >
           {buf.join('\n')}
         </pre>,
@@ -206,8 +206,8 @@ export function Markdown({ source, withAnchors = false }: { source: string; with
       const id = withAnchors ? headingAnchor(heading[2]) : undefined;
       const cls =
         (level === 1
-          ? 'text-base font-bold text-dust-100 mt-1'
-          : 'text-sm font-semibold text-dust-100 mt-2') + (withAnchors ? ' scroll-mt-14' : '');
+          ? 'text-base font-bold text-dust-900 dark:text-dust-100 mt-1'
+          : 'text-sm font-semibold text-dust-900 dark:text-dust-100 mt-2') + (withAnchors ? ' scroll-mt-14' : '');
       blocks.push(
         level === 1 ? (
           <h3 key={key++} id={id} className={cls}>
@@ -240,7 +240,7 @@ export function Markdown({ source, withAnchors = false }: { source: string; with
                 {header.map((h, c) => (
                   <th
                     key={c}
-                    className="border border-dust-700 bg-dust-800 px-2 py-1 text-left font-semibold text-dust-100"
+                    className="border border-dust-200 dark:border-dust-700 bg-dust-0 dark:bg-dust-800 px-2 py-1 text-left font-semibold text-dust-900 dark:text-dust-100"
                   >
                     {splitInline(h, c)}
                   </th>
@@ -251,7 +251,7 @@ export function Markdown({ source, withAnchors = false }: { source: string; with
               {rows.map((r, ri) => (
                 <tr key={ri}>
                   {r.map((cell, c) => (
-                    <td key={c} className="border border-dust-700 px-2 py-1 text-dust-300">
+                    <td key={c} className="border border-dust-200 dark:border-dust-700 px-2 py-1 text-dust-600 dark:text-dust-300">
                       {splitInline(cell, c)}
                     </td>
                   ))}
@@ -272,7 +272,7 @@ export function Markdown({ source, withAnchors = false }: { source: string; with
         i += 1;
       }
       blocks.push(
-        <ul key={key++} className="list-disc space-y-1 pl-5 text-sm text-dust-300">
+        <ul key={key++} className="list-disc space-y-1 pl-5 text-sm text-dust-600 dark:text-dust-300">
           {items.map((item, j) => (
             <li key={j}>{splitInline(item, j)}</li>
           ))}
@@ -299,7 +299,7 @@ export function Markdown({ source, withAnchors = false }: { source: string; with
       i += 1;
     }
     blocks.push(
-      <p key={key++} className="text-sm leading-relaxed text-dust-300">
+      <p key={key++} className="text-sm leading-relaxed text-dust-600 dark:text-dust-300">
         {splitInline(buf.join(' '), key)}
       </p>,
     );

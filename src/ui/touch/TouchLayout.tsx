@@ -33,11 +33,11 @@ export function TouchLayout({ children }: TouchLayoutProps) {
   // Desktop layout — keep existing layout
   if (isDesktop) {
     return (
-      <div className="flex h-screen overflow-hidden bg-eis-bg">
+      <div className="flex h-screen overflow-hidden bg-dust-50 dark:bg-dust-900">
         <Sidebar />
         <div className="flex-1 flex flex-col overflow-hidden">
           <Header />
-          <main className="flex-1 overflow-auto p-4">{children}</main>
+          <main className="flex-1 overflow-auto p-6">{children}</main>
         </div>
       </div>
     );
@@ -46,16 +46,19 @@ export function TouchLayout({ children }: TouchLayoutProps) {
   // Phone/Tablet on game routes — full-screen game view
   if (isGameRoute && isMobile) {
     return (
-      <div className="flex flex-col h-screen overflow-hidden bg-eis-bg">
+      <div className="flex flex-col h-screen overflow-hidden bg-dust-50 dark:bg-dust-900">
         {/* Thin top bar */}
-        <div className="flex items-center justify-between px-3 py-2 bg-eis-bg-card border-b border-eis-border shrink-0 h-10">
+        <div className="flex items-center justify-between px-3 py-2 bg-dust-0 dark:bg-dust-800 border-b border-dust-200 dark:border-dust-700 shrink-0 h-10">
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="w-8 h-8 flex items-center justify-center text-eis-text-secondary touch-manipulation"
+            aria-label="Open navigation"
+            className="w-8 h-8 flex items-center justify-center rounded text-dust-600 dark:text-dust-300 touch-manipulation"
           >
             {'\u{2630}'}
           </button>
-          <span className="text-sm font-mono text-eis-green">EIS</span>
+          <span className="font-display text-base font-bold uppercase tracking-wide text-dust-900 dark:text-dust-100">
+            EIS<span className="text-petrol-ink dark:text-petrol-light">Web</span>
+          </span>
           <div className="w-8" /> {/* Spacer */}
         </div>
 
@@ -66,7 +69,7 @@ export function TouchLayout({ children }: TouchLayoutProps) {
         {sidebarOpen && (
           <>
             <div className="fixed inset-0 bg-black/50 z-30" onClick={() => setSidebarOpen(false)} />
-            <div className="fixed left-0 top-0 bottom-0 w-56 z-40 bg-eis-bg-card border-r border-eis-border overflow-y-auto">
+            <div className="fixed left-0 top-0 bottom-0 w-56 z-40 bg-dust-0 dark:bg-dust-800 border-r border-dust-200 dark:border-dust-700 overflow-y-auto">
               <Sidebar />
             </div>
           </>
@@ -77,26 +80,29 @@ export function TouchLayout({ children }: TouchLayoutProps) {
 
   // Phone/Tablet on non-game routes — simplified layout
   return (
-    <div className="flex flex-col h-screen overflow-hidden bg-eis-bg">
+    <div className="flex flex-col h-screen overflow-hidden bg-dust-50 dark:bg-dust-900">
       {/* Top bar */}
-      <div className="flex items-center justify-between px-3 py-2 bg-eis-bg-card border-b border-eis-border shrink-0">
+      <div className="flex items-center justify-between px-3 py-2 bg-dust-0 dark:bg-dust-800 border-b border-dust-200 dark:border-dust-700 shrink-0">
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="w-8 h-8 flex items-center justify-center text-eis-text-secondary touch-manipulation"
+          aria-label="Open navigation"
+          className="w-8 h-8 flex items-center justify-center rounded text-dust-600 dark:text-dust-300 touch-manipulation"
         >
           {'\u{2630}'}
         </button>
-        <span className="text-sm font-mono text-eis-green">EIS</span>
+        <span className="font-display text-base font-bold uppercase tracking-wide text-dust-900 dark:text-dust-100">
+          EIS<span className="text-petrol-ink dark:text-petrol-light">Web</span>
+        </span>
         <div className="w-8" />
       </div>
 
-      <main className="flex-1 overflow-auto p-3">{children}</main>
+      <main className="flex-1 overflow-auto p-4">{children}</main>
 
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <>
           <div className="fixed inset-0 bg-black/50 z-30" onClick={() => setSidebarOpen(false)} />
-          <div className="fixed left-0 top-0 bottom-0 w-56 z-40 bg-eis-bg-card border-r border-eis-border overflow-y-auto">
+          <div className="fixed left-0 top-0 bottom-0 w-56 z-40 bg-dust-0 dark:bg-dust-800 border-r border-dust-200 dark:border-dust-700 overflow-y-auto">
             <Sidebar />
           </div>
         </>

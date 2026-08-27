@@ -69,7 +69,7 @@ export function BriefEditorPage() {
   return (
     <div className="max-w-6xl space-y-4">
       <div className="flex flex-wrap items-center gap-3 text-xs">
-        <Link to="/briefs" className="text-petrol-light hover:text-petrol hover:underline">
+        <Link to="/briefs" className="text-petrol-ink dark:text-petrol-light hover:text-petrol-dark dark:hover:text-petrol hover:underline">
           &larr; All briefs
         </Link>
         <StageIndicator stageId="Brief" />
@@ -165,25 +165,28 @@ function Editor({ briefName, initialRaw }: { briefName: string | null; initialRa
   };
 
   const fieldClass =
-    'w-full rounded border border-dust-700 bg-dust-900 px-2 py-1.5 font-mono text-sm text-dust-100 focus:border-petrol-dark focus:outline-none';
+    'w-full rounded border border-dust-200 dark:border-dust-700 bg-dust-0 dark:bg-dust-900 px-2 py-1.5 font-mono text-sm text-dust-900 dark:text-dust-100 focus:border-petrol dark:focus:border-petrol-dark focus:outline-none';
 
   return (
     <div className="space-y-4">
       <header className="flex flex-wrap items-center justify-between gap-2">
-        <div className="flex items-center gap-3">
-          <h2 className="text-xl font-bold text-dust-100">
-            {isNew ? 'New brief' : briefName}
-          </h2>
-          {dirty && <span className="text-xs text-amber-light">unsaved changes</span>}
+        <div className="flex items-end gap-3">
+          <div className="space-y-1.5">
+            <p className="eyebrow">Design locations</p>
+            <h2 className="page-title normal-case tracking-normal">
+              {isNew ? 'New brief' : briefName}
+            </h2>
+          </div>
+          {dirty && <span className="chip chip-amber mb-1">unsaved changes</span>}
         </div>
         <div className="flex items-center gap-2">
-          <div className="flex overflow-hidden rounded border border-dust-700 text-xs">
+          <div className="flex overflow-hidden rounded border border-dust-200 dark:border-dust-700 text-xs">
             {(['form', 'raw'] as const).map((m) => (
               <button
                 key={m}
                 type="button"
                 onClick={() => switchMode(m)}
-                className={`px-3 py-1.5 ${mode === m ? 'bg-petrol-tint text-petrol-light' : 'bg-dust-800 text-dust-500 hover:text-dust-100'}`}
+                className={`px-3 py-1.5 ${mode === m ? 'bg-petrol-wash dark:bg-petrol-tint text-petrol-ink dark:text-petrol-light' : 'bg-dust-0 dark:bg-dust-800 text-dust-600 dark:text-dust-400 hover:text-dust-900 dark:hover:text-dust-100'}`}
               >
                 {m === 'form' ? 'Form' : 'Raw text'}
               </button>
@@ -193,7 +196,7 @@ function Editor({ briefName, initialRaw }: { briefName: string | null; initialRa
             type="button"
             disabled={checking}
             onClick={() => void runCheck()}
-            className="rounded border border-dust-700 bg-dust-800 px-3 py-1.5 text-sm text-dust-300 hover:border-petrol-dark hover:text-petrol-light disabled:opacity-50"
+            className="rounded border border-dust-200 dark:border-dust-700 bg-dust-0 dark:bg-dust-800 px-3 py-1.5 text-sm text-dust-600 dark:text-dust-300 hover:border-petrol dark:hover:border-petrol-dark hover:text-petrol-dark dark:hover:text-petrol-light disabled:opacity-50"
           >
             {checking ? 'Checking…' : 'Check coverage'}
           </button>
@@ -201,7 +204,7 @@ function Editor({ briefName, initialRaw }: { briefName: string | null; initialRa
             type="button"
             disabled={saving || !nameOk}
             onClick={() => void save()}
-            className="rounded border border-petrol-dark bg-petrol-tint px-3 py-1.5 text-sm text-petrol-light hover:bg-petrol-dark disabled:opacity-50"
+            className="rounded border border-petrol/40 dark:border-petrol-dark bg-petrol-wash dark:bg-petrol-tint px-3 py-1.5 text-sm text-petrol-ink dark:text-petrol-light hover:bg-petrol/20 dark:hover:bg-petrol-dark disabled:opacity-50"
           >
             {saving ? 'Saving…' : 'Save & commit'}
           </button>
@@ -210,7 +213,7 @@ function Editor({ briefName, initialRaw }: { briefName: string | null; initialRa
 
       {isNew && (
         <div className="flex items-center gap-2">
-          <label className="text-sm text-dust-300" htmlFor="brief-name">
+          <label className="text-sm text-dust-600 dark:text-dust-300" htmlFor="brief-name">
             File name
           </label>
           <input
@@ -220,9 +223,9 @@ function Editor({ briefName, initialRaw }: { briefName: string | null; initialRa
             placeholder="MyNewLocation"
             className={`${fieldClass} max-w-xs`}
           />
-          <span className="font-mono text-xs text-dust-500">.brief</span>
+          <span className="font-mono text-xs text-dust-600 dark:text-dust-400">.brief</span>
           {!nameOk && nameStem !== '' && (
-            <span className="text-xs text-rust-light">letters, digits, _ and - only</span>
+            <span className="text-xs text-rust-dark dark:text-rust-light">letters, digits, _ and - only</span>
           )}
         </div>
       )}
@@ -262,23 +265,23 @@ function Editor({ briefName, initialRaw }: { briefName: string | null; initialRa
           </div>
           <div className="space-y-3">
             {unrecognized.length > 0 && (
-              <div className="rounded border border-dust-700 bg-dust-800 p-3">
-                <p className="text-xs font-semibold uppercase tracking-wider text-dust-500">
+              <div className="rounded border border-dust-200 dark:border-dust-700 bg-dust-0 dark:bg-dust-800 p-3">
+                <p className="text-xs font-semibold uppercase tracking-wider text-dust-600 dark:text-dust-400">
                   Unrecognised keys (preserved untouched)
                 </p>
-                <ul className="mt-2 space-y-1 font-mono text-xs text-dust-300">
+                <ul className="mt-2 space-y-1 font-mono text-xs text-dust-600 dark:text-dust-300">
                   {unrecognized.map((e, i) => (
                     <li key={`${e.key}-${i}`}>
                       {e.key}: {e.values.join(' | ')}
                     </li>
                   ))}
                 </ul>
-                <p className="mt-1 text-[11px] text-dust-500">
+                <p className="mt-1 text-[11px] text-dust-600 dark:text-dust-400">
                   location_brief.py echoes but does not check these — edit them in Raw text.
                 </p>
               </div>
             )}
-            <p className="text-xs text-dust-500">
+            <p className="text-xs text-dust-600 dark:text-dust-400">
               Multi-value keys take one value per line. Names are designer language — the check
               resolves them to RowNames and shows every resolution.
             </p>
@@ -288,7 +291,7 @@ function Editor({ briefName, initialRaw }: { briefName: string | null; initialRa
 
       {saveError !== null && <ErrorBox error={saveError} />}
       {saveResult !== null && !saveResult.success && (
-        <div className="rounded border border-rust-dark bg-rust-tint px-3 py-2 text-sm text-rust-light">
+        <div className="rounded border border-rust/50 dark:border-rust-dark bg-rust-wash dark:bg-rust-tint px-3 py-2 text-sm text-rust-dark dark:text-rust-light">
           Save refused ({saveResult.reason})
           {saveResult.detail !== undefined && (
             <span className="block font-mono text-xs">
@@ -300,7 +303,7 @@ function Editor({ briefName, initialRaw }: { briefName: string | null; initialRa
         </div>
       )}
       {saveResult !== null && saveResult.success && (
-        <div className="rounded border border-petrol-dark bg-petrol-tint px-3 py-2 text-sm text-petrol-light">
+        <div className="rounded border border-petrol/40 dark:border-petrol-dark bg-petrol-wash dark:bg-petrol-tint px-3 py-2 text-sm text-petrol-ink dark:text-petrol-light">
           Saved and committed as <code className="font-mono">{saveResult.commit}</code> — the
           check below is fresh from that save.
         </div>
@@ -308,7 +311,7 @@ function Editor({ briefName, initialRaw }: { briefName: string | null; initialRa
 
       {checkError !== null && <ErrorBox error={checkError} />}
       {check !== null && (
-        <section className="rounded border border-dust-700 bg-dust-800/50 p-4">
+        <section className="rounded border border-dust-200 dark:border-dust-700 bg-dust-0/50 dark:bg-dust-800/50 p-4">
           <BriefCheckReport check={check} />
         </section>
       )}
@@ -326,7 +329,7 @@ function FormField({ label, value, onChange, multi, hint, fieldClass }: {
 }) {
   return (
     <label className="block">
-      <span className="mb-1 block text-xs font-semibold text-dust-300">{label}</span>
+      <span className="mb-1 block text-xs font-semibold text-dust-600 dark:text-dust-300">{label}</span>
       {multi ? (
         <textarea
           value={value}
@@ -343,7 +346,7 @@ function FormField({ label, value, onChange, multi, hint, fieldClass }: {
           className={fieldClass}
         />
       )}
-      {hint !== undefined && <span className="mt-0.5 block text-[11px] text-dust-500">{hint}</span>}
+      {hint !== undefined && <span className="mt-0.5 block text-[11px] text-dust-600 dark:text-dust-400">{hint}</span>}
     </label>
   );
 }

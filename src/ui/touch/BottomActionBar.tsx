@@ -20,7 +20,7 @@ export function BottomActionBar() {
   const { editor, setTool } = useWorldEditorStore();
 
   return (
-    <div className="flex items-center justify-around bg-eis-bg-card border-t border-eis-border px-2 py-1 shrink-0">
+    <div className="flex items-center justify-around bg-dust-0 dark:bg-dust-800 border-t border-dust-200 dark:border-dust-700 px-2 py-1 shrink-0">
       {EDITOR_TOOLS.map(t => (
         <button
           key={t.tool}
@@ -29,8 +29,8 @@ export function BottomActionBar() {
             flex flex-col items-center justify-center min-w-[56px] h-14 rounded-lg
             transition-colors touch-manipulation
             ${editor.tool === t.tool
-              ? 'bg-eis-green/20 text-eis-green'
-              : 'text-eis-text-secondary hover:bg-eis-bg-hover active:bg-eis-bg-hover'
+              ? 'bg-petrol-wash dark:bg-petrol-tint text-petrol-ink dark:text-petrol-light'
+              : 'text-dust-600 dark:text-dust-300 hover:bg-dust-100 dark:hover:bg-dust-700/50 active:bg-dust-100 dark:active:bg-dust-700/50'
             }
           `}
         >

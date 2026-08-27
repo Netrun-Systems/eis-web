@@ -13,6 +13,10 @@ import { extractHeadings, Markdown } from '../markdown/Markdown';
  * A table of contents is generated from the document's own headings; every
  * heading carries a stable anchor (`/philosophy#s21`), which is what all
  * §-cites across the app link to.
+ *
+ * WEB-015 — this is the app's long-form reading surface: the article wears
+ * the `.longform` treatment (Source Serif body at a ~70ch measure); the
+ * chrome around it stays in the UI sans.
  */
 export function PhilosophyPage() {
   const state = useApi(() => fetchReport('world-philosophy'), []);
@@ -34,11 +38,16 @@ export function PhilosophyPage() {
   }, [state.data, location.hash]);
 
   return (
-    <div className="max-w-5xl space-y-3">
-      {/* Sticky provenance header. */}
-      <div className="sticky top-0 z-10 -mx-1 rounded border border-petrol-dark bg-petrol-tint px-3 py-2 backdrop-blur">
-        <p className="text-sm text-dust-100">
-          <span className="font-semibold text-petrol-light">
+    <div className="max-w-5xl space-y-4">
+      <header className="space-y-1.5">
+        <p className="eyebrow">The Method</p>
+        <h2 className="page-title">Philosophy</h2>
+      </header>
+
+      {/* Sticky provenance bar. */}
+      <div className="sticky top-0 z-10 -mx-1 rounded border border-petrol/40 bg-petrol-wash/95 px-3 py-2 backdrop-blur dark:border-petrol-dark dark:bg-petrol-tint/95">
+        <p className="text-sm text-dust-800 dark:text-dust-100">
+          <span className="font-semibold text-petrol-ink dark:text-petrol-light">
             You are reading the canonical methodology
           </span>
           {' — '}
@@ -46,12 +55,12 @@ export function PhilosophyPage() {
           {' · '}
           <span className="font-mono text-xs">{PHILOSOPHY_DOC_VERSION}</span>
           {state.data && (
-            <span className="font-mono text-xs text-dust-300">
+            <span className="font-mono text-xs text-dust-600 dark:text-dust-300">
               {' · '}mtime {state.data.mtime.slice(0, 16).replace('T', ' ')}
             </span>
           )}
         </p>
-        <p className="text-xs text-dust-300">
+        <p className="text-xs text-dust-700 dark:text-dust-300">
           Read-only — the document lives in the EISCORE repo. Every &sect;-cite in this app links
           into this page.
         </p>
@@ -61,14 +70,14 @@ export function PhilosophyPage() {
       {state.error != null && <ErrorBox error={state.error} />}
 
       {state.data && (
-        <div className="flex flex-col gap-4 lg:flex-row">
+        <div className="flex flex-col gap-6 lg:flex-row">
           {/* TOC — generated from the document's headings. */}
           <nav className="shrink-0 lg:w-72">
             <details
-              className="rounded border border-dust-700 bg-dust-800 p-2 lg:sticky lg:top-16 lg:max-h-[80vh] lg:overflow-y-auto"
+              className="panel p-2 lg:sticky lg:top-16 lg:max-h-[80vh] lg:overflow-y-auto"
               open
             >
-              <summary className="cursor-pointer text-sm font-semibold text-dust-100">
+              <summary className="cursor-pointer text-sm font-semibold text-dust-900 dark:text-dust-100">
                 Contents
               </summary>
               <ul className="mt-1 space-y-0.5">
@@ -78,12 +87,12 @@ export function PhilosophyPage() {
                     <li key={`${h.anchor}-${i}`}>
                       <a
                         href={`#${h.anchor}`}
-                        className={`block truncate text-xs hover:text-petrol hover:underline ${
+                        className={`block truncate text-xs hover:text-petrol-dark hover:underline dark:hover:text-petrol ${
                           h.level === 1
-                            ? 'mt-1 font-semibold text-petrol-light'
+                            ? 'mt-1 font-semibold text-petrol-ink dark:text-petrol-light'
                             : h.level === 2
-                              ? 'pl-3 text-dust-300'
-                              : 'pl-6 text-dust-500'
+                              ? 'pl-3 text-dust-600 dark:text-dust-300'
+                              : 'pl-6 text-dust-600 dark:text-dust-400'
                         }`}
                       >
                         {h.text}
@@ -94,7 +103,7 @@ export function PhilosophyPage() {
             </details>
           </nav>
 
-          <article className="min-w-0 flex-1">
+          <article className="longform min-w-0 flex-1">
             <Markdown source={state.data.markdown} withAnchors />
           </article>
         </div>
