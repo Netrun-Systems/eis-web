@@ -229,7 +229,7 @@ export function TableEditor({
         <button type="button" onClick={addRow} className={btnPetrol}>
           + Add row
         </button>
-        <span className="text-xs text-dust-500">
+        <span className="text-xs text-dust-600 dark:text-dust-400">
           Click a cell to edit · Enter/blur commits · Esc cancels · column order is fixed
         </span>
         <button type="button" onClick={onExit} className={`${btnDust} ml-auto`}>
@@ -239,7 +239,7 @@ export function TableEditor({
 
       {/* Live client-side guard hints (server refusals stay authoritative). */}
       {(dupGroups.length > 0 || semicolonHazards.length > 0 || commaBlocked) && (
-        <div className="space-y-1 rounded border border-amber-dark bg-amber-tint px-3 py-2 text-xs text-amber-light">
+        <div className="space-y-1 rounded border border-amber/50 bg-amber-wash px-3 py-2 text-xs text-amber-ink dark:border-amber-dark dark:bg-amber-tint dark:text-amber-light">
           {dupGroups.map((g) => (
             <div key={g.key}>
               Duplicate column-0 key <code className="font-mono">&quot;{g.key}&quot;</code> in rows{' '}
@@ -260,29 +260,29 @@ export function TableEditor({
       )}
 
       {/* The editable grid */}
-      <div className="overflow-x-auto rounded border border-dust-700">
+      <div className="overflow-x-auto rounded border border-dust-200 dark:border-dust-700">
         <table className="min-w-full border-collapse text-xs">
           <thead>
             <tr>
               {columns.map((col, ci) => (
                 <th
                   key={ci}
-                  className="sticky top-0 border-b border-dust-700 bg-dust-800 px-2 py-1.5 text-left align-bottom"
+                  className="sticky top-0 z-10 border-b border-dust-200 dark:border-dust-700 bg-dust-0 dark:bg-dust-800 px-2 py-1.5 text-left align-bottom"
                 >
-                  <div className="font-semibold text-dust-100">{col}</div>
+                  <div className="font-semibold text-dust-900 dark:text-dust-100">{col}</div>
                   {typeFor(ci) !== null && (
-                    <div className="font-mono text-[10px] font-normal text-dust-500">
+                    <div className="font-mono text-[10px] font-normal text-dust-600 dark:text-dust-400">
                       {typeFor(ci)}
                     </div>
                   )}
                 </th>
               ))}
-              <th className="sticky top-0 border-b border-dust-700 bg-dust-800 px-2 py-1.5" />
+              <th className="sticky top-0 z-10 border-b border-dust-200 dark:border-dust-700 bg-dust-0 dark:bg-dust-800 px-2 py-1.5" />
             </tr>
           </thead>
-          <tbody className="divide-y divide-dust-700/60">
+          <tbody className="divide-y divide-dust-200/70 dark:divide-dust-700/60">
             {pageRows.map((row) => (
-              <tr key={row.id} className="hover:bg-dust-800/40">
+              <tr key={row.id} className="hover:bg-dust-100 dark:hover:bg-dust-800/40">
                 {columns.map((_, ci) => {
                   const value = row.cells[ci] ?? '';
                   const dirty = isCellDirty(original, row, ci);
@@ -297,7 +297,7 @@ export function TableEditor({
                         <select
                           value={value}
                           onChange={(e) => setCellValue(row.id, ci, e.target.value)}
-                          className="w-full bg-transparent font-mono text-xs text-dust-100 outline-none"
+                          className="w-full bg-transparent font-mono text-xs text-dust-800 dark:text-dust-100 outline-none"
                         >
                           {!['true', 'false'].includes(value) && (
                             <option value={value}>{value === '' ? '(empty)' : value}</option>
@@ -324,7 +324,7 @@ export function TableEditor({
                             guardComma.onKeyDown?.(e);
                           }}
                           onPaste={guardComma.onPaste}
-                          className="w-full min-w-24 bg-dust-900 font-mono text-xs text-dust-100 outline-none ring-1 ring-petrol-dark"
+                          className="w-full min-w-24 bg-dust-0 font-mono text-xs text-dust-800 outline-none ring-1 ring-petrol dark:bg-dust-900 dark:text-dust-100 dark:ring-petrol-dark"
                         />
                       </td>
                     );
@@ -366,7 +366,7 @@ export function TableEditor({
       </div>
 
       {/* Pagination */}
-      <div className="flex items-center gap-3 text-sm text-dust-300">
+      <div className="flex items-center gap-3 text-sm text-dust-600 dark:text-dust-300">
         <button
           type="button"
           onClick={() => setPage(Math.max(0, clampedPage - 1))}
@@ -383,14 +383,14 @@ export function TableEditor({
         >
           Next &rarr;
         </button>
-        <span className="font-mono text-xs">
+        <span className="font-mono text-xs tabular-nums">
           page {clampedPage + 1} / {pageCount} &middot; {rows.length} rows
         </span>
       </div>
 
       {/* §5.4 type re-inference confirm */}
       {pendingTypeChanges !== null && (
-        <div className="space-y-2 rounded border border-amber-dark bg-amber-tint px-3 py-2 text-sm text-amber-light">
+        <div className="space-y-2 rounded border border-amber/50 bg-amber-wash px-3 py-2 text-sm text-amber-ink dark:border-amber-dark dark:bg-amber-tint dark:text-amber-light">
           <p className="font-semibold">
             This edit would change {pendingTypeChanges.length} column type
             {pendingTypeChanges.length === 1 ? '' : 's'} on re-import:
@@ -420,12 +420,12 @@ export function TableEditor({
       {/* Refusal — the server's exact reason/detail in findings language;
           dirty state is preserved so nothing is lost. */}
       {saveFailure !== null && (
-        <div className="space-y-1 rounded border border-rust-dark bg-rust-tint px-3 py-2">
-          <p className="text-sm font-semibold text-rust-light">
+        <div className="space-y-1 rounded border border-rust/50 bg-rust-wash px-3 py-2 dark:border-rust-dark dark:bg-rust-tint">
+          <p className="text-sm font-semibold text-rust-dark dark:text-rust-light">
             Save refused — <code className="font-mono">{saveFailure.reason}</code>. Your edits are
             preserved below.
           </p>
-          <ul className="divide-y divide-dust-700/60">
+          <ul className="divide-y divide-dust-200/70 dark:divide-dust-700/60">
             {refusalFindings.map((f, i) => (
               <FindingListItem key={`${f.code}-${f.row ?? ''}-${f.column ?? ''}-${i}`} finding={f} />
             ))}
@@ -433,15 +433,16 @@ export function TableEditor({
         </div>
       )}
 
-      {/* Persistent dirty bar */}
+      {/* Persistent dirty bar — same surface language as the app's other
+          persistent bars: card ground, dust border; petrol border once dirty. */}
       <div
         className={`sticky bottom-0 flex flex-wrap items-center gap-2 rounded border px-3 py-2 text-sm ${
           dirtyStats.dirty
-            ? 'border-petrol-dark bg-dust-800 text-dust-100'
-            : 'border-dust-700 bg-dust-800 text-dust-500'
+            ? 'border-petrol/40 bg-dust-0 text-dust-800 dark:border-petrol-dark dark:bg-dust-800 dark:text-dust-100'
+            : 'border-dust-200 bg-dust-0 text-dust-500 dark:border-dust-700 dark:bg-dust-800'
         }`}
       >
-        <span className="font-mono text-xs">
+        <span className="font-mono text-xs tabular-nums">
           {dirtyStats.cellsEdited} cell{dirtyStats.cellsEdited === 1 ? '' : 's'} edited,{' '}
           {dirtyStats.rowsAdded} row{dirtyStats.rowsAdded === 1 ? '' : 's'} added,{' '}
           {dirtyStats.rowsDeleted} deleted
@@ -451,7 +452,7 @@ export function TableEditor({
           onChange={(e) => setMessage(e.target.value)}
           placeholder={defaultMessage}
           title="Commit message (optional — placeholder shows the default)"
-          className="min-w-52 flex-1 rounded border border-dust-700 bg-dust-900 px-2 py-1 font-mono text-xs text-dust-100 placeholder:text-dust-500"
+          className="field min-w-52 flex-1 px-2 py-1 font-mono text-xs"
         />
         <button
           type="button"
@@ -491,23 +492,22 @@ function inputModeFor(ue5: string | null): 'decimal' | 'numeric' | 'text' {
   return 'text';
 }
 
-/** Cell background language: petrol tint = dirty, rust = duplicate key,
+/** Cell background language: petrol wash/tint = dirty, rust = duplicate key,
  * amber = semicolon-hazard contributor. Word/hint carries the meaning too. */
 function cellClass(dirty: boolean, dupKey: boolean, hazard: boolean): string {
   const base = 'px-2 py-1';
-  if (dupKey) return `${base} bg-rust-tint text-rust-light`;
-  if (hazard) return `${base} bg-amber-tint text-amber-light`;
-  if (dirty) return `${base} bg-petrol-tint text-petrol-light`;
-  return `${base} text-dust-300`;
+  if (dupKey) return `${base} bg-rust-wash text-rust-dark dark:bg-rust-tint dark:text-rust-light`;
+  if (hazard)
+    return `${base} bg-amber-wash text-amber-ink dark:bg-amber-tint dark:text-amber-light`;
+  if (dirty)
+    return `${base} bg-petrol-wash text-petrol-ink dark:bg-petrol-tint dark:text-petrol-light`;
+  return `${base} text-dust-600 dark:text-dust-300`;
 }
 
-const btnPetrol =
-  'rounded border border-petrol-dark bg-petrol-tint px-2.5 py-1 text-xs text-petrol-light hover:bg-petrol-dark disabled:cursor-not-allowed disabled:border-dust-700 disabled:bg-dust-800 disabled:text-dust-500';
-const btnDust =
-  'rounded border border-dust-700 bg-dust-800 px-2.5 py-1 text-xs text-dust-300 hover:bg-dust-700 disabled:cursor-not-allowed disabled:text-dust-500';
-const btnPage =
-  'rounded border border-petrol-dark bg-petrol-tint px-2.5 py-1 text-petrol-light hover:bg-petrol-dark disabled:cursor-not-allowed disabled:border-dust-700 disabled:bg-dust-800 disabled:text-dust-500';
+const btnPetrol = 'btn-primary px-2.5 py-1 text-xs';
+const btnDust = 'btn-quiet px-2.5 py-1 text-xs';
+const btnPage = 'btn-primary px-2.5 py-1';
 const btnMini =
-  'rounded border border-dust-700 px-1.5 text-[11px] leading-4 text-dust-300 hover:bg-dust-700';
+  'rounded border border-dust-200 px-1.5 text-[11px] leading-4 text-dust-600 hover:bg-dust-100 dark:border-dust-700 dark:text-dust-300 dark:hover:bg-dust-700';
 const btnMiniDanger =
-  'rounded border border-rust-dark px-1.5 text-[11px] leading-4 text-rust-light hover:bg-rust-tint';
+  'rounded border border-rust/50 px-1.5 text-[11px] leading-4 text-rust-dark hover:bg-rust-wash dark:border-rust-dark dark:text-rust-light dark:hover:bg-rust-tint';
