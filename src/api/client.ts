@@ -5,6 +5,11 @@
  */
 
 import type {
+  BriefCheckResponse,
+  BriefGetResponse,
+  BriefListResponse,
+  BriefPutBody,
+  BriefPutResponse,
   GitLogResponse,
   HealthResponse,
   ManifestResponse,
@@ -111,6 +116,64 @@ export function runWorldgenValidation(): Promise<WorldgenValidationResponse> {
 /** WEB-005: dry-run the hard-rule write guards against the file on disk. */
 export function runTableGuardCheck(path: string): Promise<TableGuardCheckResponse> {
   return postJson(`/api/validate/table?path=${encodeURIComponent(path)}`);
+}
+
+/** WEB-007: the location briefs on disk (name, Location:, mtime, notes). */
+export function fetchBriefs(): Promise<BriefListResponse> {
+  return getJson('/api/briefs');
+}
+
+/** WEB-007: one brief — raw text + the parsed comments/entries. */
+export function fetchBrief(name: string): Promise<BriefGetResponse> {
+  return getJson(`/api/briefs/${encodeURIComponent(name)}`);
+}
+
+/** WEB-007: run location_brief.py against a SAVED brief. exitCode 1 in the
+ * response means blockers — the call still resolves. */
+export function checkBrief(name: string): Promise<BriefCheckResponse> {
+  return postJson(`/api/briefs/${encodeURIComponent(name)}/check`);
+}
+
+/** WEB-007: check an UNSAVED draft buffer — runs against a temp file outside
+ * the repo, so EISCORE is never touched. */
+export function checkBriefDraft(raw: string): Promise<BriefCheckResponse> {
+  return requestJson('/api/briefs/check-draft', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ raw }),
+  });
+}
+
+/**
+ * WEB-007: save a brief (write -> informational check -> single-file commit).
+ * Like putWorldgenWeb, a refusal RESOLVES with the failure body; only
+ * network/proxy failures throw.
+ */
+export async function putBrief(name: string, body: BriefPutBody): Promise<BriefPutResponse> {
+  let res: Response;
+  try {
+    res = await fetch(`/api/briefs/${encodeURIComponent(name)}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+  } catch {
+    throw new ApiError(API_DOWN_MESSAGE, { connectionFailed: true, status: null });
+  }
+  let parsed: unknown = null;
+  try {
+    parsed = await res.json();
+  } catch {
+    /* non-JSON body handled below */
+  }
+  if (parsed === null || typeof parsed !== 'object') {
+    const connectionFailed = res.status >= 500;
+    throw new ApiError(connectionFailed ? API_DOWN_MESSAGE : `HTTP ${res.status}`, {
+      connectionFailed,
+      status: res.status,
+    });
+  }
+  return parsed as BriefPutResponse;
 }
 
 /** WEB-006: which world-gen source fragments exist per stem. */

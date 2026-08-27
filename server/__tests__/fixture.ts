@@ -336,6 +336,124 @@ export function makeWorldgenFixture(): Fixture {
   return fx;
 }
 
+// ---------------------------------------------------------------------------
+// WEB-007 — briefs fixture: a Briefs/ dir with two briefs plus a stand-in
+// location_brief.py honouring the real CLI contract (--brief, --json <file>,
+// --quiet; exit 1 iff blockers; JSON report shaped like the real tool's).
+// ---------------------------------------------------------------------------
+
+/** Resolves (Region 'Fixture Region', structure 'Fixture Towers') -> exit 0. */
+export const BRIEF_FIXTURE_OK = [
+  '# A fixture brief for tests.',
+  '',
+  'Location:',
+  'Fixture Canyon',
+  '',
+  'Region:',
+  'Fixture Region',
+  '',
+  'Primary structures:',
+  'Fixture Towers',
+  '',
+].join('\n');
+
+/** Region resolves to nothing -> BLOCKER -> exit 1. */
+export const BRIEF_FIXTURE_BAD = [
+  'Location:',
+  'Bad Region Site',
+  '',
+  'Region:',
+  'Atlantis Prime',
+  '',
+  'Primary structures:',
+  'Fixture Towers',
+  '',
+].join('\n');
+
+const LOCATION_BRIEF_STANDIN = `import io, json, os, re, sys
+args = sys.argv[1:]
+def opt(flag):
+    return args[args.index(flag) + 1] if flag in args else None
+brief = opt("--brief")
+out = opt("--json")
+def norm(s):
+    return re.sub(r"[^a-z0-9]", "", (s or "").lower())
+fields, key = {}, None
+with io.open(brief, "r", encoding="utf-8-sig") as fh:
+    for raw in fh.read().splitlines():
+        line = raw.strip()
+        if not line or line.startswith("#"):
+            continue
+        m = re.match(r"^([A-Za-z][A-Za-z /_-]*):\\s*(.*)$", line)
+        if m:
+            key = m.group(1).strip().lower()
+            fields.setdefault(key, [])
+            if m.group(2).strip():
+                fields[key].append(m.group(2).strip())
+            continue
+        if key:
+            fields[key].append(line)
+REGIONS = {"fixtureregion": "REG_Fixture"}
+STRUCTS = {"fixturetower": "STR_FixtureTower", "fixturetowers": "STR_FixtureTower"}
+findings = []
+region_raw = (fields.get("region") or [""])[0]
+region = REGIONS.get(norm(region_raw))
+if not region:
+    findings.append({"severity": "BLOCKER", "section": "region",
+                     "detail": "Region '%s' resolves to no row in Regions.csv" % region_raw,
+                     "fix": "author the region"})
+structures = []
+for tok in fields.get("primary structures", []):
+    rn = STRUCTS.get(norm(tok))
+    if rn:
+        structures.append({"asked": tok, "resolved": rn})
+    else:
+        findings.append({"severity": "BLOCKER", "section": "structures",
+                         "detail": "Primary structure '%s' resolves to no row" % tok,
+                         "fix": None})
+pieces = [{"piece": "Wall", "have": 3, "reasons": ["fixture enclosure"], "candidates": 0,
+           "packs": [], "styles": [["Rural", 3]], "consumed": True, "consumers": ["ASM"]}]
+blockers = sum(1 for f in findings if f["severity"] == "BLOCKER")
+verdict = "NOT BUILDABLE" if blockers else "BUILDABLE"
+result = {"brief": brief.replace("\\\\", "/"),
+          "location": (fields.get("location") or [""])[0],
+          "purpose": (fields.get("purpose") or [""])[0],
+          "region": {"asked": region_raw, "resolved": region},
+          "city_style": {"asked": "", "family": None, "chain": []},
+          "structures": structures, "spaces": {"required": [], "preferred": []},
+          "connections": [], "networks": [], "traversal": [], "states": [],
+          "structure_coverage": [], "pieces": pieces, "rules": [],
+          "verdict": verdict,
+          "counts": {"blocker": blockers, "gap": 0, "note": 0, "style_substitution": 0},
+          "findings": findings}
+if out:
+    d = os.path.dirname(os.path.abspath(out))
+    if d and not os.path.isdir(d):
+        os.makedirs(d)
+    with io.open(out, "w", encoding="utf-8") as fh:
+        json.dump(result, fh, indent=2)
+print("VERDICT: %s -- %d blocker(s), 0 gap(s), 0 note(s)" % (verdict, blockers))
+sys.exit(1 if blockers else 0)
+`;
+
+/** Layer the briefs mini-corpus onto the base fixture repo and commit it. */
+export function makeBriefsFixture(): Fixture {
+  const fx = makeFixtureRepo();
+  const files: Record<string, string> = {
+    'Documentation/World/Briefs/FixtureCanyon.brief': BRIEF_FIXTURE_OK,
+    'Documentation/World/Briefs/BadRegion.brief': BRIEF_FIXTURE_BAD,
+    'Scripts/location_brief.py': LOCATION_BRIEF_STANDIN,
+  };
+  for (const [rel, content] of Object.entries(files)) {
+    const abs = path.join(fx.repoPath, ...rel.split('/'));
+    fs.mkdirSync(path.dirname(abs), { recursive: true });
+    fs.writeFileSync(abs, content, 'utf-8');
+  }
+  git(fx.repoPath, ['add', '-A']);
+  git(fx.repoPath, ['commit', '-q', '-m', 'fixture: briefs mini-corpus']);
+  return fx;
+}
+
 export function fixtureEntry(stem: string): ManifestTable {
   const entry = FIXTURE_TABLES.find((t) => t.stem === stem);
   if (!entry) throw new Error(`no fixture table ${stem}`);

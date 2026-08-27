@@ -252,6 +252,71 @@ export interface WorldgenPutSuccess {
   summaryCounts: FindingSummaryCounts;
 }
 
+// ---------------------------------------------------------------------------
+// WEB-007 — Brief Studio.
+// ---------------------------------------------------------------------------
+
+export interface BriefListEntry {
+  name: string;
+  mtime: string;
+  /** The brief's `Location:` value ('' when absent/unparseable). */
+  location: string;
+  /** Line count of the leading `#` comment block (the design notes). */
+  commentLines: number;
+}
+
+export interface BriefListResult {
+  dir: string;
+  briefs: BriefListEntry[];
+}
+
+/** One parsed key block, same semantics as location_brief.py parse_brief(). */
+export interface BriefParsedEntry {
+  key: string;
+  values: string[];
+  inline: boolean;
+}
+
+export interface BriefGetResult {
+  name: string;
+  raw: string;
+  parsed: {
+    comments: string[];
+    entries: BriefParsedEntry[];
+  };
+}
+
+/** One location_brief.py run. exitCode 1 = at least one BLOCKER — a result,
+ * never an HTTP failure. `result` is the tool's --json report, passed through
+ * faithfully. `failure` is set only when the tool could not run/report. */
+export interface BriefCheckResult {
+  ranAt: string;
+  exitCode: number;
+  verdict: string | null;
+  result: unknown;
+  failure?: string;
+}
+
+export type BriefCheckOutcome =
+  | { ok: true; check: BriefCheckResult }
+  | { ok: false; detail: string };
+
+export interface BriefPutBody {
+  raw?: string;
+  message?: string;
+}
+
+export interface BriefPutSuccess {
+  success: true;
+  name: string;
+  commit: string;
+  /** Informational — a NOT BUILDABLE brief still commits (its gaps ARE the
+   * environment-art backlog). */
+  check: BriefCheckResult;
+}
+
+export type BriefPutResult = BriefPutSuccess | WriteFailure;
+
 export interface WorldgenPutValidationFailure {
   success: false;
   reason: 'validation_errors';

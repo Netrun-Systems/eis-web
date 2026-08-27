@@ -259,3 +259,121 @@ export interface WorldgenPutFailure {
 }
 
 export type WorldgenPutResponse = WorldgenPutSuccess | WorldgenPutFailure;
+
+// ---------------------------------------------------------------------------
+// WEB-007 — Brief Studio (mirrors of server/types.ts + the location_brief.py
+// --json report shape, which the server passes through faithfully).
+// ---------------------------------------------------------------------------
+
+export interface BriefListEntry {
+  name: string;
+  mtime: string;
+  location: string;
+  commentLines: number;
+}
+
+export interface BriefListResponse {
+  dir: string;
+  briefs: BriefListEntry[];
+}
+
+export interface BriefParsedEntry {
+  key: string;
+  values: string[];
+  inline: boolean;
+}
+
+export interface BriefGetResponse {
+  name: string;
+  raw: string;
+  parsed: {
+    comments: string[];
+    entries: BriefParsedEntry[];
+  };
+}
+
+/** A designer-term -> RowName resolution as the tool reports it. */
+export interface BriefResolution {
+  asked: string;
+  resolved: string | null;
+}
+
+export interface BriefPieceEntry {
+  piece: string;
+  have: number;
+  reasons: string[];
+  candidates: number;
+  /** [pack name, candidate count] pairs from the harvest worklist. */
+  packs: [string, number][];
+  /** [CityStyle, row count] pairs — the charter's "read the style column". */
+  styles: [string, number][];
+  consumed: boolean;
+  consumers: string[];
+  /** Present only when the brief names a City style (WG-209). */
+  family_hop?: number | null;
+  family_hop_name?: string | null;
+  in_family?: number;
+  outside_chain?: number;
+  family_note?: string | null;
+}
+
+export interface BriefFinding {
+  severity: 'BLOCKER' | 'GAP' | 'NOTE';
+  section: string;
+  detail: string;
+  fix: string | null;
+}
+
+/** location_brief.py's --json report. Loosely typed on purpose: the server
+ * passes it through unmodified, so unknown extra fields simply ride along. */
+export interface BriefCheckReport {
+  brief?: string;
+  location?: string;
+  purpose?: string;
+  region?: BriefResolution;
+  landmark?: string | null;
+  city_style?: { asked: string; family: string | null; chain: string[] };
+  structures?: BriefResolution[];
+  spaces?: { required: string[]; preferred: string[] };
+  connections?: string[];
+  networks?: BriefResolution[];
+  traversal?: { asked: string; declared: boolean }[];
+  states?: BriefResolution[];
+  structure_coverage?: { structure: string; assets: string[] }[];
+  pieces?: BriefPieceEntry[];
+  rules?: { rule: string; target: string; hard: boolean }[];
+  verdict?: string;
+  counts?: { blocker: number; gap: number; note: number; style_substitution: number };
+  findings?: BriefFinding[];
+  [key: string]: unknown;
+}
+
+/** One check run. exitCode 1 = at least one blocker — still a 200 result.
+ * `failure` is set only when the tool could not run/report (PUT path). */
+export interface BriefCheckResponse {
+  ranAt: string;
+  exitCode: number;
+  verdict: string | null;
+  result: BriefCheckReport | null;
+  failure?: string;
+}
+
+export interface BriefPutBody {
+  raw: string;
+  message?: string;
+}
+
+export interface BriefPutSuccess {
+  success: true;
+  name: string;
+  commit: string;
+  check: BriefCheckResponse;
+}
+
+export interface BriefPutFailure {
+  success: false;
+  reason: string;
+  detail?: unknown;
+}
+
+export type BriefPutResponse = BriefPutSuccess | BriefPutFailure;

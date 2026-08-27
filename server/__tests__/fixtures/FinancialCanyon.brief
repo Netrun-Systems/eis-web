@@ -1,0 +1,45 @@
+# Location brief — the designer's first artifact, written before Unreal opens.
+# Verbatim from the world-development philosophy §1790, so the tool's own example
+# is the doc's example. Run:
+#
+#   python Scripts/location_brief.py --brief Documentation/World/Briefs/FinancialCanyon.brief
+#
+# A key is a line ending in ':'. Values are the lines under it, one per line.
+# Names are designer language — the tool resolves them to RowNames and says so.
+
+Location:
+Financial Canyon
+
+Region:
+Fallen Metropolis
+
+Purpose:
+Dense vertical commercial exploration zone
+
+Primary structures:
+Office Towers
+Apartment
+Subway Station
+
+Networks:
+Road
+Subway
+Sewer
+Power
+Telecom
+
+Traversal:
+Street
+Interior
+Roof
+Subway
+
+World state:
+Abandoned -> Damaged -> Collapsed
+
+Gameplay:
+Exploration
+Scavenging
+Vertical traversal
+Locked areas
+Underground shortcuts

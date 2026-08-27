@@ -1,0 +1,50 @@
+# LOC_DustwalkerArchive -- the one real interior in the starting region.
+# Canon: Exodus_Chapter5_Canon.md §2 (LOC_DustwalkerArchive -- Dustwalkers; Information gate)
+#        §4 NPC_LastElder (HomeLocation), §6 DOC_DustwalkerOralHistory + DOC_DustwalkerRouteMarks
+#        §7 QUEST_150 Reconstruct the Routes
+#        docs/Chapter 5_... VII -- "A damaged Dustwalker archive" and
+#        "Primary lessons: ... the value of oral knowledge"
+#
+#   python Scripts/location_brief.py --brief Documentation/World/Briefs/DustwalkerArchive.brief
+#
+# Deliberately the ONLY enclosed volume among the five POIs. That is a pacing decision:
+# the region teaches survival in the open for four sites, then puts the answer indoors,
+# below grade, behind a collapse. It is entered through CON_Breach rather than its own
+# door -- RULE_BuriedArchiveEntry makes that a hard constraint so the gate is never
+# generated shut.
+
+Location:
+Dustwalker Archive
+
+Region:
+Central Dust Basin
+
+City style:
+Vernacular
+
+Purpose:
+The Information gate of Act I. A sub-grade record store holding the route language and
+the oral history, plus the last living Dustwalker memory. Small footprint, long section:
+one room that matters and the shaft that reaches it.
+
+Primary structures:
+Buried Archive
+
+Networks:
+Route Markers
+
+Traversal:
+Interior
+Ruin
+OpenGround
+Track
+
+World state:
+Abandoned -> Damaged -> Collapsed
+
+Gameplay:
+Locked areas
+Vertical traversal
+Document recovery
+Oral history
+Route reading

@@ -8,6 +8,8 @@ import { TablesPage } from './ui/tables/TablesPage';
 import { TableDetailPage } from './ui/tables/TableDetailPage';
 import { VocabularyPage } from './ui/vocabulary/VocabularyPage';
 import { VocabularyStemPage } from './ui/vocabulary/VocabularyStemPage';
+import { BriefsPage } from './ui/briefs/BriefsPage';
+import { BriefEditorPage } from './ui/briefs/BriefEditorPage';
 
 export function App() {
   return (
@@ -19,6 +21,8 @@ export function App() {
           <Route path="/tables/*" element={<TableDetailPage />} />
           <Route path="/vocabulary" element={<VocabularyPage />} />
           <Route path="/vocabulary/:stem" element={<VocabularyStemPage />} />
+          <Route path="/briefs" element={<BriefsPage />} />
+          <Route path="/briefs/:name" element={<BriefEditorPage />} />
           <Route path="/world" element={<WorldCanvas />} />
           <Route path="/csv" element={<CSVEditor />} />
           <Route path="*" element={<Navigate to="/" />} />

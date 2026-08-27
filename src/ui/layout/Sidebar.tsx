@@ -5,6 +5,7 @@ const NAV_ITEMS = [
   { to: '/', label: 'Dashboard' },
   { to: '/tables', label: 'Tables' },
   { to: '/vocabulary', label: 'Vocabulary' },
+  { to: '/briefs', label: 'Briefs' },
   { to: '/world', label: 'World Canvas' },
   { to: '/csv', label: 'CSV Editor' },
 ];

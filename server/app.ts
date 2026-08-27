@@ -9,7 +9,17 @@ import { writeTable } from './tableWrite.ts';
 import { countFindings, runGuardFindings } from './guards.ts';
 import { runWorldgenValidation } from './validation.ts';
 import { getWorldgenSources, getWorldgenWeb, isWorldgenStem, putWorldgenWeb, WORLDGEN_STEMS } from './worldgen.ts';
-import type { TableGuardCheckResult, TableListEntry, WorldgenPutBody, WriteRequestBody } from './types.ts';
+import {
+  BRIEF_NAME_RE,
+  BRIEFS_DIR,
+  checkBrief,
+  checkBriefDraft,
+  getBrief,
+  listBriefs,
+  MAX_BRIEF_BYTES,
+  putBrief,
+} from './briefs.ts';
+import type { BriefPutBody, TableGuardCheckResult, TableListEntry, WorldgenPutBody, WriteRequestBody } from './types.ts';
 
 export interface AppOptions {
   repoPath: string;
@@ -214,6 +224,79 @@ export function createApp(options: AppOptions): express.Express {
     res.status(result.success ? 200 : statusForFailure(result.reason)).json(result);
   }));
 
+  // WEB-007: Brief Studio — the philosophy's "brief before editor" as an API.
+  // Briefs live in Documentation/World/Briefs/ (the hard boundary); checks run
+  // Scripts/location_brief.py --json and pass its report through faithfully
+  // (exit 0 and 1 are both HTTP 200 — 1 means blockers, a result).
+  const invalidBriefName = (res: Response, name: string): boolean => {
+    if (BRIEF_NAME_RE.test(name)) return false;
+    res.status(400).json({
+      success: false,
+      reason: 'invalid_name',
+      detail: `brief names must match ${BRIEF_NAME_RE} and stay inside ${BRIEFS_DIR}/`,
+    });
+    return true;
+  };
+
+  app.get('/api/briefs', asyncRoute(async (_req, res) => {
+    res.json(listBriefs(repoPath));
+  }));
+
+  // Registered before the :name routes on purpose — a draft check names no
+  // brief and never touches the repo.
+  app.post('/api/briefs/check-draft', asyncRoute(async (req, res) => {
+    const raw = (req.body as { raw?: unknown } | undefined)?.raw;
+    if (typeof raw !== 'string') {
+      res.status(400).json({ success: false, reason: 'bad_request', detail: 'body must carry {raw: string}' });
+      return;
+    }
+    if (Buffer.byteLength(raw, 'utf-8') > MAX_BRIEF_BYTES) {
+      res.status(413).json({
+        success: false,
+        reason: 'too_large',
+        detail: `draft exceeds ${MAX_BRIEF_BYTES} bytes`,
+      });
+      return;
+    }
+    const outcome = await checkBriefDraft(repoPath, raw);
+    if (!outcome.ok) {
+      res.status(500).json({ success: false, reason: 'check_failed', detail: outcome.detail });
+      return;
+    }
+    res.json(outcome.check);
+  }));
+
+  app.get('/api/briefs/:name', asyncRoute(async (req, res) => {
+    const name = req.params.name;
+    if (invalidBriefName(res, name)) return;
+    const brief = getBrief(repoPath, name);
+    if (brief === null) {
+      res.status(404).json({ success: false, reason: 'not_found', detail: `no such brief: ${name}` });
+      return;
+    }
+    res.json(brief);
+  }));
+
+  app.post('/api/briefs/:name/check', asyncRoute(async (req, res) => {
+    const name = req.params.name;
+    if (invalidBriefName(res, name)) return;
+    const outcome = await checkBrief(repoPath, name);
+    if (outcome === null) {
+      res.status(404).json({ success: false, reason: 'not_found', detail: `no such brief: ${name}` });
+      return;
+    }
+    if (!outcome.ok) {
+      res.status(500).json({ success: false, reason: 'check_failed', detail: outcome.detail });
+      return;
+    }
+    res.json(outcome.check);
+  }));
+
+  app.put('/api/briefs/:name', asyncRoute(async (req, res) => {
+    const result = await putBrief(repoPath, req.params.name, req.body as BriefPutBody);
+    res.status(result.success ? 200 : statusForFailure(result.reason)).json(result);
+  }));
+
   app.post('/api/run/:script', asyncRoute(async (req, res) => {
     const scriptName = req.params.script;
     const brief =
@@ -278,7 +361,11 @@ export function createApp(options: AppOptions): express.Express {
 function statusForFailure(reason: string): number {
   switch (reason) {
     case 'bad_request':
+    case 'invalid_name':
+    case 'missing_location':
       return 400;
+    case 'too_large':
+      return 413;
     case 'classification_refused':
     case 'file_dirty':
     case 'key_collision':
