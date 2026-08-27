@@ -18,6 +18,6 @@
     "forceConsistentCasingInFileNames": true
   },
   "include": ["src"],
-  "exclude": ["src/api", "src/engine/rag/seed-collections.ts", "db", "docs", "node_modules"],
+  "exclude": ["node_modules"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

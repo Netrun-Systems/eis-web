@@ -6,13 +6,9 @@
 import { useCallback, useRef } from 'react';
 import { useGesture } from '@use-gesture/react';
 import { useWorldEditorStore } from './useWorldEditor';
-import { useSimulationStore } from './useSimulation';
-import type { WorldMapState } from '../engine/world-map-types';
 
 interface MapGestureOptions {
-  mode: 'play' | 'editor' | 'observe';
   onContextMenu?: (worldX: number, worldY: number) => void;
-  onTap?: (worldX: number, worldY: number) => void;
 }
 
 export function useMapGestures(
@@ -30,10 +26,8 @@ export function useMapGestures(
     selectTile,
     selectObject,
     selectLocation,
-    selectNpc,
   } = useWorldEditorStore();
 
-  const { world } = useSimulationStore();
   const lastPinchScale = useRef(1);
 
   /** Convert screen coordinates to tile coordinates */
@@ -70,7 +64,7 @@ export function useMapGestures(
   /** Handle select mode tap (find what was clicked) */
   const handleSelectTap = useCallback(
     (tileX: number, tileY: number) => {
-      if (!worldMap || !world) return;
+      if (!worldMap) return;
 
       // Check objects
       const obj = worldMap.objects.find(o => o.x === tileX && o.y === tileY);
@@ -84,17 +78,9 @@ export function useMapGestures(
       });
       if (loc) { selectLocation(loc.id); return; }
 
-      // Check NPCs
-      const npc = world.npcs.find(n => {
-        const dx = n.position.x - tileX;
-        const dy = n.position.y - tileY;
-        return Math.sqrt(dx * dx + dy * dy) < 1.5;
-      });
-      if (npc) { selectNpc(npc.id); return; }
-
       selectTile(tileX, tileY);
     },
-    [worldMap, world, selectObject, selectLocation, selectNpc, selectTile],
+    [worldMap, selectObject, selectLocation, selectTile],
   );
 
   /** Apply editor tool at tile position */
@@ -133,22 +119,20 @@ export function useMapGestures(
             y: editor.camera.y - dy / editor.camera.zoom,
           });
         } else if (touches <= 1) {
-          if (options.mode === 'editor') {
-            // In editor mode with paint tools, drag paints
-            if (
-              editor.tool === 'paint_biome' ||
-              editor.tool === 'erase' ||
-              editor.tool === 'faction_paint'
-            ) {
-              const target = event.target as HTMLElement;
-              const rect = target.getBoundingClientRect?.() ?? containerRef.current?.getBoundingClientRect();
-              if (rect && 'clientX' in event) {
-                const me = event as unknown as MouseEvent;
-                const tile = screenToTile(me.clientX, me.clientY);
-                if (tile) applyTool(tile.tileX, tile.tileY);
-              }
-              return;
+          // With paint tools, drag paints
+          if (
+            editor.tool === 'paint_biome' ||
+            editor.tool === 'erase' ||
+            editor.tool === 'faction_paint'
+          ) {
+            const target = event.target as HTMLElement;
+            const rect = target.getBoundingClientRect?.() ?? containerRef.current?.getBoundingClientRect();
+            if (rect && 'clientX' in event) {
+              const me = event as unknown as MouseEvent;
+              const tile = screenToTile(me.clientX, me.clientY);
+              if (tile) applyTool(tile.tileX, tile.tileY);
             }
+            return;
           }
 
           // Default: one-finger drag = pan (or shift+drag on desktop)
@@ -180,15 +164,7 @@ export function useMapGestures(
         const tile = screenToTile(me.clientX, me.clientY);
         if (!tile) return;
 
-        if (options.mode === 'editor') {
-          applyTool(tile.tileX, tile.tileY);
-        } else if (options.mode === 'play') {
-          // In play mode, tapping = move or interact
-          options.onTap?.(tile.tileX, tile.tileY);
-        } else {
-          // Observe mode = select
-          handleSelectTap(tile.tileX, tile.tileY);
-        }
+        applyTool(tile.tileX, tile.tileY);
       },
 
       onContextMenu: ({ event }) => {

@@ -1,3 +1,16 @@
+-- ============================================================================
+-- KEPT AS A DESIGN DOCUMENT — NOT THE SCHEMA OF ANYTHING (WEB-002, 2026-08-27)
+--
+-- This file is retained for its per-table source-CSV provenance comments,
+-- which represent weeks of data-modeling work against the EISCORE corpus.
+-- No database is created from it: the revival architecture (charter D2) uses
+-- files + git as the store, with no DB in the authoring path.
+--
+-- Its data shapes are FROZEN AT 2026-03 and are badly stale — e.g. the NPCs
+-- table models 53 of today's 83 NPC columns. Do not treat any shape below as
+-- current; the generated table manifest (WEB-001) is the living contract.
+-- ============================================================================
+
 -- ============================================================
 -- EIS Web Simulation Database Schema
 -- Target: PostgreSQL 15+ on Cloud SQL charlotte-pg-instance

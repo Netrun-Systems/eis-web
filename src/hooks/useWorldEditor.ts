@@ -15,20 +15,16 @@ import type {
   LocationType,
 } from '../engine/world-map-types';
 import { DEFAULT_WORLD_CONFIG } from '../engine/world-map-types';
-import { WorldGenerator, generateDefaultWorld } from '../engine/world-generator';
+import { WorldGenerator } from '../engine/world-generator';
 import { createWorldObject } from '../engine/object-catalog';
 import { exportWorldJSON, importWorldJSON } from '../engine/world-serialization';
-import { locationSystem } from '../engine/systems/location-system';
-import type { WorldState } from '../engine/types';
 
 interface WorldEditorStore {
   worldMap: WorldMapState | null;
   editor: EditorState;
-  worldState: WorldState | null; // Reference to simulation world
 
   // Actions
-  generateWorld: (config?: Partial<WorldConfig>, worldState?: WorldState) => void;
-  setWorldState: (world: WorldState) => void;
+  generateWorld: (config?: Partial<WorldConfig>) => void;
   setTool: (tool: EditorTool) => void;
   setSelectedBiome: (biome: BiomeType) => void;
   setSelectedObjectType: (type: ObjectType | null) => void;
@@ -80,22 +76,12 @@ const defaultEditor: EditorState = {
 export const useWorldEditorStore = create<WorldEditorStore>((set, get) => ({
   worldMap: null,
   editor: { ...defaultEditor },
-  worldState: null,
 
-  generateWorld: (config, worldState) => {
+  generateWorld: (config) => {
     const cfg = { ...DEFAULT_WORLD_CONFIG, ...config };
     const generator = new WorldGenerator(cfg.seed);
-    const map = generator.generate(cfg, worldState);
-    locationSystem.setWorldMap(map);
-    set({ worldMap: map, worldState: worldState ?? get().worldState });
-  },
-
-  setWorldState: (world) => {
-    set({ worldState: world });
-    const map = get().worldMap;
-    if (map) {
-      locationSystem.setWorldMap(map);
-    }
+    const map = generator.generate(cfg);
+    set({ worldMap: map });
   },
 
   setTool: (tool) => set(s => ({ editor: { ...s.editor, tool } })),
@@ -300,28 +286,14 @@ export const useWorldEditorStore = create<WorldEditorStore>((set, get) => ({
   },
 
   saveWorld: () => {
-    const { worldMap, worldState } = get();
+    const { worldMap } = get();
     if (!worldMap) return null;
-    return exportWorldJSON(worldMap, worldState?.npcs ?? []);
+    return exportWorldJSON(worldMap, []);
   },
 
   loadWorld: (json) => {
     try {
-      const { map, npcPositions } = importWorldJSON(json);
-      const { worldState } = get();
-
-      // Restore NPC positions
-      if (worldState) {
-        for (const np of npcPositions) {
-          const npc = worldState.npcs.find(n => n.id === np.npcId);
-          if (npc) {
-            npc.position.x = np.x;
-            npc.position.y = np.y;
-          }
-        }
-      }
-
-      locationSystem.setWorldMap(map);
+      const { map } = importWorldJSON(json);
       set({ worldMap: map });
     } catch (err) {
       console.error('Failed to load world:', err);

@@ -1,38 +1,41 @@
 # eis-web
 
-Web-based simulation twin / companion for the **EISCORE** Unreal Engine 5.7 project.
+**Status: REVIVAL IN PROGRESS — branch `revival/worldgen`**
 
-**Status**: STALLED — last active commit was the initial scaffold. Resume only with deliberate scoping; see `ARCHITECTURE.md` for state.
+EISWeb is being rebuilt as a **world-design and CSV-authoring front-end for EISCORE**
+(the Unreal Engine 5.8 project). The architecture is repo-as-database: the EISCORE
+repository's CSVs are the single source of truth, every save is a file write plus a
+git commit, and validation runs the EISCORE repo's own Python — the web tool never
+reimplements a rule. The old in-browser simulation engine, the Express/Postgres
+backend, and the stale CSV snapshot were removed in WEB-002; git history preserves
+them.
 
-## What it is
-
-A browser-based, PixiJS-rendered 2D simulation viewport that shares CSVs with EISCORE and syncs bidirectionally with the UE5 project over WebSocket + REST. 12 in-browser simulation systems live in `src/engine/`. A Node server (`server.mjs`) sits between the UE5 plugin (`Plugins/EISRemoteControl` in the EIS repo) and the browser.
-
-## Architecture
-
-See **[ARCHITECTURE.md](./ARCHITECTURE.md)** for the system diagram, UE5 bridge sequence, and stalled-state notes.
-
-## Protocol spec
-
-See `docs/UE5_BRIDGE.md` for the WebSocket + REST protocol with the EISCORE plugin.
-
-## Stack
-
-| Layer | Tool |
-|-------|------|
-| Build | Vite |
-| UI | React 18 + TypeScript + Tailwind |
-| Renderer | PixiJS (2D viewport) |
-| Server | Node `server.mjs` + Express-like routing |
-| DB | PostgreSQL via `db/connection.ts` |
-
-## Dev
+## Install
 
 ```bash
-npm install
-npm run dev    # Vite dev :5173
-npm run api    # Node API :3001
+npm install --legacy-peer-deps
 ```
+
+`--legacy-peer-deps` is required until the React 19 peer-dependency situation in the
+dependency tree is cleaned up.
+
+Node 20+ (see `.nvmrc` / `engines`).
+
+## Run
+
+```bash
+npm run dev    # Vite dev server on :5173
+```
+
+## Where the plan lives
+
+The canonical charter and the `WEB-` ticket ledger live in the **EISCORE repo**:
+
+- `Documentation/Web/EISWEB_CHARTER.md`
+- `todo.md § EISWeb revival`
+
+A one-page summary of the charter's decisions is mirrored here at
+[`docs/CHARTER.md`](./docs/CHARTER.md) — on divergence, the EISCORE copy wins.
 
 ## License
 

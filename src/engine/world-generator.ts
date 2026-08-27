@@ -18,7 +18,7 @@ import type {
 import { DEFAULT_WORLD_CONFIG } from './world-map-types';
 import { createRNG } from './rng';
 import { createWorldObject } from './object-catalog';
-import type { NPC, FactionDefinition, WorldState } from './types';
+import type { NPC, FactionDefinition } from './types';
 
 // ---- Compact Perlin Noise (2D, single octave) ----
 
@@ -114,17 +114,16 @@ export class WorldGenerator {
     this.permTemp = buildPermutation(createRNG(seed + 2000));
   }
 
-  generate(config: WorldConfig, worldState?: WorldState): WorldMapState {
+  generate(config: WorldConfig, factions: FactionDefinition[] = [], npcs: NPC[] = []): WorldMapState {
     const tiles = this.generateTiles(config);
-    const factions = worldState?.factions ?? [];
     const locations = this.placeLocations(tiles, config, factions);
     const objects = this.placeObjects(locations, config);
     const paths = this.connectLocations(locations, tiles, config);
 
-    // Place NPCs at home locations if worldState provided
+    // Place NPCs at home locations if provided
     const npcLocations = new Map<string, NPCLocationState>();
-    if (worldState) {
-      this.placeNPCs(worldState.npcs, locations, tiles, config, npcLocations);
+    if (npcs.length > 0) {
+      this.placeNPCs(npcs, locations, tiles, config, npcLocations);
     }
 
     // Mark tiles with location IDs
@@ -556,11 +555,8 @@ export class WorldGenerator {
 }
 
 /** Generate a world with default config */
-export function generateDefaultWorld(worldState?: WorldState): WorldMapState {
+export function generateDefaultWorld(): WorldMapState {
   const config = { ...DEFAULT_WORLD_CONFIG };
-  if (worldState) {
-    config.seed = worldState.rng.seed;
-  }
   const generator = new WorldGenerator(config.seed);
-  return generator.generate(config, worldState);
+  return generator.generate(config);
 }

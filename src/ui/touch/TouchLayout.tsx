@@ -16,8 +16,8 @@ interface TouchLayoutProps {
   children: React.ReactNode;
 }
 
-/** Routes that use full-screen game view (no sidebar/header on mobile) */
-const GAME_ROUTES = ['/play', '/editor', '/observe', '/world-editor', '/map'];
+/** Routes that use full-screen canvas view (no sidebar/header on mobile) */
+const GAME_ROUTES = ['/world'];
 
 export function TouchLayout({ children }: TouchLayoutProps) {
   const { isPhone, isTablet, isDesktop, isMobile } = useResponsive();

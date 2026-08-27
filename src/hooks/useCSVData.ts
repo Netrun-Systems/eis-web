@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { parseCSVText, fetchCSV } from '../engine/csv-loader';
+import Papa from 'papaparse';
 
 interface CSVData {
   headers: string[];
@@ -8,44 +8,40 @@ interface CSVData {
 
 /**
  * Hook for loading and manipulating CSV data.
+ * WEB-002: parses with papaparse; files come in via drag-drop only.
+ * Server round-trip against the EISCORE repo lands in WEB-003.
  */
 export function useCSVData() {
   const [data, setData] = useState<CSVData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const loadFromURL = useCallback(async (url: string) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const rows = await fetchCSV(url);
-      if (rows.length > 0) {
-        const headers = Object.keys(rows[0]);
-        setData({ headers, rows: rows as Record<string, string>[] });
-      }
-    } catch (err) {
-      setError(String(err));
-    }
-    setLoading(false);
-  }, []);
-
   const loadFromText = useCallback((text: string) => {
-    try {
-      const rows = parseCSVText(text);
-      if (rows.length > 0) {
-        const headers = Object.keys(rows[0]);
-        setData({ headers, rows: rows as Record<string, string>[] });
-      }
-    } catch (err) {
-      setError(String(err));
+    setError(null);
+    const result = Papa.parse<Record<string, string>>(text, {
+      header: true,
+      skipEmptyLines: true,
+    });
+    if (result.errors.length > 0) {
+      setError(result.errors.map(e => `Row ${e.row ?? '?'}: ${e.message}`).join('; '));
+    }
+    const headers = result.meta.fields ?? [];
+    if (headers.length > 0) {
+      setData({ headers, rows: result.data });
     }
   }, []);
 
   const loadFromFile = useCallback((file: File) => {
+    setLoading(true);
     const reader = new FileReader();
     reader.onload = (e) => {
       const text = e.target?.result as string;
       loadFromText(text);
+      setLoading(false);
+    };
+    reader.onerror = () => {
+      setError('Failed to read file');
+      setLoading(false);
     };
     reader.readAsText(file);
   }, [loadFromText]);
@@ -78,22 +74,13 @@ export function useCSVData() {
 
   const exportCSV = useCallback((): string => {
     if (!data) return '';
-    const lines = [data.headers.join(',')];
-    for (const row of data.rows) {
-      const values = data.headers.map(h => {
-        const val = row[h] ?? '';
-        return val.includes(',') || val.includes('"') ? `"${val.replace(/"/g, '""')}"` : val;
-      });
-      lines.push(values.join(','));
-    }
-    return lines.join('\n');
+    return Papa.unparse({ fields: data.headers, data: data.rows.map(r => data.headers.map(h => r[h] ?? '')) });
   }, [data]);
 
   return {
     data,
     loading,
     error,
-    loadFromURL,
     loadFromText,
     loadFromFile,
     updateCell,

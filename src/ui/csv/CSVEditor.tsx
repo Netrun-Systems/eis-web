@@ -1,25 +1,16 @@
 import React, { useState, useCallback } from 'react';
 import { useCSVData } from '../../hooks/useCSVData';
 
-const AVAILABLE_CSVS = [
-  'NPCs.csv', 'Needs.csv', 'Behavior.csv', 'Action.csv', 'Traits.csv',
-  'Talents.csv', 'Emotions.csv', 'EmotionalContagionRules.csv',
-  'TrustEvolutionParameters.csv', 'Relationship.csv',
-  'Groups_Definitions.csv', 'Groups.csv', 'FactionReputationMatrix.csv',
-  'Item.csv', 'Quests.csv', 'Roles.csv', 'Skills.csv',
-  'Knowledge.csv', 'Memory.csv', 'Schedule.csv',
-  'Environment.csv', 'WeatherConditions.csv', 'Event.csv', 'Dialogue.csv',
-];
-
+/**
+ * CSV grid editor — drag-drop-only mode (WEB-002).
+ * A dropped file is parsed and editable in place; export is a
+ * client-side download. Server round-trip against the EISCORE
+ * repo lands in WEB-003.
+ */
 export function CSVEditor() {
-  const { data, loading, error, loadFromURL, loadFromFile, updateCell, addRow, removeRow, exportCSV } = useCSVData();
+  const { data, loading, error, loadFromFile, updateCell, addRow, removeRow, exportCSV } = useCSVData();
   const [selectedFile, setSelectedFile] = useState('');
   const [editingCell, setEditingCell] = useState<{ row: number; col: string } | null>(null);
-
-  const handleLoad = useCallback((file: string) => {
-    setSelectedFile(file);
-    loadFromURL(`/data/${file}`);
-  }, [loadFromURL]);
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -45,27 +36,18 @@ export function CSVEditor() {
   return (
     <div className="space-y-4">
       <h2 className="text-xl font-bold text-eis-text">CSV Editor</h2>
+      <p className="text-xs text-eis-text-muted">
+        Drag-drop only for now — export is a client-side download. Server round-trip
+        (read/write against the EISCORE repo) lands in WEB-003.
+      </p>
 
-      {/* File selector */}
-      <div className="flex flex-wrap gap-3 items-center">
-        <select
-          value={selectedFile}
-          onChange={e => handleLoad(e.target.value)}
-          className="eis-input"
-        >
-          <option value="">Select a CSV file...</option>
-          {AVAILABLE_CSVS.map(f => (
-            <option key={f} value={f}>{f}</option>
-          ))}
-        </select>
-
-        {data && (
-          <>
-            <button onClick={addRow} className="eis-btn-secondary text-sm">Add Row</button>
-            <button onClick={handleExport} className="eis-btn-primary text-sm">Export CSV</button>
-          </>
-        )}
-      </div>
+      {data && (
+        <div className="flex flex-wrap gap-3 items-center">
+          <span className="text-sm text-eis-text-secondary font-mono">{selectedFile}</span>
+          <button onClick={addRow} className="eis-btn-secondary text-sm">Add Row</button>
+          <button onClick={handleExport} className="eis-btn-primary text-sm">Export CSV</button>
+        </div>
+      )}
 
       {/* Drop zone */}
       {!data && (
@@ -74,7 +56,7 @@ export function CSVEditor() {
           onDrop={handleDrop}
           className="eis-card border-dashed border-2 border-eis-border text-center py-12 cursor-pointer hover:border-eis-green/50"
         >
-          <p className="text-eis-text-secondary">Drop a CSV file here or select from the dropdown above</p>
+          <p className="text-eis-text-secondary">Drop a CSV file here to edit it</p>
         </div>
       )}
 
@@ -131,7 +113,7 @@ export function CSVEditor() {
                             onClick={() => setEditingCell({ row: rowIdx, col })}
                             title={row[col] ?? ''}
                           >
-                            {row[col] || '\u00A0'}
+                            {row[col] || ' '}
                           </span>
                         )}
                       </td>
@@ -143,9 +125,7 @@ export function CSVEditor() {
                       className="text-eis-danger/60 hover:text-eis-danger"
                       title="Remove row"
                     >
-                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                      </svg>
+                      &#x2715;
                     </button>
                   </td>
                 </tr>

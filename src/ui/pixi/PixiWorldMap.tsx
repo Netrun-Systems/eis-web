@@ -14,17 +14,11 @@ import {
   type Renderer,
 } from 'pixi.js';
 import { useWorldEditorStore } from '../../hooks/useWorldEditor';
-import { useSimulationStore } from '../../hooks/useSimulation';
 import { getFactionColor } from '../../engine/world';
-import { BIOME_COLORS } from '../../engine/world-map-types';
-import type { WorldMapState, WorldObject } from '../../engine/world-map-types';
-import type { WorldState, NPC, TensionInstance } from '../../engine/types';
 import { getBiomeTexture, clearTileTextureCache } from './tile-textures';
-import { renderNPC, renderObjectDurability, getBehaviorColor, type NPCRenderOptions } from './PixiNPCSprite';
-import { getVisibleTiles } from '../../engine/player';
+import { renderObjectDurability } from './PixiNPCSprite';
 
 interface PixiWorldMapProps {
-  mode: 'play' | 'editor' | 'observe';
   width: number;
   height: number;
 }
@@ -32,24 +26,20 @@ interface PixiWorldMapProps {
 // Animation frame counter
 let globalAnimTick = 0;
 
-export function PixiWorldMap({ mode, width, height }: PixiWorldMapProps) {
+export function PixiWorldMap({ width, height }: PixiWorldMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const appRef = useRef<Application | null>(null);
   const layersRef = useRef<{
     tileLayer: Container;
     factionLayer: Container;
-    fogLayer: Graphics;
     locationLayer: Container;
     pathLayer: Container;
     objectLayer: Container;
-    npcLayer: Container;
-    tensionLayer: Container;
     uiLayer: Container;
   } | null>(null);
   const rafRef = useRef<number>(0);
 
   const { worldMap, editor } = useWorldEditorStore();
-  const { world, tickCounter } = useSimulationStore();
   const { camera, showOverlays } = editor;
 
   // Initialize PixiJS Application
@@ -74,33 +64,24 @@ export function PixiWorldMap({ mode, width, height }: PixiWorldMapProps) {
       // Create layer hierarchy
       const tileLayer = new Container();
       const factionLayer = new Container();
-      const fogLayer = new Graphics();
       const locationLayer = new Container();
       const pathLayer = new Container();
       const objectLayer = new Container();
-      const npcLayer = new Container();
-      const tensionLayer = new Container();
       const uiLayer = new Container();
 
       app.stage.addChild(tileLayer);
       app.stage.addChild(factionLayer);
-      app.stage.addChild(fogLayer);
       app.stage.addChild(locationLayer);
       app.stage.addChild(pathLayer);
       app.stage.addChild(objectLayer);
-      app.stage.addChild(tensionLayer);
-      app.stage.addChild(npcLayer);
       app.stage.addChild(uiLayer);
 
       layersRef.current = {
         tileLayer,
         factionLayer,
-        fogLayer,
         locationLayer,
         pathLayer,
         objectLayer,
-        npcLayer,
-        tensionLayer,
         uiLayer,
       };
     });
@@ -170,33 +151,6 @@ export function PixiWorldMap({ mode, width, height }: PixiWorldMapProps) {
         }
       }
       layers.factionLayer.addChild(fg);
-    }
-
-    // --- FOG OF WAR (player mode) ---
-    layers.fogLayer.clear();
-    if (mode === 'play' && world?.playerId) {
-      const player = world.npcs.find(n => n.id === world.playerId);
-      if (player) {
-        const sightRadius = 8;
-        const visible = getVisibleTiles(player.position, sightRadius);
-
-        for (let y = startTileY; y < endTileY; y++) {
-          for (let x = startTileX; x < endTileX; x++) {
-            const key = `${x},${y}`;
-            const px = x * ts + offsetX;
-            const py = y * ts + offsetY;
-
-            if (!visible.has(key)) {
-              // Out of sight: dark overlay
-              const dx = x - player.position.x;
-              const dy = y - player.position.y;
-              const dist = Math.sqrt(dx * dx + dy * dy);
-              const alpha = dist < sightRadius + 3 ? 0.3 : 0.7;
-              layers.fogLayer.rect(px, py, ts + 0.5, ts + 0.5).fill({ color: 0x000000, alpha });
-            }
-          }
-        }
-      }
     }
 
     // --- LOCATIONS ---
@@ -314,68 +268,6 @@ export function PixiWorldMap({ mode, width, height }: PixiWorldMapProps) {
       layers.objectLayer.addChild(og);
     }
 
-    // --- TENSION VISUALIZATION ---
-    layers.tensionLayer.removeChildren();
-    if (world?.activeTensions) {
-      const tg = new Graphics();
-      for (const tension of world.activeTensions) {
-        if (tension.status !== 'building' && tension.status !== 'peaked') continue;
-        const sx = tension.location.x * ts + offsetX;
-        const sy = tension.location.y * ts + offsetY;
-        if (sx < -50 || sx > width + 50 || sy < -50 || sy > height + 50) continue;
-
-        const intensity = tension.tensionLevel / 100;
-        const pulseR = 15 + intensity * 20 + Math.sin(globalAnimTick * 0.06) * 5;
-        const color = tension.tensionLevel > 60 ? 0xef4444 : 0xf97316;
-        const alpha = 0.15 + intensity * 0.35;
-
-        tg.circle(sx, sy, pulseR).fill({ color, alpha });
-        tg.circle(sx, sy, pulseR).stroke({ color, width: 1, alpha: alpha + 0.15 });
-      }
-      layers.tensionLayer.addChild(tg);
-    }
-
-    // --- NPCs ---
-    layers.npcLayer.removeChildren();
-    if (showOverlays.npcs && world) {
-      const ng = new Graphics();
-      const npcOpts: NPCRenderOptions = {
-        showBehaviorLines: showOverlays.behaviorLines,
-        showNeedBubbles: showOverlays.needBubbles,
-        selectedNpcId: editor.selectedNpcId,
-        zoom: camera.zoom,
-        tileSize: ts,
-        animTick: globalAnimTick,
-      };
-
-      // In player mode, only render visible NPCs
-      const playerId = world.playerId;
-      const player = playerId ? world.npcs.find(n => n.id === playerId) : null;
-      const visibleSet =
-        mode === 'play' && player ? getVisibleTiles(player.position, 8) : null;
-
-      for (const npc of world.npcs) {
-        if (npc.isDowned) continue;
-
-        // Viewport culling
-        const px = npc.position.x * ts + offsetX;
-        const py = npc.position.y * ts + offsetY;
-        if (px < -ts * 2 || py < -ts * 2 || px > width + ts * 2 || py > height + ts * 2) continue;
-
-        // Fog of war culling in player mode
-        if (visibleSet) {
-          const key = `${Math.round(npc.position.x)},${Math.round(npc.position.y)}`;
-          if (!visibleSet.has(key) && !npc.isPlayer) continue;
-        }
-
-        const texts = renderNPC(ng, npc, worldMap, npcOpts);
-        for (const t of texts) {
-          layers.npcLayer.addChild(t);
-        }
-      }
-      layers.npcLayer.addChild(ng);
-    }
-
     // --- SELECTION HIGHLIGHT ---
     if (editor.selectedTile) {
       const sg = new Graphics();
@@ -393,7 +285,7 @@ export function PixiWorldMap({ mode, width, height }: PixiWorldMapProps) {
 
     // Continue animation loop
     rafRef.current = requestAnimationFrame(renderFrame);
-  }, [worldMap, world, camera, showOverlays, editor, mode, width, height, tickCounter]);
+  }, [worldMap, camera, showOverlays, editor, width, height]);
 
   // Start/restart render loop when dependencies change
   useEffect(() => {
