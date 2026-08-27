@@ -160,3 +160,103 @@ export interface ScriptRunResult {
   stdout: string;
   stderr: string;
 }
+
+// ---------------------------------------------------------------------------
+// WEB-006 — vocabulary editor over web-owned world-gen source fragments.
+// ---------------------------------------------------------------------------
+
+export interface WorldgenFragmentInfo {
+  exists: boolean;
+  /** Data-row count (header excluded); null when absent or unparseable. */
+  rowCount: number | null;
+}
+
+export interface WorldgenSourceEntry {
+  stem: string;
+  base: WorldgenFragmentInfo & { path: string };
+  fragments: {
+    ext: WorldgenFragmentInfo;
+    web: WorldgenFragmentInfo;
+    patch: WorldgenFragmentInfo;
+    webPatch: WorldgenFragmentInfo;
+  };
+}
+
+export interface WorldgenSourcesResult {
+  extDir: string;
+  stems: WorldgenSourceEntry[];
+}
+
+/** One row of <Stem>.web.patch.csv (schema RowName,Column,Op,Value,Reason —
+ * the same patch mechanism normalize's script-owned .patch.csv layer uses). */
+export interface WorldgenPatch {
+  rowName: string;
+  column: string;
+  op: string;
+  value: string;
+  reason: string;
+}
+
+export interface WorldgenBaseRow {
+  rowName: string;
+  displayName: string;
+  owner: 'base' | 'ext';
+}
+
+/** Everything a picker for one FK column may legally offer. */
+export interface WorldgenFkOptions {
+  column: string;
+  targetTable: string;
+  targetPrefix: string;
+  rowNames: string[];
+  groupTokens: string[];
+  /** Reference-blessed specials: SpaceTypes categories for adjacency columns,
+   * movement modes for TraversalType. */
+  extras: string[];
+}
+
+export interface WorldgenGroupToken {
+  token: string;
+  domain: string;
+  members: string[];
+}
+
+export interface WorldgenWebResult {
+  stem: string;
+  columns: string[];
+  columnTypes: ManifestColumnType[];
+  baseRows: WorldgenBaseRow[];
+  /** Full web-owned rows, aligned to `columns`. */
+  webRows: string[][];
+  webPatches: WorldgenPatch[];
+  fks: ManifestForeignKey[];
+  fkOptions: WorldgenFkOptions[];
+  wildcards: string[];
+  groupTokens: WorldgenGroupToken[];
+  adjacencyCategoryColumns: string[];
+  traversalMovementModes: string[];
+}
+
+export interface WorldgenPutBody {
+  webRows?: string[][];
+  webPatches?: WorldgenPatch[];
+  message?: string;
+}
+
+export interface WorldgenPutSuccess {
+  success: true;
+  /** null when the edit set was byte-identical to HEAD (nothing to commit). */
+  commit: string | null;
+  normalizeOutput: string;
+  findings: Finding[];
+  summaryCounts: FindingSummaryCounts;
+}
+
+export interface WorldgenPutValidationFailure {
+  success: false;
+  reason: 'validation_errors';
+  findings: Finding[];
+  summaryCounts: FindingSummaryCounts;
+}
+
+export type WorldgenPutResult = WorldgenPutSuccess | WorldgenPutValidationFailure | WriteFailure;

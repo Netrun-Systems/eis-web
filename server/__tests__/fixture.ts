@@ -151,6 +151,191 @@ export function makeFixtureRepo(): Fixture {
   };
 }
 
+// ---------------------------------------------------------------------------
+// WEB-006 — worldgen fixture: a mini Data/WorldGen + WorldGen_Extensions with
+// stand-in normalize / group-tokens / validator scripts that honour the SAME
+// CLI contracts as the real ones (normalize merges base -> ext -> web ->
+// patch -> web.patch; the validator takes --dir/--json, exits 1 iff errors).
+// ---------------------------------------------------------------------------
+
+const WG_SPACETYPES_HEADER =
+  'RowName,SpaceTypeID,DisplayName,Category,MinWidthCm,PrimaryAdjacency,Notes';
+
+/** Data/WorldGen/SpaceTypes.csv exactly as the stand-in normalize regenerates
+ * it from base + ext — the byte-identical no-web-files baseline. */
+const WG_SPACETYPES_GENERATED =
+  WG_SPACETYPES_HEADER +
+  '\n' +
+  'SPC_Lobby,SPC_Lobby,Lobby,Public,300.0,SPC_Corridor,base row\n' +
+  'SPC_Corridor,SPC_Corridor,Corridor,Circulation,150.0,*,base row\n' +
+  'SPC_FixtureExt,SPC_FixtureExt,Fixture Ext,Utility,120.0,SPC_Lobby,ext row\n';
+
+const WG_GROUPTOKENS_GENERATED =
+  'RowName,TokenID,Domain,MemberCount,Members,DerivationRule\n' +
+  'AllFixture,AllFixture,SpaceTypes,2,SPC_Lobby|SPC_Corridor,fixture rule\n';
+
+const WG_NORMALIZE_STANDIN = `import csv, io, os
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+EXT = os.path.join(ROOT, "Documentation", "WorldGen_Extensions")
+OUT = os.path.join(ROOT, "Data", "WorldGen")
+HDR = ["RowName","SpaceTypeID","DisplayName","Category","MinWidthCm","PrimaryAdjacency","Notes"]
+BASE = [
+  ["SPC_Lobby","SPC_Lobby","Lobby","Public","300.0","SPC_Corridor","base row"],
+  ["SPC_Corridor","SPC_Corridor","Corridor","Circulation","150.0","*","base row"],
+]
+def read(p):
+    if not os.path.isfile(p): return None
+    with io.open(p, encoding="utf-8-sig", newline="") as fh:
+        rows = list(csv.reader(fh))
+    return rows[0], rows[1:]
+rows = [list(r) for r in BASE]
+names = set(r[0] for r in rows)
+for suffix, label in ((".ext.csv","extension:"), (".web.csv","web:      ")):
+    got = read(os.path.join(EXT, "SpaceTypes"+suffix))
+    if not got: continue
+    hdr, extra = got
+    idx = dict((c,i) for i,c in enumerate(hdr))
+    added = 0
+    for er in extra:
+        new = [er[idx[c]] if c in idx and idx[c] < len(er) else "" for c in HDR]
+        if not new[0]: continue
+        if new[0] in names:
+            print("  WARNING: SpaceTypes%s row '%s' already exists, skipped" % (suffix, new[0]))
+            continue
+        rows.append(new); names.add(new[0]); added += 1
+    if added: print("  %s %-24s +%d row(s)" % (label, "SpaceTypes", added))
+by = dict((r[0], r) for r in rows)
+for suffix, label in ((".patch.csv","patch:    "), (".web.patch.csv","web patch:")):
+    got = read(os.path.join(EXT, "SpaceTypes"+suffix))
+    if not got: continue
+    hdr, prows = got
+    idx = dict((c,i) for i,c in enumerate(hdr))
+    applied = 0
+    for pr in prows:
+        def cell(c):
+            i = idx.get(c, -1)
+            return pr[i].strip() if 0 <= i < len(pr) else ""
+        name, col = cell("RowName"), cell("Column")
+        op, val = cell("Op").lower() or "append", cell("Value")
+        t = by.get(name)
+        if t is None or col not in HDR:
+            print("  WARNING: SpaceTypes%s targets unknown row/column, skipped" % suffix)
+            continue
+        ci = HDR.index(col)
+        if op == "set":
+            t[ci] = val
+        else:
+            cur = [x for x in t[ci].split("|") if x.strip()]
+            for tok in [x.strip() for x in val.split("|") if x.strip()]:
+                if tok not in cur: cur.append(tok)
+            t[ci] = "|".join(cur)
+        applied += 1
+    if applied: print("  %s %-24s %d applied, 0 skipped" % (label, "SpaceTypes", applied))
+os.makedirs(OUT, exist_ok=True)
+with io.open(os.path.join(OUT, "SpaceTypes.csv"), "w", encoding="utf-8", newline="") as fh:
+    w = csv.writer(fh, lineterminator="\\n")
+    w.writerow(HDR); w.writerows(rows)
+print("  wrote %-28s %4d rows  %2d cols" % ("SpaceTypes.csv", len(rows), len(HDR)))
+`;
+
+const WG_GROUPTOKENS_STANDIN = `import io, os
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+p = os.path.join(ROOT, "Data", "WorldGen", "GroupTokens.csv")
+with io.open(p, "w", encoding="utf-8", newline="") as fh:
+    fh.write("RowName,TokenID,Domain,MemberCount,Members,DerivationRule\\n")
+    fh.write("AllFixture,AllFixture,SpaceTypes,2,SPC_Lobby|SPC_Corridor,fixture rule\\n")
+`;
+
+/** Content-sensitive stand-in validator: any PrimaryAdjacency token that is
+ * not a RowName, wildcard, or the fixture group token is an ERROR (exit 1). */
+const WG_VALIDATOR_STANDIN = `import csv, io, json, os, sys
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+args = sys.argv[1:]
+out = args[args.index("--json")+1] if "--json" in args else None
+p = os.path.join(ROOT, "Data", "WorldGen", "SpaceTypes.csv")
+with io.open(p, encoding="utf-8-sig", newline="") as fh:
+    rows = list(csv.reader(fh))
+hdr, data = rows[0], rows[1:]
+ni, ai = hdr.index("RowName"), hdr.index("PrimaryAdjacency")
+names = set(r[ni] for r in data)
+groups = set(["AllFixture"])
+wild = set(["", "*", "any", "all", "none", "n/a", "-"])
+items = [{"severity": "INFO", "rule": "V0-fixture-info", "table": "SpaceTypes",
+          "column": None, "row": None, "detail": "%d rows checked" % len(data)}]
+errors = 0
+for r in data:
+    for tok in (r[ai] if ai < len(r) else "").split("|"):
+        tok = tok.strip()
+        if tok.lower() in wild or tok in names or tok in groups:
+            continue
+        items.append({"severity": "ERROR", "rule": "V2-fixture-unresolved",
+                      "table": "SpaceTypes", "column": "PrimaryAdjacency",
+                      "row": r[ni], "detail": "unresolved reference: %s" % tok})
+        errors += 1
+if out:
+    with open(out, "w") as fh:
+        json.dump({"dir": "Data/WorldGen", "items": items}, fh)
+sys.exit(1 if errors else 0)
+`;
+
+export const WG_SPACETYPES_MANIFEST: ManifestTable = {
+  path: 'Data/WorldGen/SpaceTypes.csv',
+  folder: 'WorldGen',
+  stem: 'SpaceTypes',
+  row_count: 3,
+  columns: WG_SPACETYPES_HEADER.split(','),
+  column_types: WG_SPACETYPES_HEADER.split(',').map((name) => ({
+    name,
+    ue5_type: name === 'MinWidthCm' ? 'float' : 'FString',
+    pipe_multi: name === 'PrimaryAdjacency',
+    semicolon_hazard: false,
+  })),
+  row_key: { column0: 'RowName', unique: true, rows_lost_on_import: 0 },
+  classification: 'generated',
+  flags: { generated: { generator: 'Scripts/normalize_worldgen_metadata.py' } },
+  foreign_keys: [
+    { column: 'PrimaryAdjacency', target_table: 'SpaceTypes', target_prefix: 'SPC_' },
+  ],
+};
+
+/** Layer the worldgen mini-corpus onto the base fixture repo and commit it —
+ * a clean HEAD whose generated outputs are byte-identical to what the
+ * stand-in generator chain reproduces (0 validator errors on HEAD). */
+export function makeWorldgenFixture(): Fixture {
+  const fx = makeFixtureRepo();
+  const files: Record<string, string> = {
+    'Data/WorldGen/SpaceTypes.csv': WG_SPACETYPES_GENERATED,
+    'Data/WorldGen/GroupTokens.csv': WG_GROUPTOKENS_GENERATED,
+    'Documentation/WorldGen_Extensions/SpaceTypes.ext.csv':
+      WG_SPACETYPES_HEADER +
+      '\n' +
+      'SPC_FixtureExt,SPC_FixtureExt,Fixture Ext,Utility,120.0,SPC_Lobby,ext row\n',
+    'Scripts/normalize_worldgen_metadata.py': WG_NORMALIZE_STANDIN,
+    'Scripts/author_group_tokens.py': WG_GROUPTOKENS_STANDIN,
+    // Replaces the WEB-005 always-fails stand-in for this fixture variant.
+    'Scripts/validate_worldgen_metadata.py': WG_VALIDATOR_STANDIN,
+  };
+  for (const [rel, content] of Object.entries(files)) {
+    const abs = path.join(fx.repoPath, ...rel.split('/'));
+    fs.mkdirSync(path.dirname(abs), { recursive: true });
+    fs.writeFileSync(abs, content, 'utf-8');
+  }
+  // Manifest gains the SpaceTypes entry + the worldgen_reference block.
+  const manifestPath = path.join(fx.repoPath, 'Exports', 'TableManifest.json');
+  const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf-8')) as TableManifest;
+  manifest.tables.push(WG_SPACETYPES_MANIFEST);
+  manifest.worldgen_reference = {
+    source: 'fixture',
+    wildcards: ['', '*', 'any', 'all', 'none', 'n/a', '-'],
+    adjacency_columns_accepting_categories: ['AvoidAdjacency', 'PrimaryAdjacency'],
+    traversal_type_movement_modes: ['Walk', 'Climb'],
+  };
+  fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 1), 'utf-8');
+  git(fx.repoPath, ['add', '-A']);
+  git(fx.repoPath, ['commit', '-q', '-m', 'fixture: worldgen mini-corpus']);
+  return fx;
+}
+
 export function fixtureEntry(stem: string): ManifestTable {
   const entry = FIXTURE_TABLES.find((t) => t.stem === stem);
   if (!entry) throw new Error(`no fixture table ${stem}`);

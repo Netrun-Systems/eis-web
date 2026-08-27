@@ -8,7 +8,8 @@ import { listAllowedScripts, runAllowedScript } from './scripts.ts';
 import { writeTable } from './tableWrite.ts';
 import { countFindings, runGuardFindings } from './guards.ts';
 import { runWorldgenValidation } from './validation.ts';
-import type { TableGuardCheckResult, TableListEntry, WriteRequestBody } from './types.ts';
+import { getWorldgenSources, getWorldgenWeb, isWorldgenStem, putWorldgenWeb, WORLDGEN_STEMS } from './worldgen.ts';
+import type { TableGuardCheckResult, TableListEntry, WorldgenPutBody, WriteRequestBody } from './types.ts';
 
 export interface AppOptions {
   repoPath: string;
@@ -176,6 +177,43 @@ export function createApp(options: AppOptions): express.Express {
     res.json(body);
   }));
 
+  // WEB-006: the vocabulary editor's three routes. EISWeb owns exactly two
+  // source fragments per normalized world-gen stem (<Stem>.web.csv row
+  // additions, <Stem>.web.patch.csv column edits); the PUT writes them,
+  // re-runs the generator chain, and rolls back on any validator ERROR.
+  app.get('/api/worldgen/sources', asyncRoute(async (_req, res) => {
+    res.json(getWorldgenSources(repoPath));
+  }));
+
+  app.get('/api/worldgen/web/:stem', asyncRoute(async (req, res) => {
+    const stem = req.params.stem;
+    if (!isWorldgenStem(stem)) {
+      res.status(404).json({
+        success: false,
+        reason: 'unknown_stem',
+        detail: `not a normalized world-gen stem: ${stem}`,
+        allowed: [...WORLDGEN_STEMS],
+      });
+      return;
+    }
+    res.json(getWorldgenWeb(repoPath, stem));
+  }));
+
+  app.put('/api/worldgen/web/:stem', asyncRoute(async (req, res) => {
+    const stem = req.params.stem;
+    if (!isWorldgenStem(stem)) {
+      res.status(404).json({
+        success: false,
+        reason: 'unknown_stem',
+        detail: `not a normalized world-gen stem: ${stem}`,
+        allowed: [...WORLDGEN_STEMS],
+      });
+      return;
+    }
+    const result = await putWorldgenWeb(repoPath, stem, req.body as WorldgenPutBody);
+    res.status(result.success ? 200 : statusForFailure(result.reason)).json(result);
+  }));
+
   app.post('/api/run/:script', asyncRoute(async (req, res) => {
     const scriptName = req.params.script;
     const brief =
@@ -246,6 +284,7 @@ function statusForFailure(reason: string): number {
     case 'key_collision':
     case 'semicolon_hazard':
     case 'raw_read_comma':
+    case 'validation_errors':
       return 409;
     default:
       return 500;

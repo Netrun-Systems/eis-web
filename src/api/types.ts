@@ -162,3 +162,100 @@ export interface TableGuardCheckResponse {
   findings: Finding[];
   summaryCounts: FindingSummaryCounts;
 }
+
+// ---------------------------------------------------------------------------
+// WEB-006 — vocabulary editor (mirrors of server/types.ts).
+// ---------------------------------------------------------------------------
+
+export interface WorldgenFragmentInfo {
+  exists: boolean;
+  rowCount: number | null;
+}
+
+export interface WorldgenSourceEntry {
+  stem: string;
+  base: WorldgenFragmentInfo & { path: string };
+  fragments: {
+    ext: WorldgenFragmentInfo;
+    web: WorldgenFragmentInfo;
+    patch: WorldgenFragmentInfo;
+    webPatch: WorldgenFragmentInfo;
+  };
+}
+
+export interface WorldgenSourcesResponse {
+  extDir: string;
+  stems: WorldgenSourceEntry[];
+}
+
+/** One row of <Stem>.web.patch.csv (RowName,Column,Op,Value,Reason). */
+export interface WorldgenPatch {
+  rowName: string;
+  column: string;
+  op: string;
+  value: string;
+  reason: string;
+}
+
+export interface WorldgenBaseRow {
+  rowName: string;
+  displayName: string;
+  owner: 'base' | 'ext';
+}
+
+export interface WorldgenFkOptions {
+  column: string;
+  targetTable: string;
+  targetPrefix: string;
+  rowNames: string[];
+  groupTokens: string[];
+  extras: string[];
+}
+
+export interface WorldgenGroupToken {
+  token: string;
+  domain: string;
+  members: string[];
+}
+
+export interface WorldgenWebResponse {
+  stem: string;
+  columns: string[];
+  columnTypes: ManifestColumnType[];
+  baseRows: WorldgenBaseRow[];
+  webRows: string[][];
+  webPatches: WorldgenPatch[];
+  fks: ManifestForeignKey[];
+  fkOptions: WorldgenFkOptions[];
+  wildcards: string[];
+  groupTokens: WorldgenGroupToken[];
+  adjacencyCategoryColumns: string[];
+  traversalMovementModes: string[];
+}
+
+export interface WorldgenPutBody {
+  webRows: string[][];
+  webPatches: WorldgenPatch[];
+  message?: string;
+}
+
+export interface WorldgenPutSuccess {
+  success: true;
+  /** null = nothing changed (byte-identical to HEAD). */
+  commit: string | null;
+  normalizeOutput: string;
+  findings: Finding[];
+  summaryCounts: FindingSummaryCounts;
+}
+
+/** Any refusal/failure. findings/summaryCounts are present when the reason is
+ * 'validation_errors' (the rollback path). */
+export interface WorldgenPutFailure {
+  success: false;
+  reason: string;
+  detail?: unknown;
+  findings?: Finding[];
+  summaryCounts?: FindingSummaryCounts;
+}
+
+export type WorldgenPutResponse = WorldgenPutSuccess | WorldgenPutFailure;

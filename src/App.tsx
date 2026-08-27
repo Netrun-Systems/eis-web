@@ -6,6 +6,8 @@ import { WorldCanvas } from './ui/world/WorldCanvas';
 import { CSVEditor } from './ui/csv/CSVEditor';
 import { TablesPage } from './ui/tables/TablesPage';
 import { TableDetailPage } from './ui/tables/TableDetailPage';
+import { VocabularyPage } from './ui/vocabulary/VocabularyPage';
+import { VocabularyStemPage } from './ui/vocabulary/VocabularyStemPage';
 
 export function App() {
   return (
@@ -15,6 +17,8 @@ export function App() {
           <Route path="/" element={<StatusPage />} />
           <Route path="/tables" element={<TablesPage />} />
           <Route path="/tables/*" element={<TableDetailPage />} />
+          <Route path="/vocabulary" element={<VocabularyPage />} />
+          <Route path="/vocabulary/:stem" element={<VocabularyStemPage />} />
           <Route path="/world" element={<WorldCanvas />} />
           <Route path="/csv" element={<CSVEditor />} />
           <Route path="*" element={<Navigate to="/" />} />

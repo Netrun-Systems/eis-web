@@ -12,7 +12,11 @@ import type {
   TableGuardCheckResponse,
   TableRowsResponse,
   TablesResponse,
+  WorldgenPutBody,
+  WorldgenPutResponse,
+  WorldgenSourcesResponse,
   WorldgenValidationResponse,
+  WorldgenWebResponse,
 } from './types';
 
 /** The one message every component shows on connection failure — kept
@@ -107,4 +111,50 @@ export function runWorldgenValidation(): Promise<WorldgenValidationResponse> {
 /** WEB-005: dry-run the hard-rule write guards against the file on disk. */
 export function runTableGuardCheck(path: string): Promise<TableGuardCheckResponse> {
   return postJson(`/api/validate/table?path=${encodeURIComponent(path)}`);
+}
+
+/** WEB-006: which world-gen source fragments exist per stem. */
+export function fetchWorldgenSources(): Promise<WorldgenSourcesResponse> {
+  return getJson('/api/worldgen/sources');
+}
+
+/** WEB-006: everything the vocabulary editor needs for one stem. */
+export function fetchWorldgenWeb(stem: string): Promise<WorldgenWebResponse> {
+  return getJson(`/api/worldgen/web/${encodeURIComponent(stem)}`);
+}
+
+/**
+ * WEB-006: save the web-owned fragments for one stem. Unlike the generic
+ * helpers, a refusal (409/400) RESOLVES with the failure body — the caller
+ * needs the full findings that caused a rollback, not a one-line message.
+ * Only network/proxy failures throw.
+ */
+export async function putWorldgenWeb(
+  stem: string,
+  body: WorldgenPutBody,
+): Promise<WorldgenPutResponse> {
+  let res: Response;
+  try {
+    res = await fetch(`/api/worldgen/web/${encodeURIComponent(stem)}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+  } catch {
+    throw new ApiError(API_DOWN_MESSAGE, { connectionFailed: true, status: null });
+  }
+  let parsed: unknown = null;
+  try {
+    parsed = await res.json();
+  } catch {
+    /* non-JSON body handled below */
+  }
+  if (parsed === null || typeof parsed !== 'object') {
+    const connectionFailed = res.status >= 500;
+    throw new ApiError(connectionFailed ? API_DOWN_MESSAGE : `HTTP ${res.status}`, {
+      connectionFailed,
+      status: res.status,
+    });
+  }
+  return parsed as WorldgenPutResponse;
 }
