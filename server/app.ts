@@ -13,6 +13,13 @@ export interface AppOptions {
   corsOrigin: string;
 }
 
+/** WEB-004: read-only markdown reports served from the EISCORE repo. The Map
+ * IS the path allow-list — nothing outside it is ever resolved. */
+export const REPORT_ALLOW_LIST: ReadonlyMap<string, string> = new Map([
+  ['worldgen-backlog', 'Documentation/World/WORLDGEN_BACKLOG.md'],
+  ['asset-gaps', 'Documentation/World/ASSET_GAPS.md'],
+]);
+
 /** Boot-time verification: the configured path must be a git repo (worktrees
  * count) containing Data/ and the WEB-001 manifest. Returns a specific
  * complaint, or null when the repo is usable. */
@@ -148,6 +155,28 @@ export function createApp(options: AppOptions): express.Express {
       return;
     }
     res.json(outcome.result);
+  }));
+
+  app.get('/api/reports/:name', asyncRoute(async (req, res) => {
+    const rel = REPORT_ALLOW_LIST.get(req.params.name);
+    if (rel === undefined) {
+      res.status(404).json({
+        success: false,
+        reason: 'unknown_report',
+        detail: `not an allow-listed report: ${req.params.name}`,
+        allowed: [...REPORT_ALLOW_LIST.keys()],
+      });
+      return;
+    }
+    const abs = path.join(repoPath, ...rel.split('/'));
+    const stat = fs.statSync(abs);
+    const markdown = fs.readFileSync(abs, 'utf-8');
+    res.json({
+      name: req.params.name,
+      path: rel,
+      mtime: stat.mtime.toISOString(),
+      markdown,
+    });
   }));
 
   app.get('/api/git/log', asyncRoute(async (req, res) => {

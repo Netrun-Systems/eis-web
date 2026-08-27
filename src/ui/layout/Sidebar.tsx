@@ -2,7 +2,8 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 
 const NAV_ITEMS = [
-  { to: '/', label: 'Status' },
+  { to: '/', label: 'Dashboard' },
+  { to: '/tables', label: 'Tables' },
   { to: '/world', label: 'World Canvas' },
   { to: '/csv', label: 'CSV Editor' },
 ];

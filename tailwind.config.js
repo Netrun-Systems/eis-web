@@ -20,6 +20,29 @@ export default {
           warning: '#e5a84b',
           info: '#5b9ee5',
         },
+        // WEB-004 charter palette. Stone/dust neutrals for surfaces and text,
+        // petrol-teal for interactive elements, rust strictly for hazard
+        // chips/banners. Named tokens only — no inline hex in components.
+        dust: {
+          100: '#e8e4dc', // primary text on dark surfaces
+          300: '#b5aea1', // secondary text
+          500: '#7d766a', // muted text / disabled
+          700: '#3a3a36', // borders / dividers
+          800: '#26262c', // raised card surface
+          900: '#1b1b20', // page surface
+        },
+        petrol: {
+          light: '#6db8c4', // hover / emphasis on dark
+          DEFAULT: '#3a8a99', // interactive: links, buttons, active nav
+          dark: '#25606c', // pressed / borders
+          tint: '#22434a', // subtle interactive backgrounds
+        },
+        rust: {
+          light: '#d98b6c', // hazard text on dark
+          DEFAULT: '#b0563a', // hazard chips / banners
+          dark: '#6e3423', // hazard borders
+          tint: '#3a241d', // hazard chip/banner background
+        },
       },
       fontFamily: {
         mono: ['"JetBrains Mono"', 'Consolas', 'monospace'],

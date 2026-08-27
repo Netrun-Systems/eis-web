@@ -70,6 +70,10 @@ const FILES: Record<string, string> = {
   'Data/PCG/RawParts.csv': 'RowName,PartId,Notes\nPART_1,PART_1,fine\nPART_2,PART_2,also fine\n',
   'Data/WorldGen/GenOut.csv': 'RowName,Value\nG_1,G_1\nG_2,G_2\n',
   'Data/Legacy_Import/Old.csv': 'Name,Value\nOLD_1,1\nOLD_2,2\n',
+  // WEB-004: the two allow-listed dashboard reports.
+  'Documentation/World/WORLDGEN_BACKLOG.md':
+    '# World-Gen Metadata — Still Needed\n\nFixture backlog body.\n',
+  'Documentation/World/ASSET_GAPS.md': '# Asset Gaps\n\nFixture gap report body.\n',
 };
 
 export function makeFixtureRepo(): Fixture {
