@@ -121,9 +121,10 @@ export function WorldCanvas() {
   if (!worldMap) {
     return (
       <div className="flex items-center justify-center h-full">
-        <div className="text-center">
-          <p className="text-eis-text-secondary mb-4">No world generated yet</p>
-          <button onClick={() => generateWorld()} className="eis-btn-primary">
+        <div className="rounded border border-dashed border-dust-200 px-10 py-8 text-center dark:border-dust-700">
+          <p className="eyebrow mb-1">World Canvas</p>
+          <p className="text-dust-600 dark:text-dust-300 mb-4">No world generated yet</p>
+          <button onClick={() => generateWorld()} className="btn-primary px-4 py-2 text-sm font-medium">
             Generate World
           </button>
         </div>
@@ -134,15 +135,15 @@ export function WorldCanvas() {
   return (
     <div className="flex flex-col h-full overflow-hidden">
       {/* Top bar */}
-      <div className="flex items-center gap-3 px-3 py-2 bg-eis-bg-card border-b border-eis-border shrink-0">
-        <span className="text-sm font-medium text-eis-text">{worldMap.config.name}</span>
-        <span className="text-xs text-eis-text-muted">
+      <div className="flex items-center gap-3 px-3 py-2 bg-dust-0 dark:bg-dust-800 border-b border-dust-200 dark:border-dust-700 shrink-0">
+        <span className="text-sm font-medium text-dust-900 dark:text-dust-100">{worldMap.config.name}</span>
+        <span className="text-xs text-dust-600 dark:text-dust-400">
           {worldMap.config.width}x{worldMap.config.height} | Seed: {worldMap.config.seed}
         </span>
         <div className="flex-1" />
-        <button onClick={() => generateWorld()} className="eis-btn-secondary text-xs">Regenerate</button>
-        <button onClick={handleSave} className="eis-btn-secondary text-xs">Save JSON</button>
-        <label className="eis-btn-secondary text-xs cursor-pointer">
+        <button onClick={() => generateWorld()} className="btn-quiet px-3 py-1.5 text-xs">Regenerate</button>
+        <button onClick={handleSave} className="btn-quiet px-3 py-1.5 text-xs">Save JSON</button>
+        <label className="btn-quiet px-3 py-1.5 text-xs cursor-pointer">
           Load JSON
           <input type="file" accept=".json" onChange={handleLoadFile} className="hidden" />
         </label>
@@ -150,15 +151,15 @@ export function WorldCanvas() {
 
       <div className="flex flex-1 min-h-0">
         {/* Left toolbar */}
-        <div className="flex flex-col gap-1 w-16 shrink-0 p-1 bg-eis-bg-card border-r border-eis-border overflow-y-auto">
+        <div className="flex flex-col gap-1 w-16 shrink-0 p-1 bg-dust-0 dark:bg-dust-800 border-r border-dust-200 dark:border-dust-700 overflow-y-auto">
           {(Object.entries(TOOL_LABELS) as [EditorTool, { label: string; key: string }][]).map(([tool, meta]) => (
             <button
               key={tool}
               onClick={() => setTool(tool)}
               className={`h-9 flex items-center justify-center rounded text-[10px] transition-colors touch-manipulation ${
                 editor.tool === tool
-                  ? 'bg-eis-green/20 text-eis-green border border-eis-green/40'
-                  : 'bg-eis-bg text-eis-text-secondary hover:bg-eis-bg-hover border border-transparent'
+                  ? 'bg-petrol-wash dark:bg-petrol-tint text-petrol-ink dark:text-petrol-light border border-petrol/50 dark:border-petrol-dark'
+                  : 'bg-dust-50 dark:bg-dust-900 text-dust-600 dark:text-dust-300 hover:bg-dust-100 dark:hover:bg-dust-700/50 border border-transparent'
               }`}
               title={`${meta.label} (${meta.key})`}
             >
@@ -169,15 +170,15 @@ export function WorldCanvas() {
           {/* Brush size */}
           {(editor.tool === 'paint_biome' || editor.tool === 'faction_paint') && (
             <div className="mt-2 flex flex-col items-center gap-1">
-              <span className="text-[8px] text-eis-text-muted">Size</span>
+              <span className="text-[8px] text-dust-600 dark:text-dust-400">Size</span>
               {[1, 2, 3, 4, 5].map(s => (
                 <button
                   key={s}
                   onClick={() => setBrushSize(s)}
                   className={`w-8 h-5 text-[10px] rounded ${
                     editor.brushSize === s
-                      ? 'bg-eis-green/20 text-eis-green'
-                      : 'bg-eis-bg text-eis-text-secondary hover:bg-eis-bg-hover'
+                      ? 'bg-petrol-wash dark:bg-petrol-tint text-petrol-ink dark:text-petrol-light'
+                      : 'bg-dust-50 dark:bg-dust-900 text-dust-600 dark:text-dust-300 hover:bg-dust-100 dark:hover:bg-dust-700/50'
                   }`}
                 >
                   {s}
@@ -189,13 +190,13 @@ export function WorldCanvas() {
           {/* Biome swatches */}
           {editor.tool === 'paint_biome' && (
             <div className="mt-2 flex flex-col items-center gap-1">
-              <span className="text-[8px] text-eis-text-muted">Biome</span>
+              <span className="text-[8px] text-dust-600 dark:text-dust-400">Biome</span>
               {(Object.keys(BIOME_COLORS) as BiomeType[]).map(biome => (
                 <button
                   key={biome}
                   onClick={() => setSelectedBiome(biome)}
                   className={`w-10 h-4 rounded border ${
-                    editor.selectedBiome === biome ? 'border-white' : 'border-transparent'
+                    editor.selectedBiome === biome ? 'border-dust-900 dark:border-white' : 'border-transparent'
                   }`}
                   style={{ backgroundColor: BIOME_COLORS[biome] }}
                   title={BIOME_LABELS[biome]}
@@ -207,13 +208,13 @@ export function WorldCanvas() {
           {/* Faction swatches */}
           {editor.tool === 'faction_paint' && (
             <div className="mt-2 flex flex-col items-center gap-1">
-              <span className="text-[8px] text-eis-text-muted">Faction</span>
+              <span className="text-[8px] text-dust-600 dark:text-dust-400">Faction</span>
               {FACTIONS.map(f => (
                 <button
                   key={f}
                   onClick={() => setSelectedFaction(f)}
                   className={`w-10 h-4 rounded border ${
-                    editor.selectedFaction === f ? 'border-white' : 'border-transparent'
+                    editor.selectedFaction === f ? 'border-dust-900 dark:border-white' : 'border-transparent'
                   }`}
                   style={{ backgroundColor: getFactionColor(f) }}
                   title={f}
@@ -224,7 +225,7 @@ export function WorldCanvas() {
         </div>
 
         {/* Main map */}
-        <div ref={mapContainerRef} className="flex-1 relative overflow-hidden bg-[#0a0a0a]" style={{ touchAction: 'none' }}>
+        <div ref={mapContainerRef} className="flex-1 relative overflow-hidden bg-dust-900" style={{ touchAction: 'none' }}>
           <PixiWorldMap width={mapSize.width} height={mapSize.height} />
 
           <PixiMinimap
@@ -237,12 +238,12 @@ export function WorldCanvas() {
 
           {/* Object palette overlay */}
           {editor.tool === 'place_object' && (
-            <div className="absolute top-2 left-2 z-10 bg-eis-bg-card/90 border border-eis-border rounded p-2">
-              <label className="text-[10px] text-eis-text-muted block mb-1">Object type</label>
+            <div className="absolute top-2 left-2 z-10 bg-dust-0/90 dark:bg-dust-800/90 border border-dust-200 dark:border-dust-700 rounded p-2">
+              <label className="text-[10px] text-dust-600 dark:text-dust-400 block mb-1">Object type</label>
               <select
                 value={editor.selectedObjectType ?? ''}
                 onChange={e => setSelectedObjectType((e.target.value || null) as ObjectType | null)}
-                className="eis-input text-xs"
+                className="field px-2 py-1 text-xs"
               >
                 <option value="">Choose...</option>
                 {(Object.keys(OBJECT_CATALOG) as ObjectType[]).map(t => (

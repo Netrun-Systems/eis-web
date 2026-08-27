@@ -63,32 +63,32 @@ const NAV_GROUPS: NavGroup[] = [
 
 export function Sidebar() {
   return (
-    <nav className="w-56 bg-eis-bg-card border-r border-eis-border flex flex-col shrink-0">
-      <div className="p-4 border-b border-eis-border">
-        <h1 className="text-xl font-bold text-eis-green font-mono tracking-wider">EISWeb</h1>
-        <p className="text-xs text-eis-text-muted mt-0.5">World design for EISCORE</p>
+    <nav className="flex w-56 shrink-0 flex-col border-r border-dust-200 bg-dust-0 dark:border-dust-700 dark:bg-dust-800">
+      <div className="border-b border-dust-200 p-4 dark:border-dust-700">
+        <h1 className="font-display text-2xl font-bold uppercase leading-none tracking-wide text-dust-900 dark:text-dust-100">
+          EIS<span className="text-petrol-ink dark:text-petrol-light">Web</span>
+        </h1>
+        <p className="mt-1 text-xs text-dust-600 dark:text-dust-400">World design for EISCORE</p>
       </div>
 
       <div className="flex-1 overflow-y-auto py-2">
         {NAV_GROUPS.map((group) => (
-          <div key={group.label} className="mb-1">
-            <p className="px-4 pt-2 pb-1 text-[10px] font-semibold uppercase tracking-wider text-eis-text-muted">
-              {group.label}
-            </p>
+          <div key={group.label} className="mb-2">
+            <p className="eyebrow px-4 pb-1.5 pt-2.5 !text-[10px]">{group.label}</p>
             {group.items.map((item) => (
               <NavLink
                 key={item.to}
                 to={item.to}
                 className={({ isActive }) =>
-                  `flex items-center gap-2 px-4 py-1.5 text-sm transition-colors ${
+                  `flex items-center gap-2 border-l-2 py-1.5 pl-[14px] pr-4 text-sm transition-colors ${
                     isActive
-                      ? 'text-eis-green bg-eis-green/10 border-r-2 border-eis-green'
-                      : 'text-eis-text-secondary hover:text-eis-text hover:bg-eis-bg-hover'
+                      ? 'border-petrol bg-petrol-wash/70 font-medium text-petrol-ink dark:border-petrol-light dark:bg-petrol-tint/60 dark:text-petrol-light'
+                      : 'border-transparent text-dust-600 hover:bg-dust-100 hover:text-dust-900 dark:text-dust-300 dark:hover:bg-dust-700/50 dark:hover:text-dust-100'
                   }`
                 }
               >
                 {item.stageNo !== undefined && (
-                  <span className="w-4 shrink-0 text-right font-mono text-[10px] text-eis-text-muted">
+                  <span className="w-4 shrink-0 text-right font-mono text-[10px] tabular-nums text-dust-500 dark:text-dust-500">
                     {item.stageNo}
                   </span>
                 )}
@@ -99,8 +99,10 @@ export function Sidebar() {
         ))}
       </div>
 
-      <div className="p-3 border-t border-eis-border">
-        <p className="text-xs text-eis-text-muted text-center">Netrun Systems</p>
+      <div className="border-t border-dust-200 p-3 dark:border-dust-700">
+        <p className="text-center font-mono text-[10px] uppercase tracking-eyebrow text-dust-500">
+          Netrun Systems
+        </p>
       </div>
     </nav>
   );

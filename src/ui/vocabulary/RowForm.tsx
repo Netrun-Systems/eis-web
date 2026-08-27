@@ -130,19 +130,19 @@ export function RowForm(props: RowFormProps) {
   };
 
   return (
-    <div className="space-y-3 rounded border border-petrol-dark bg-dust-800 p-3">
+    <div className="space-y-3 rounded border border-petrol/40 dark:border-petrol-dark bg-dust-0 dark:bg-dust-800 p-3">
       <div className="flex flex-wrap items-center gap-3">
-        <h4 className="text-sm font-semibold text-dust-100">
+        <h4 className="text-sm font-semibold text-dust-900 dark:text-dust-100">
           {editingName !== null ? `Edit web row ${editingName}` : 'New web row'}
         </h4>
         {onCopyFrom && copyFromNames && copyFromNames.length > 0 && (
-          <label className="flex items-center gap-1.5 text-xs text-dust-500">
+          <label className="flex items-center gap-1.5 text-xs text-dust-600 dark:text-dust-400">
             copy values from
             <select
               disabled={copyBusy}
               defaultValue=""
               onChange={(e) => void doCopyFrom(e.target.value)}
-              className="rounded border border-dust-700 bg-dust-900 px-1.5 py-1 font-mono text-xs text-dust-300"
+              className="rounded border border-dust-200 dark:border-dust-700 bg-dust-0 dark:bg-dust-900 px-1.5 py-1 font-mono text-xs text-dust-600 dark:text-dust-300"
             >
               <option value="">—</option>
               {copyFromNames.map((n) => (
@@ -182,18 +182,18 @@ export function RowForm(props: RowFormProps) {
           type="button"
           disabled={nameError !== null}
           onClick={() => onSubmit(values)}
-          className="rounded border border-petrol-dark bg-petrol-tint px-3 py-1 text-sm text-petrol-light hover:bg-petrol-dark disabled:cursor-not-allowed disabled:border-dust-700 disabled:bg-dust-800 disabled:text-dust-500"
+          className="rounded border border-petrol/40 dark:border-petrol-dark bg-petrol-wash dark:bg-petrol-tint px-3 py-1 text-sm text-petrol-ink dark:text-petrol-light hover:bg-petrol/20 dark:hover:bg-petrol-dark disabled:cursor-not-allowed disabled:border-dust-200 dark:disabled:border-dust-700 disabled:bg-dust-100 dark:disabled:bg-dust-800 disabled:text-dust-500"
         >
           {editingName !== null ? 'Update row' : 'Add row'}
         </button>
         <button
           type="button"
           onClick={onCancel}
-          className="rounded border border-dust-700 px-3 py-1 text-sm text-dust-300 hover:bg-dust-800/60"
+          className="rounded border border-dust-200 dark:border-dust-700 px-3 py-1 text-sm text-dust-600 dark:text-dust-300 hover:bg-dust-100 dark:hover:bg-dust-800/60"
         >
           Cancel
         </button>
-        <span className="text-xs text-dust-500">Nothing is written until you Save.</span>
+        <span className="text-xs text-dust-600 dark:text-dust-400">Nothing is written until you Save.</span>
       </div>
     </div>
   );
@@ -227,10 +227,10 @@ function Field({
   return (
     <label className="block text-xs">
       <span className="mb-0.5 flex items-baseline gap-1.5">
-        <span className="font-semibold text-dust-100">{column}</span>
-        {ue5Type !== null && <span className="font-mono text-[10px] text-dust-500">{ue5Type}</span>}
+        <span className="font-semibold text-dust-900 dark:text-dust-100">{column}</span>
+        {ue5Type !== null && <span className="font-mono text-[10px] text-dust-600 dark:text-dust-400">{ue5Type}</span>}
         {fk && (
-          <span className="font-mono text-[10px] text-petrol-light">→ {fk.targetTable}</span>
+          <span className="font-mono text-[10px] text-petrol-ink dark:text-petrol-light">→ {fk.targetTable}</span>
         )}
       </span>
       {kind === 'fk' && fk ? (
@@ -246,7 +246,7 @@ function Field({
           type="number"
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="w-full rounded border border-dust-700 bg-dust-900 px-2 py-1 font-mono text-xs text-dust-300"
+          className="w-full rounded border border-dust-200 dark:border-dust-700 bg-dust-0 dark:bg-dust-900 px-2 py-1 font-mono text-xs text-dust-600 dark:text-dust-300"
         />
       ) : (
         <input
@@ -254,12 +254,12 @@ function Field({
           value={value}
           placeholder={kind === 'rowname' ? `${prefix}…` : undefined}
           onChange={(e) => onChange(e.target.value)}
-          className={`w-full rounded border px-2 py-1 font-mono text-xs text-dust-300 ${
-            error !== null ? 'border-rust-dark bg-rust-tint/40' : 'border-dust-700 bg-dust-900'
+          className={`w-full rounded border px-2 py-1 font-mono text-xs text-dust-600 dark:text-dust-300 ${
+            error !== null ? 'border-rust/50 dark:border-rust-dark bg-rust-wash/50 dark:bg-rust-tint/40' : 'border-dust-200 dark:border-dust-700 bg-dust-0 dark:bg-dust-900'
           }`}
         />
       )}
-      {error !== null && <span className="mt-0.5 block text-rust-light">{error}</span>}
+      {error !== null && <span className="mt-0.5 block text-rust-dark dark:text-rust-light">{error}</span>}
     </label>
   );
 }
@@ -289,9 +289,9 @@ function UnitField({
           const v = e.target.value;
           onChange(v === '' || Number.isNaN(Number(v)) ? '' : (Number(v) * factor).toFixed(1));
         }}
-        className="w-full rounded border border-dust-700 bg-dust-900 px-2 py-1 font-mono text-xs text-dust-300"
+        className="w-full rounded border border-dust-200 dark:border-dust-700 bg-dust-0 dark:bg-dust-900 px-2 py-1 font-mono text-xs text-dust-600 dark:text-dust-300"
       />
-      <span className="whitespace-nowrap text-dust-500">
+      <span className="whitespace-nowrap text-dust-600 dark:text-dust-400">
         {unit} <span className="font-mono">= {value === '' ? '—' : value} cm{kind === 'sqmeters' ? '²' : ''}</span>
       </span>
     </span>
@@ -324,7 +324,7 @@ function FkSinglePicker({
     <select
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="w-full rounded border border-dust-700 bg-dust-900 px-1.5 py-1 font-mono text-xs text-dust-300"
+      className="w-full rounded border border-dust-200 dark:border-dust-700 bg-dust-0 dark:bg-dust-900 px-1.5 py-1 font-mono text-xs text-dust-600 dark:text-dust-300"
     >
       <option value="">(empty)</option>
       {!known && value !== '' && <option value={value}>{value} (current)</option>}
@@ -365,18 +365,18 @@ export function FkMultiPicker({
   return (
     <div className="space-y-1">
       <div className="flex flex-wrap gap-1">
-        {tokens.length === 0 && <span className="text-dust-500">(empty)</span>}
+        {tokens.length === 0 && <span className="text-dust-600 dark:text-dust-400">(empty)</span>}
         {tokens.map((t) => (
           <span
             key={t}
-            className="inline-flex items-center gap-1 rounded border border-petrol-dark bg-petrol-tint px-1.5 py-0.5 font-mono text-[11px] text-petrol-light"
+            className="inline-flex items-center gap-1 rounded border border-petrol/40 dark:border-petrol-dark bg-petrol-wash dark:bg-petrol-tint px-1.5 py-0.5 font-mono text-[11px] text-petrol-ink dark:text-petrol-light"
           >
             {t}
             <button
               type="button"
               onClick={() => remove(t)}
               title={`remove ${t}`}
-              className="text-petrol-light hover:text-dust-100"
+              className="text-petrol-ink dark:text-petrol-light hover:text-dust-900 dark:hover:text-dust-100"
             >
               ×
             </button>
@@ -386,7 +386,7 @@ export function FkMultiPicker({
       <select
         value=""
         onChange={(e) => add(e.target.value)}
-        className="w-full rounded border border-dust-700 bg-dust-900 px-1.5 py-1 font-mono text-xs text-dust-300"
+        className="w-full rounded border border-dust-200 dark:border-dust-700 bg-dust-0 dark:bg-dust-900 px-1.5 py-1 font-mono text-xs text-dust-600 dark:text-dust-300"
       >
         <option value="">+ add {fk.column} value…</option>
         {groups.map((g) => (

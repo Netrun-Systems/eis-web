@@ -125,7 +125,7 @@ export function PixiMinimap({
 
   return (
     <div
-      className="absolute bottom-2 right-2 border border-eis-border rounded overflow-hidden bg-eis-bg-card/80 cursor-grab active:cursor-grabbing z-20"
+      className="absolute bottom-2 right-2 border border-dust-200 dark:border-dust-700 rounded overflow-hidden bg-dust-0/80 dark:bg-dust-800/80 cursor-grab active:cursor-grabbing z-20"
       style={{
         transform: position.x || position.y ? `translate(${position.x}px, ${position.y}px)` : undefined,
       }}

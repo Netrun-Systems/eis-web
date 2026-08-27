@@ -112,7 +112,7 @@ export function BottomSheet({ children, snapPoint, onSnapChange, peekContent }: 
 
       {/* Sheet */}
       <animated.div
-        className="fixed left-0 right-0 bg-eis-bg-card border-t border-eis-border rounded-t-2xl z-40 shadow-2xl"
+        className="fixed left-0 right-0 bg-dust-0 dark:bg-dust-800 border-t border-dust-200 dark:border-dust-700 rounded-t-2xl z-40 shadow-2xl"
         style={{
           top: y,
           height: windowHeight,
@@ -121,7 +121,7 @@ export function BottomSheet({ children, snapPoint, onSnapChange, peekContent }: 
       >
         {/* Drag handle */}
         <div {...bind()} className="flex justify-center py-3 cursor-grab active:cursor-grabbing">
-          <div className="w-10 h-1 bg-eis-text-muted/40 rounded-full" />
+          <div className="w-10 h-1 bg-dust-500/40 rounded-full" />
         </div>
 
         {/* Peek content (always visible) */}

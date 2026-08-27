@@ -4,8 +4,9 @@ import { fetchManifest, fetchTables } from '../../api/client';
 import { useApi } from '../../api/useApi';
 import type { Classification, TableListEntry } from '../../api/types';
 import { MethodContext } from '../method/MethodContext';
-import { ClassificationBadge, ErrorBox, HazardChip, LoadingBox } from './badges';
+import { ClassificationBadge, EmptyBox, ErrorBox, HazardChip, LoadingBox } from './badges';
 import { ManifestSummaryStrip } from './ManifestSummaryStrip';
+import { PageHeader } from '../layout/PageHeader';
 
 const CLASSIFICATIONS: Classification[] = [
   'authored',
@@ -64,8 +65,12 @@ export function TablesPage() {
   }, [filtered]);
 
   return (
-    <div className="max-w-5xl space-y-4">
-      <h2 className="text-xl font-bold text-dust-100">Tables</h2>
+    <div className="max-w-5xl space-y-5">
+      <PageHeader
+        eyebrow="Inspect the data"
+        title="Tables"
+        context="Every CSV the manifest knows, grouped by folder — classification, row counts, and the hazards that cost real data."
+      />
 
       <MethodContext surface="tables" />
 
@@ -79,12 +84,12 @@ export function TablesPage() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search by stem or path…"
-          className="w-64 rounded border border-dust-700 bg-dust-900 px-3 py-1.5 text-sm text-dust-100 placeholder:text-dust-500 focus:border-petrol focus:outline-none focus:ring-1 focus:ring-petrol/50"
+          className="field w-64 px-3 py-1.5 text-sm"
         />
         <select
           value={classFilter}
           onChange={(e) => setClassFilter(e.target.value as Classification | 'all')}
-          className="rounded border border-dust-700 bg-dust-900 px-2 py-1.5 text-sm text-dust-100 focus:border-petrol focus:outline-none"
+          className="field px-2 py-1.5 text-sm"
         >
           <option value="all">all classifications</option>
           {CLASSIFICATIONS.map((c) => (
@@ -94,7 +99,7 @@ export function TablesPage() {
           ))}
         </select>
         {tablesState.data && (
-          <span className="text-xs text-dust-500">
+          <span className="text-xs tabular-nums text-dust-600 dark:text-dust-400">
             {filtered.length} of {tablesState.data.count} tables
           </span>
         )}
@@ -104,21 +109,21 @@ export function TablesPage() {
       {tablesState.error != null && <ErrorBox error={tablesState.error} />}
 
       {tablesState.data && (
-        <div className="space-y-4">
+        <div className="space-y-5">
           {byFolder.map(([folder, entries]) => (
             <section key={folder}>
-              <h3 className="mb-1 font-mono text-xs uppercase tracking-wider text-dust-500">
-                Data/{folder}
-              </h3>
-              <ul className="divide-y divide-dust-700 rounded border border-dust-700 bg-dust-800">
+              <h3 className="eyebrow mb-1.5">Data/{folder}</h3>
+              <ul className="panel divide-y divide-dust-200/70 dark:divide-dust-700/60">
                 {entries.map((t) => (
                   <li key={t.path}>
                     <Link
                       to={`/tables/${t.path}`}
-                      className="flex flex-wrap items-center gap-x-3 gap-y-1 px-3 py-2 hover:bg-petrol-tint/40"
+                      className="flex flex-wrap items-center gap-x-3 gap-y-1 px-3 py-2 transition-colors hover:bg-petrol-wash/50 dark:hover:bg-petrol-tint/40"
                     >
-                      <span className="font-mono text-sm text-petrol-light">{t.stem}</span>
-                      <span className="font-mono text-xs text-dust-500">
+                      <span className="font-mono text-sm text-petrol-ink dark:text-petrol-light">
+                        {t.stem}
+                      </span>
+                      <span className="font-mono text-xs tabular-nums text-dust-600 dark:text-dust-400">
                         {t.row_count} rows
                       </span>
                       <ClassificationBadge classification={t.classification} />
@@ -145,7 +150,7 @@ export function TablesPage() {
             </section>
           ))}
           {byFolder.length === 0 && (
-            <p className="text-sm text-dust-500">No tables match the current search/filter.</p>
+            <EmptyBox>No tables match the current search/filter.</EmptyBox>
           )}
         </div>
       )}

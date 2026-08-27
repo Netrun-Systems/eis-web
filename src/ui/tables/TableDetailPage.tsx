@@ -100,7 +100,7 @@ export function TableDetailPage() {
   return (
     <div className="max-w-6xl space-y-4">
       <div className="text-xs">
-        <Link to="/tables" className="text-petrol-light hover:text-petrol hover:underline">
+        <Link to="/tables" className="text-petrol-ink dark:text-petrol-light hover:text-petrol-dark dark:hover:text-petrol hover:underline">
           &larr; All tables
         </Link>
       </div>
@@ -126,18 +126,18 @@ export function TableDetailPage() {
             onRunWg={runWg}
           />
 
-          <div className="overflow-x-auto rounded border border-dust-700">
+          <div className="overflow-x-auto rounded border border-dust-200 dark:border-dust-700">
             <table className="min-w-full border-collapse text-xs">
               <thead>
                 <tr>
                   {rowsState.data.columns.map((col, i) => (
                     <th
                       key={i}
-                      className="sticky top-0 border-b border-dust-700 bg-dust-800 px-2 py-1.5 text-left align-bottom"
+                      className="sticky top-0 z-10 border-b border-dust-200 dark:border-dust-700 bg-dust-0 dark:bg-dust-800 px-2 py-1.5 text-left align-bottom"
                     >
-                      <div className="font-semibold text-dust-100">{col}</div>
+                      <div className="font-semibold text-dust-900 dark:text-dust-100">{col}</div>
                       {typeFor(col, i) && (
-                        <div className="font-mono text-[10px] font-normal text-dust-500">
+                        <div className="font-mono text-[10px] font-normal text-dust-600 dark:text-dust-400">
                           {typeFor(col, i)}
                         </div>
                       )}
@@ -145,7 +145,7 @@ export function TableDetailPage() {
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-dust-700/60">
+              <tbody className="divide-y divide-dust-200/70 dark:divide-dust-700/60">
                 {pageRows.map((row, r) => {
                   const flagged = flaggedKeys.has(row[0] ?? '');
                   return (
@@ -153,15 +153,15 @@ export function TableDetailPage() {
                       key={clampedPage * PAGE_SIZE + r}
                       className={
                         flagged
-                          ? 'bg-rust-tint/50 hover:bg-rust-tint'
-                          : 'hover:bg-dust-800/60'
+                          ? 'bg-rust-wash/60 dark:bg-rust-tint/50 hover:bg-rust-wash dark:hover:bg-rust-tint'
+                          : 'hover:bg-dust-100 dark:hover:bg-dust-800/60'
                       }
                     >
                       {row.map((cell, c) => (
                         <td
                           key={c}
                           className={`max-w-md truncate px-2 py-1 font-mono ${
-                            flagged ? 'text-rust-light' : 'text-dust-300'
+                            flagged ? 'text-rust-dark dark:text-rust-light' : 'text-dust-600 dark:text-dust-300'
                           }`}
                           title={cell}
                         >
@@ -175,12 +175,12 @@ export function TableDetailPage() {
             </table>
           </div>
 
-          <div className="flex items-center gap-3 text-sm text-dust-300">
+          <div className="flex items-center gap-3 text-sm text-dust-600 dark:text-dust-300">
             <button
               type="button"
               onClick={() => setPage(Math.max(0, clampedPage - 1))}
               disabled={clampedPage === 0}
-              className="rounded border border-petrol-dark bg-petrol-tint px-2.5 py-1 text-petrol-light hover:bg-petrol-dark disabled:cursor-not-allowed disabled:border-dust-700 disabled:bg-dust-800 disabled:text-dust-500"
+              className="btn-primary px-2.5 py-1"
             >
               &larr; Prev
             </button>
@@ -188,11 +188,11 @@ export function TableDetailPage() {
               type="button"
               onClick={() => setPage(Math.min(pageCount - 1, clampedPage + 1))}
               disabled={clampedPage >= pageCount - 1}
-              className="rounded border border-petrol-dark bg-petrol-tint px-2.5 py-1 text-petrol-light hover:bg-petrol-dark disabled:cursor-not-allowed disabled:border-dust-700 disabled:bg-dust-800 disabled:text-dust-500"
+              className="btn-primary px-2.5 py-1"
             >
               Next &rarr;
             </button>
-            <span className="font-mono text-xs">
+            <span className="font-mono text-xs tabular-nums">
               page {clampedPage + 1} / {pageCount} &middot; {totalRows} rows total
             </span>
           </div>
@@ -200,20 +200,20 @@ export function TableDetailPage() {
       )}
 
       <section className="space-y-1">
-        <h3 className="text-sm font-semibold text-dust-100">Recent history</h3>
+        <h3 className="text-sm font-semibold text-dust-900 dark:text-dust-100">Recent history</h3>
         {logState.loading && <LoadingBox label="Loading git log" />}
         {logState.error != null && <ErrorBox error={logState.error} />}
         {logState.data &&
           (logState.data.commits.length === 0 ? (
-            <p className="text-sm text-dust-500">No commits touch this file.</p>
+            <p className="text-sm text-dust-600 dark:text-dust-400">No commits touch this file.</p>
           ) : (
-            <ul className="space-y-0.5 font-mono text-xs text-dust-300">
+            <ul className="space-y-0.5 font-mono text-xs text-dust-600 dark:text-dust-300">
               {logState.data.commits.map((c) => (
                 <li key={c.hash}>
-                  <span className="text-petrol-light">{c.hash}</span>
-                  <span className="text-dust-500"> &middot; </span>
-                  <span className="text-dust-500">{c.date.slice(0, 10)}</span>
-                  <span className="text-dust-500"> &middot; </span>
+                  <span className="text-petrol-ink dark:text-petrol-light">{c.hash}</span>
+                  <span className="text-dust-600 dark:text-dust-400"> &middot; </span>
+                  <span className="text-dust-600 dark:text-dust-400">{c.date.slice(0, 10)}</span>
+                  <span className="text-dust-600 dark:text-dust-400"> &middot; </span>
                   {c.subject}
                 </li>
               ))}
@@ -233,9 +233,10 @@ function TableHeader({ entry }: { entry: ManifestTable }) {
   const rawRead = entry.classification === 'raw_read' || entry.flags.raw_read !== undefined;
 
   return (
-    <header className="space-y-2">
-      <div className="flex flex-wrap items-center gap-2">
-        <h2 className="text-xl font-bold text-dust-100">{entry.stem}</h2>
+    <header className="space-y-2 border-b border-dust-200 pb-3 dark:border-dust-700">
+      <p className="eyebrow">Inspect the data · Data/{entry.path.split('/')[1] ?? ''}</p>
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+        <h2 className="page-title normal-case tracking-normal">{entry.stem}</h2>
         <ClassificationBadge classification={entry.classification} />
         {entry.row_key.rows_lost_on_import > 0 && (
           <HazardChip title="Non-unique column 0: later rows silently overwrite earlier ones on import">
@@ -255,32 +256,32 @@ function TableHeader({ entry }: { entry: ManifestTable }) {
       </div>
 
       <dl className="grid grid-cols-[max-content_1fr] gap-x-4 gap-y-1 text-sm">
-        <dt className="text-dust-500">Path</dt>
-        <dd className="font-mono text-xs text-dust-300">{entry.path}</dd>
+        <dt className="text-dust-600 dark:text-dust-400">Path</dt>
+        <dd className="font-mono text-xs text-dust-600 dark:text-dust-300">{entry.path}</dd>
 
-        <dt className="text-dust-500">Classification</dt>
-        <dd className="text-dust-300">
+        <dt className="text-dust-600 dark:text-dust-400">Classification</dt>
+        <dd className="text-dust-600 dark:text-dust-300">
           {entry.classification}
           {typeof classDetail?.source === 'string' && (
-            <span className="text-dust-500"> — {classDetail.source}</span>
+            <span className="text-dust-600 dark:text-dust-400"> — {classDetail.source}</span>
           )}
         </dd>
 
         {generator !== null && (
           <>
-            <dt className="text-dust-500">Generator</dt>
-            <dd className="font-mono text-xs text-dust-300">{generator}</dd>
+            <dt className="text-dust-600 dark:text-dust-400">Generator</dt>
+            <dd className="font-mono text-xs text-dust-600 dark:text-dust-300">{generator}</dd>
           </>
         )}
 
-        <dt className="text-dust-500">Row key</dt>
-        <dd className="text-dust-300">
-          column 0 <code className="font-mono text-xs text-petrol-light">{entry.row_key.column0}</code>
+        <dt className="text-dust-600 dark:text-dust-400">Row key</dt>
+        <dd className="text-dust-600 dark:text-dust-300">
+          column 0 <code className="font-mono text-xs text-petrol-ink dark:text-petrol-light">{entry.row_key.column0}</code>
           {' — '}
           {entry.row_key.unique ? (
             'unique'
           ) : (
-            <span className="text-rust-light">
+            <span className="text-rust-dark dark:text-rust-light">
               NOT unique ({entry.row_key.rows_lost_on_import} rows lost on import)
             </span>
           )}
@@ -288,12 +289,12 @@ function TableHeader({ entry }: { entry: ManifestTable }) {
 
         {entry.foreign_keys && entry.foreign_keys.length > 0 && (
           <>
-            <dt className="text-dust-500">Foreign keys</dt>
-            <dd className="space-y-0.5 font-mono text-xs text-dust-300">
+            <dt className="text-dust-600 dark:text-dust-400">Foreign keys</dt>
+            <dd className="space-y-0.5 font-mono text-xs text-dust-600 dark:text-dust-300">
               {entry.foreign_keys.map((fk) => (
                 <div key={`${fk.column}->${fk.target_table}`}>
                   {fk.column} &rarr; {fk.target_table}{' '}
-                  <span className="text-dust-500">({fk.target_prefix})</span>
+                  <span className="text-dust-600 dark:text-dust-400">({fk.target_prefix})</span>
                 </div>
               ))}
             </dd>
@@ -336,15 +337,15 @@ function FindingsPanel({
   }, [findings]);
 
   return (
-    <section className="space-y-2 rounded border border-dust-700 bg-dust-800 p-3">
+    <section className="space-y-2 rounded border border-dust-200 dark:border-dust-700 bg-dust-0 dark:bg-dust-800 p-3">
       <div className="flex flex-wrap items-center gap-2">
-        <h3 className="text-sm font-semibold text-dust-100">Validation</h3>
+        <h3 className="text-sm font-semibold text-dust-900 dark:text-dust-100">Validation</h3>
         {isWorldGen && (
           <button
             type="button"
             onClick={onRunWg}
             disabled={wgRunning}
-            className="rounded border border-petrol-dark bg-petrol-tint px-2.5 py-1 text-xs text-petrol-light hover:bg-petrol-dark disabled:cursor-not-allowed disabled:text-dust-500"
+            className="btn-primary px-2.5 py-1 text-xs"
           >
             {wgRunning ? 'Validating…' : 'Validate WorldGen'}
           </button>
@@ -363,14 +364,14 @@ function FindingsPanel({
       {wgError != null && <ErrorBox error={wgError} />}
 
       {!guardLoading && guardError == null && ordered.length === 0 && (
-        <p className="text-sm text-dust-500">
+        <p className="text-sm text-dust-600 dark:text-dust-400">
           No findings — hard-rule guard checks pass
           {wgResult !== null ? '; the worldgen validator reports nothing for this table' : ''}.
         </p>
       )}
 
       {ordered.length > 0 && (
-        <ul className="divide-y divide-dust-700/60">
+        <ul className="divide-y divide-dust-200/70 dark:divide-dust-700/60">
           {ordered.map((f, i) => (
             <FindingListItem
               key={`${f.source}-${f.code}-${f.row ?? ''}-${f.column ?? ''}-${i}`}
@@ -382,8 +383,8 @@ function FindingsPanel({
       )}
 
       {wgResult !== null && wgOtherCount > 0 && (
-        <p className="text-xs text-dust-500">
-          <Link to="/" className="text-petrol-light hover:text-petrol hover:underline">
+        <p className="text-xs text-dust-600 dark:text-dust-400">
+          <Link to="/" className="text-petrol-ink dark:text-petrol-light hover:text-petrol-dark dark:hover:text-petrol hover:underline">
             {wgOtherCount} finding{wgOtherCount === 1 ? '' : 's'} in other tables — see the
             dashboard
           </Link>
@@ -398,11 +399,11 @@ function GeneratedBanner({ entry }: { entry: ManifestTable }) {
   const detail = entry.flags.generated ?? entry.flags.generated_unverified;
   if (!detail) return null;
   return (
-    <div className="rounded border border-rust-dark bg-rust-tint px-3 py-2 text-sm text-rust-light">
+    <div className="rounded border border-rust/50 dark:border-rust-dark bg-rust-wash dark:bg-rust-tint px-3 py-2 text-sm text-rust-dark dark:text-rust-light">
       Generated by <code className="font-mono">{detail.generator ?? 'a script'}</code> — edits
       belong in the source
       {entry.classification === 'generated_unverified' && typeof detail.source === 'string' && (
-        <span className="text-rust-light/80"> ({detail.source})</span>
+        <span className="text-rust-dark/80 dark:text-rust-light/80"> ({detail.source})</span>
       )}
     </div>
   );

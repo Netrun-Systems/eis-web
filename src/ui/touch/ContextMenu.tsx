@@ -65,7 +65,7 @@ export function ContextMenu({ x, y, items, onSelect, onClose }: ContextMenuProps
         }}
       >
         {/* Center dot */}
-        <div className="absolute w-3 h-3 bg-eis-text-muted/30 rounded-full -translate-x-1.5 -translate-y-1.5" />
+        <div className="absolute w-3 h-3 bg-dust-500/30 rounded-full -translate-x-1.5 -translate-y-1.5" />
 
         {/* Items */}
         {positions.map(item => (
@@ -74,9 +74,9 @@ export function ContextMenu({ x, y, items, onSelect, onClose }: ContextMenuProps
             className={`
               absolute pointer-events-auto
               w-12 h-12 rounded-full flex flex-col items-center justify-center
-              bg-eis-bg-card border border-eis-border shadow-lg
+              bg-dust-0 dark:bg-dust-800 border border-dust-200 dark:border-dust-700 shadow-lg
               active:scale-110 transition-transform touch-manipulation
-              ${item.color ?? 'text-eis-text'}
+              ${item.color ?? 'text-dust-900 dark:text-dust-100'}
             `}
             style={{
               left: item.cx - ITEM_SIZE / 2,
@@ -88,7 +88,7 @@ export function ContextMenu({ x, y, items, onSelect, onClose }: ContextMenuProps
             }}
           >
             <span className="text-lg leading-none">{item.icon}</span>
-            <span className="text-[8px] mt-0.5 leading-none text-eis-text-muted">{item.label}</span>
+            <span className="text-[8px] mt-0.5 leading-none text-dust-600 dark:text-dust-400">{item.label}</span>
           </button>
         ))}
       </animated.div>
@@ -98,17 +98,17 @@ export function ContextMenu({ x, y, items, onSelect, onClose }: ContextMenuProps
 
 // Predefined menus for different target types
 export const NPC_CONTEXT_ITEMS: MenuItem[] = [
-  { id: 'talk', icon: '\u{1F4AC}', label: 'Talk', color: 'text-blue-400' },
-  { id: 'trade', icon: '\u{1F91D}', label: 'Trade', color: 'text-green-400' },
-  { id: 'attack', icon: '\u{2694}', label: 'Attack', color: 'text-red-400' },
+  { id: 'talk', icon: '\u{1F4AC}', label: 'Talk', color: 'text-info-ink dark:text-info-light' },
+  { id: 'trade', icon: '\u{1F91D}', label: 'Trade', color: 'text-petrol-ink dark:text-petrol-light' },
+  { id: 'attack', icon: '\u{2694}', label: 'Attack', color: 'text-rust-dark dark:text-rust-light' },
   { id: 'examine', icon: '\u{1F50D}', label: 'Examine' },
-  { id: 'follow', icon: '\u{1F463}', label: 'Follow', color: 'text-purple-400' },
+  { id: 'follow', icon: '\u{1F463}', label: 'Follow', color: 'text-petrol-ink dark:text-petrol-light' },
 ];
 
 export const OBJECT_CONTEXT_ITEMS: MenuItem[] = [
-  { id: 'use', icon: '\u{1F91A}', label: 'Use', color: 'text-green-400' },
+  { id: 'use', icon: '\u{1F91A}', label: 'Use', color: 'text-petrol-ink dark:text-petrol-light' },
   { id: 'examine', icon: '\u{1F50D}', label: 'Examine' },
-  { id: 'pickup', icon: '\u{1F4E5}', label: 'Pick Up', color: 'text-yellow-400' },
+  { id: 'pickup', icon: '\u{1F4E5}', label: 'Pick Up', color: 'text-amber-ink dark:text-amber-light' },
 ];
 
 export const TILE_CONTEXT_ITEMS: MenuItem[] = [
