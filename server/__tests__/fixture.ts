@@ -457,6 +457,117 @@ export function makeBriefsFixture(): Fixture {
   return fx;
 }
 
+// ---------------------------------------------------------------------------
+// WEB-009 — DAM fixture: mini PCG catalogues + stand-in location_brief.py
+// (carrying a real CONSUMED_PIECE_TYPES dict literal, comments included, so
+// the live-source parser is exercised) + a stand-in catalog_content_pack.py
+// honouring the real CLI contract (--list / --pack X --dry-run / --write,
+// "re-running replaces only that pack's rows") + a stand-in
+// author_city_style_fallback.py --check.
+// ---------------------------------------------------------------------------
+
+/** The dict literal the DAM parser reads — deliberately styled like the real
+ * one: aligned values, trailing commas, inline and full-line comments. */
+const DAM_LOCATION_BRIEF_STANDIN = `# fixture location_brief.py for DAM tests -- only the constant matters here.
+# THE ONLY COPY of the consumed set (fixture edition).
+CONSUMED_PIECE_TYPES = {
+    "Wall":      ("ASM", "EXO"),  # both generators read walls
+    "StairStep": ("VERT",),
+    # Consumed but with ZERO catalogue rows -- the WG-215c case.
+    "Scaffold":  ("EXO",),
+}
+`;
+
+/** 9 rows: 4 consumed (3 Wall + 1 StairStep), 5 inert (2 Door + 3 CornerIn). */
+const DAM_KIT_CATALOG =
+  'AssetID,CityStyle,KitID,Level,PieceType,ContentPath\n' +
+  'LEG_W1,Rural,KIT_LEG,L1,Wall,/Game/Legacy/W1\n' +
+  'LEG_W2,Rural,KIT_LEG,L1,Wall,/Game/Legacy/W2\n' +
+  'LEG_S1,Rural,KIT_LEG,L1,StairStep,/Game/Legacy/S1\n' +
+  'LEG_D1,Rural,KIT_LEG,L1,Door,/Game/Legacy/D1\n' +
+  'LEG_D2,Rural,KIT_LEG,L1,Door,/Game/Legacy/D2\n' +
+  'CHI_W1,Chicago,KIT_CHI,L1,Wall,/Game/Chi/W1\n' +
+  'CHI_C1,Chicago,KIT_CHI,L1,CornerIn,/Game/Chi/C1\n' +
+  'CHI_C2,Chicago,KIT_CHI,L1,CornerIn,/Game/Chi/C2\n' +
+  'CHI_C3,Chicago,KIT_CHI,L1,CornerIn,/Game/Chi/C3\n';
+
+const DAM_PROP_CATALOG =
+  'AssetID,PackID,PropClass,PropType,ContentPath\n' +
+  'PROP_1,LegacyPack,Seating,Chairs,/Game/Legacy/P1\n';
+
+const DAM_FALLBACKS =
+  'CityStyle,Family,FallbackOrder\n' +
+  'Rural,Vernacular,Chicago\n' +
+  'Chicago,Urban,Rural\n';
+
+/** Same CLI + output contract as the real script; --write replaces exactly
+ * the scanned pack's CityStyle rows, so a second write is byte-idempotent. */
+const DAM_CATALOG_SCRIPT_STANDIN = `import csv, io, os, sys
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+KIT = os.path.join(ROOT, "Data", "PCG", "BuildingKitCatalog.csv")
+COLS = ["AssetID", "CityStyle", "KitID", "Level", "PieceType", "ContentPath"]
+PACKS = {"FixturePack": ("Rural", True), "PropsOnly": ("N/A (props only)", False)}
+NEW_KIT = [
+    ["FX_W1", "Rural", "KIT_FX", "L1", "Wall", "/Game/Fixture/W1"],
+    ["FX_W2", "Rural", "KIT_FX", "L1", "Wall", "/Game/Fixture/W2"],
+    ["FX_S1", "Rural", "KIT_FX", "L1", "StairStep", "/Game/Fixture/S1"],
+]
+args = sys.argv[1:]
+if "--list" in args:
+    for name, (style, present) in PACKS.items():
+        print("%-22s %-16s %s" % (name, style, "on disk" if present else "NOT FOUND"))
+    sys.exit(0)
+pack = args[args.index("--pack") + 1] if "--pack" in args else None
+if pack not in PACKS:
+    print("unknown pack: %s (see --list)" % pack)
+    sys.exit(1)
+with io.open(KIT, encoding="utf-8-sig", newline="") as fh:
+    rows = list(csv.reader(fh))[1:]
+kept = [r for r in rows if r[1] != "Rural"]
+merged = kept + NEW_KIT
+print("=" * 30)
+print("%s  ->  CityStyle=Rural  KitID=KIT_FX" % pack)
+print("  architectural (3):")
+print("    Wall              2   name:'W'  <- placeable today")
+print("    StairStep         1   name:'S'  <- placeable today")
+print("-" * 30)
+print("BuildingKitCatalog: %d existing kept + %d new = %d" % (len(kept), len(NEW_KIT), len(merged)))
+print("InteriorPropCatalog: 1 existing kept + 0 new = 1")
+if "--write" in args:
+    with io.open(KIT, "w", encoding="utf-8", newline="") as fh:
+        w = csv.writer(fh, lineterminator="\\n")
+        w.writerow(COLS)
+        w.writerows(merged)
+    print("wrote Data/PCG/BuildingKitCatalog.csv")
+else:
+    print("(dry run -- pass --write to update the catalogues)")
+sys.exit(0)
+`;
+
+const DAM_FALLBACK_CHECK_STANDIN = `print("check ok")
+`;
+
+/** Layer the DAM mini-corpus onto the base fixture repo and commit it. */
+export function makeDamFixture(): Fixture {
+  const fx = makeFixtureRepo();
+  const files: Record<string, string> = {
+    'Scripts/location_brief.py': DAM_LOCATION_BRIEF_STANDIN,
+    'Scripts/catalog_content_pack.py': DAM_CATALOG_SCRIPT_STANDIN,
+    'Scripts/author_city_style_fallback.py': DAM_FALLBACK_CHECK_STANDIN,
+    'Data/PCG/BuildingKitCatalog.csv': DAM_KIT_CATALOG,
+    'Data/PCG/InteriorPropCatalog.csv': DAM_PROP_CATALOG,
+    'Data/PCG/CityStyleFallback.csv': DAM_FALLBACKS,
+  };
+  for (const [rel, content] of Object.entries(files)) {
+    const abs = path.join(fx.repoPath, ...rel.split('/'));
+    fs.mkdirSync(path.dirname(abs), { recursive: true });
+    fs.writeFileSync(abs, content, 'utf-8');
+  }
+  git(fx.repoPath, ['add', '-A']);
+  git(fx.repoPath, ['commit', '-q', '-m', 'fixture: DAM mini-corpus']);
+  return fx;
+}
+
 export function fixtureEntry(stem: string): ManifestTable {
   const entry = FIXTURE_TABLES.find((t) => t.stem === stem);
   if (!entry) throw new Error(`no fixture table ${stem}`);

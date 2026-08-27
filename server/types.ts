@@ -325,3 +325,97 @@ export interface WorldgenPutValidationFailure {
 }
 
 export type WorldgenPutResult = WorldgenPutSuccess | WorldgenPutValidationFailure | WriteFailure;
+
+// ---------------------------------------------------------------------------
+// WEB-009 — DAM
+// ---------------------------------------------------------------------------
+
+/** The consumed set, parsed live from Scripts/location_brief.py (the only
+ * copy, per WG-213/WG-215). Never hardcoded server-side. */
+export interface DamConsumedPieceTypes {
+  source: string;
+  count: number;
+  /** Distinct consumer keys (VERT/ASM/EXO today), sorted. */
+  consumers: string[];
+  /** piece type -> consumers that read it. */
+  types: Record<string, string[]>;
+}
+
+export interface DamPieceTypeRow {
+  name: string;
+  consumed: boolean;
+  consumers: string[];
+  total: number;
+  byStyle: Record<string, number>;
+}
+
+export interface DamStyleFallback {
+  style: string;
+  family: string;
+  chain: string[];
+}
+
+export interface DamKitCoverage {
+  ranAt: string;
+  catalogPath: string;
+  consumedSource: string;
+  totalRows: number;
+  /** Rows whose PieceType some consumer reads. */
+  consumedRows: number;
+  /** WG-218's number, computed live: rows no generator will ever place. */
+  inertRows: number;
+  inertPct: number;
+  styles: string[];
+  pieceTypes: DamPieceTypeRow[];
+  fallbacks: DamStyleFallback[];
+}
+
+export interface DamPackEntry {
+  name: string;
+  cityStyle: string;
+  onDisk: boolean;
+}
+
+export interface DamPackList {
+  ranAt: string;
+  exitCode: number;
+  /** null when --list output resisted parsing — render `raw` instead. */
+  packs: DamPackEntry[] | null;
+  raw: string;
+}
+
+export interface DamMergeSummary {
+  kitKept: number;
+  kitNew: number;
+  kitTotal: number;
+  propKept: number;
+  propNew: number;
+  propTotal: number;
+}
+
+export interface DamDryRunResult {
+  pack: string;
+  ranAt: string;
+  exitCode: number;
+  /** The classification report, verbatim. */
+  report: string;
+  merge: DamMergeSummary | null;
+}
+
+export interface DamFallbackCheck {
+  /** author_city_style_fallback.py --check: 0 ok, non-zero = stale/missing
+   * family — surfaced, never auto-fixed. */
+  exitCode: number;
+  output: string;
+}
+
+export interface DamPackWriteResult {
+  success: true;
+  pack: string;
+  /** null = idempotent (the pack was already registered byte-identically). */
+  commit: string | null;
+  note?: string;
+  diffstat: string | null;
+  report: string;
+  fallbackCheck: DamFallbackCheck;
+}

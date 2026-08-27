@@ -46,6 +46,14 @@ const NAV_GROUPS: NavGroup[] = [
     items: [{ to: '/briefs', label: 'Briefs' }],
   },
   {
+    label: 'Assets',
+    items: [
+      { to: '/dam', label: 'Overview', end: true },
+      { to: '/dam/kit', label: 'Kit coverage' },
+      { to: '/dam/packs', label: 'Content packs' },
+    ],
+  },
+  {
     label: 'Inspect the data',
     items: [
       { to: '/data', label: 'Data health' },
@@ -79,6 +87,7 @@ export function Sidebar() {
               <NavLink
                 key={item.to}
                 to={item.to}
+                end={item.end}
                 className={({ isActive }) =>
                   `flex items-center gap-2 border-l-2 py-1.5 pl-[14px] pr-4 text-sm transition-colors ${
                     isActive

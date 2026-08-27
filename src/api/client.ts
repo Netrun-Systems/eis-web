@@ -6,6 +6,11 @@
 
 import type {
   BriefCheckResponse,
+  DamConsumedTypesResponse,
+  DamDryRunResponse,
+  DamKitCoverageResponse,
+  DamPackListResponse,
+  DamPackWriteResponse,
   BriefGetResponse,
   BriefListResponse,
   BriefPutBody,
@@ -209,6 +214,63 @@ export async function putBrief(name: string, body: BriefPutBody): Promise<BriefP
     });
   }
   return parsed as BriefPutResponse;
+}
+
+/** WEB-009: the consumed piece-type map, parsed live from location_brief.py. */
+export function fetchDamConsumedTypes(): Promise<DamConsumedTypesResponse> {
+  return getJson('/api/dam/consumed-piece-types');
+}
+
+/** WEB-009: the CityStyle x PieceType coverage matrix + live inert numbers. */
+export function fetchDamKitCoverage(): Promise<DamKitCoverageResponse> {
+  return getJson('/api/dam/kit-coverage');
+}
+
+/** WEB-009: configured content packs + on-disk state (--list, read-only). */
+export function fetchDamPackList(): Promise<DamPackListResponse> {
+  return getJson('/api/dam/pack-list');
+}
+
+/** WEB-009: one pack's classification report (--dry-run, read-only). */
+export function runDamPackDryRun(pack: string): Promise<DamDryRunResponse> {
+  return requestJson('/api/dam/pack-dry-run', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ pack }),
+  });
+}
+
+/**
+ * WEB-009: register a pack (--write behind an explicit confirm; dirty-guarded,
+ * single commit, idempotent when already registered). Like putWorldgenWeb, a
+ * refusal (409/400/404) RESOLVES with the failure body; only network/proxy
+ * failures throw.
+ */
+export async function runDamPackWrite(pack: string): Promise<DamPackWriteResponse> {
+  let res: Response;
+  try {
+    res = await fetch('/api/dam/pack-write', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pack, confirm: true }),
+    });
+  } catch {
+    throw new ApiError(API_DOWN_MESSAGE, { connectionFailed: true, status: null });
+  }
+  let parsed: unknown = null;
+  try {
+    parsed = await res.json();
+  } catch {
+    /* non-JSON body handled below */
+  }
+  if (parsed === null || typeof parsed !== 'object') {
+    const connectionFailed = res.status >= 500;
+    throw new ApiError(connectionFailed ? API_DOWN_MESSAGE : `HTTP ${res.status}`, {
+      connectionFailed,
+      status: res.status,
+    });
+  }
+  return parsed as DamPackWriteResponse;
 }
 
 /** WEB-006: which world-gen source fragments exist per stem. */

@@ -12,6 +12,9 @@ import { BriefsPage } from './ui/briefs/BriefsPage';
 import { BriefEditorPage } from './ui/briefs/BriefEditorPage';
 import { WorkflowPage } from './ui/workflow/WorkflowPage';
 import { PhilosophyPage } from './ui/philosophy/PhilosophyPage';
+import { DamOverviewPage } from './ui/dam/DamOverviewPage';
+import { DamKitPage } from './ui/dam/DamKitPage';
+import { DamPacksPage } from './ui/dam/DamPacksPage';
 
 export function App() {
   return (
@@ -29,6 +32,9 @@ export function App() {
           <Route path="/vocabulary/:stem" element={<VocabularyStemPage />} />
           <Route path="/briefs" element={<BriefsPage />} />
           <Route path="/briefs/:name" element={<BriefEditorPage />} />
+          <Route path="/dam" element={<DamOverviewPage />} />
+          <Route path="/dam/kit" element={<DamKitPage />} />
+          <Route path="/dam/packs" element={<DamPacksPage />} />
           <Route path="/world" element={<WorldCanvas />} />
           <Route path="/csv" element={<CSVEditor />} />
           <Route path="*" element={<Navigate to="/workflow" />} />

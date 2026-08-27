@@ -9,6 +9,7 @@ import { writeTable } from './tableWrite.ts';
 import { countFindings, runGuardFindings } from './guards.ts';
 import { runWorldgenValidation } from './validation.ts';
 import { getWorldgenSources, getWorldgenWeb, isWorldgenStem, putWorldgenWeb, WORLDGEN_STEMS } from './worldgen.ts';
+import { dryRunPack, getConsumedPieceTypes, getKitCoverage, getPackList, writePack } from './dam.ts';
 import {
   BRIEF_NAME_RE,
   BRIEFS_DIR,
@@ -298,6 +299,56 @@ export function createApp(options: AppOptions): express.Express {
   app.put('/api/briefs/:name', asyncRoute(async (req, res) => {
     const result = await putBrief(repoPath, req.params.name, req.body as BriefPutBody);
     res.status(result.success ? 200 : statusForFailure(result.reason)).json(result);
+  }));
+
+  // WEB-009: the DAM surfaces. The consumed set is parsed LIVE from
+  // Scripts/location_brief.py — a parse failure is a loud 500, never a
+  // hardcoded fallback (same discipline as the worldgen source parsers).
+  app.get('/api/dam/consumed-piece-types', asyncRoute(async (_req, res) => {
+    try {
+      res.json(getConsumedPieceTypes(repoPath));
+    } catch (err) {
+      res.status(500).json({
+        success: false,
+        reason: 'consumed_parse_failed',
+        detail: err instanceof Error ? err.message : String(err),
+      });
+    }
+  }));
+
+  app.get('/api/dam/kit-coverage', asyncRoute(async (_req, res) => {
+    try {
+      res.json(getKitCoverage(repoPath));
+    } catch (err) {
+      res.status(500).json({
+        success: false,
+        reason: 'coverage_failed',
+        detail: err instanceof Error ? err.message : String(err),
+      });
+    }
+  }));
+
+  app.get('/api/dam/pack-list', asyncRoute(async (_req, res) => {
+    res.json(await getPackList(repoPath));
+  }));
+
+  app.post('/api/dam/pack-dry-run', asyncRoute(async (req, res) => {
+    const outcome = await dryRunPack(repoPath, (req.body as { pack?: unknown } | undefined)?.pack);
+    if (!outcome.ok) {
+      res.status(outcome.status).json({ success: false, reason: outcome.reason, detail: outcome.detail });
+      return;
+    }
+    res.json(outcome.result);
+  }));
+
+  app.post('/api/dam/pack-write', asyncRoute(async (req, res) => {
+    const body = req.body as { pack?: unknown; confirm?: unknown } | undefined;
+    const outcome = await writePack(repoPath, body?.pack, body?.confirm);
+    if (!outcome.ok) {
+      res.status(outcome.status).json({ success: false, reason: outcome.reason, detail: outcome.detail });
+      return;
+    }
+    res.json(outcome.result);
   }));
 
   app.post('/api/run/:script', asyncRoute(async (req, res) => {

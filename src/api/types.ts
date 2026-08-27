@@ -404,3 +404,98 @@ export interface BriefPutFailure {
 }
 
 export type BriefPutResponse = BriefPutSuccess | BriefPutFailure;
+
+// ---------------------------------------------------------------------------
+// WEB-009 — DAM
+// ---------------------------------------------------------------------------
+
+/** The consumed piece-type map, parsed live from Scripts/location_brief.py. */
+export interface DamConsumedTypesResponse {
+  source: string;
+  count: number;
+  consumers: string[];
+  types: Record<string, string[]>;
+}
+
+export interface DamPieceTypeRow {
+  name: string;
+  consumed: boolean;
+  consumers: string[];
+  total: number;
+  byStyle: Record<string, number>;
+}
+
+export interface DamStyleFallback {
+  style: string;
+  family: string;
+  chain: string[];
+}
+
+export interface DamKitCoverageResponse {
+  ranAt: string;
+  catalogPath: string;
+  consumedSource: string;
+  totalRows: number;
+  consumedRows: number;
+  /** WG-218's number, computed live. */
+  inertRows: number;
+  inertPct: number;
+  styles: string[];
+  pieceTypes: DamPieceTypeRow[];
+  fallbacks: DamStyleFallback[];
+}
+
+export interface DamPackEntry {
+  name: string;
+  cityStyle: string;
+  onDisk: boolean;
+}
+
+export interface DamPackListResponse {
+  ranAt: string;
+  exitCode: number;
+  /** null = the --list output resisted parsing; render `raw` preformatted. */
+  packs: DamPackEntry[] | null;
+  raw: string;
+}
+
+export interface DamMergeSummary {
+  kitKept: number;
+  kitNew: number;
+  kitTotal: number;
+  propKept: number;
+  propNew: number;
+  propTotal: number;
+}
+
+export interface DamDryRunResponse {
+  pack: string;
+  ranAt: string;
+  exitCode: number;
+  report: string;
+  merge: DamMergeSummary | null;
+}
+
+export interface DamFallbackCheck {
+  exitCode: number;
+  output: string;
+}
+
+export interface DamPackWriteSuccess {
+  success: true;
+  pack: string;
+  /** null = idempotent — the pack was already registered byte-identically. */
+  commit: string | null;
+  note?: string;
+  diffstat: string | null;
+  report: string;
+  fallbackCheck: DamFallbackCheck;
+}
+
+export interface DamPackWriteFailure {
+  success: false;
+  reason: string;
+  detail?: unknown;
+}
+
+export type DamPackWriteResponse = DamPackWriteSuccess | DamPackWriteFailure;
