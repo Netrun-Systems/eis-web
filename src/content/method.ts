@@ -319,7 +319,8 @@ export type SurfaceKey =
   | 'vocabulary:GenerationRules'
   | 'briefs'
   | 'tables'
-  | 'validation';
+  | 'validation'
+  | 'world-canvas';
 
 export interface SurfaceContext {
   title: string;
@@ -565,6 +566,37 @@ export const METHOD_CONTEXT: Record<SurfaceKey, SurfaceContext> = {
       cite: cite('Part VIII', 'part-viii'),
     },
     readMore: [cite('Part VIII', 'part-viii'), cite('§17', 's17')],
+  },
+
+  'world-canvas': {
+    title: 'The canvas edits instance data',
+    lead:
+      'This canvas edits what exists HERE — WorldLayout’s 64 grid cells are instance data, ' +
+      'the level designer’s side of §2’s split, and per that table instance data is ' +
+      '"edited with a canvas". The vocabulary tables author what KINDS of thing can exist ' +
+      '(§2, §6) and are edited with schema-driven forms, not here.',
+    rules: [
+      {
+        text:
+          'WorldLayout is the one editable table on this surface. Regions and RegionCrosswalk ' +
+          'are generated outputs of the world-gen pipeline — shown read-only in the inspector; ' +
+          'edit the sources and re-run the generator.',
+        cite: cite('§18.6', 's18-6'),
+      },
+      {
+        text:
+          'The crosswalk is declared, with reasons — the inspector shows each join’s MatchBasis, ' +
+          'and an override row carries its stated reason instead of pretending the names match.',
+        cite: cite('§16', 's16'),
+      },
+    ],
+    quote: {
+      text:
+        'The test: if adding a second location of the same kind requires editing the vocabulary, ' +
+        'the split is wrong.',
+      cite: cite('§2', 's2'),
+    },
+    readMore: [cite('§2', 's2'), cite('§6', 's6'), cite('§16', 's16')],
   },
 };
 

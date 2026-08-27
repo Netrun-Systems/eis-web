@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { TouchLayout } from './ui/touch/TouchLayout';
 import { StatusPage } from './ui/StatusPage';
-import { WorldCanvas } from './ui/world/WorldCanvas';
+import { WorldPage } from './ui/world/WorldPage';
 import { CSVEditor } from './ui/csv/CSVEditor';
 import { TablesPage } from './ui/tables/TablesPage';
 import { TableDetailPage } from './ui/tables/TableDetailPage';
@@ -35,7 +35,7 @@ export function App() {
           <Route path="/dam" element={<DamOverviewPage />} />
           <Route path="/dam/kit" element={<DamKitPage />} />
           <Route path="/dam/packs" element={<DamPacksPage />} />
-          <Route path="/world" element={<WorldCanvas />} />
+          <Route path="/world" element={<WorldPage />} />
           <Route path="/csv" element={<CSVEditor />} />
           <Route path="*" element={<Navigate to="/workflow" />} />
         </Routes>
