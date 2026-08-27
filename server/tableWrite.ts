@@ -1,7 +1,4 @@
 import fs from 'node:fs';
-import os from 'node:os';
-import path from 'node:path';
-import crypto from 'node:crypto';
 import type {
   ManifestTable,
   WriteRequestBody,
@@ -9,7 +6,8 @@ import type {
 } from './types.ts';
 import { detectEol, writeCsvAtomic, type AtomicWriteOptions, type Eol } from './csv.ts';
 import { checkClassification, runHardRuleGuards } from './guards.ts';
-import { gitAddAndCommit, gitDiffStat, gitFileStatus, run } from './git.ts';
+import { gitAddAndCommit, gitDiffStat, gitFileStatus } from './git.ts';
+import { runValidatorRaw } from './validation.ts';
 
 export interface WriteContext {
   repoPath: string;
@@ -114,36 +112,15 @@ export async function writeTable(
   return { success: true, commit: committed.commit, validationReport };
 }
 
+/** WEB-003 semantics over the shared WEB-005 runner: a zero exit with no JSON
+ * still counts as ok (with a note), a non-zero exit with no JSON is a
+ * validation failure. */
 async function runWorldgenValidator(
   repoPath: string,
 ): Promise<{ ok: boolean; json?: unknown; output?: string }> {
-  const tmpJson = path.join(
-    os.tmpdir(),
-    `eisweb-worldgen-validation-${crypto.randomBytes(6).toString('hex')}.json`,
-  );
-  try {
-    const r = await run(
-      'python',
-      ['Scripts/validate_worldgen_metadata.py', '--dir', 'Data/WorldGen', '--json', tmpJson],
-      repoPath,
-    );
-    let json: unknown = null;
-    if (fs.existsSync(tmpJson)) {
-      try {
-        json = JSON.parse(fs.readFileSync(tmpJson, 'utf-8'));
-      } catch {
-        json = null;
-      }
-    }
-    if (r.code !== 0 && json === null) {
-      return { ok: false, output: (r.stdout + '\n' + r.stderr).trim() };
-    }
-    return { ok: true, json: json ?? { note: 'validator produced no JSON', stdout: r.stdout } };
-  } finally {
-    try {
-      fs.rmSync(tmpJson, { force: true });
-    } catch {
-      /* best effort */
-    }
+  const r = await runValidatorRaw(repoPath);
+  if (r.code !== 0 && r.json === null) {
+    return { ok: false, output: (r.stdout + '\n' + r.stderr).trim() };
   }
+  return { ok: true, json: r.json ?? { note: 'validator produced no JSON', stdout: r.stdout } };
 }

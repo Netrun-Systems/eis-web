@@ -9,8 +9,10 @@ import type {
   HealthResponse,
   ManifestResponse,
   ReportResponse,
+  TableGuardCheckResponse,
   TableRowsResponse,
   TablesResponse,
+  WorldgenValidationResponse,
 } from './types';
 
 /** The one message every component shows on connection failure — kept
@@ -38,10 +40,10 @@ export function describeApiError(err: unknown): string {
   return String(err);
 }
 
-async function getJson<T>(url: string): Promise<T> {
+async function requestJson<T>(url: string, init?: RequestInit): Promise<T> {
   let res: Response;
   try {
-    res = await fetch(url);
+    res = await fetch(url, init);
   } catch {
     // fetch rejects (TypeError) only on network-level failure. With the Vite
     // proxy in front, a dead API surfaces as a 500 from the proxy instead —
@@ -69,6 +71,9 @@ async function getJson<T>(url: string): Promise<T> {
   return (await res.json()) as T;
 }
 
+const getJson = <T,>(url: string): Promise<T> => requestJson<T>(url);
+const postJson = <T,>(url: string): Promise<T> => requestJson<T>(url, { method: 'POST' });
+
 export function fetchHealth(): Promise<HealthResponse> {
   return getJson('/api/health');
 }
@@ -91,4 +96,15 @@ export function fetchGitLog(path: string, n = 10): Promise<GitLogResponse> {
 
 export function fetchReport(name: string): Promise<ReportResponse> {
   return getJson(`/api/reports/${encodeURIComponent(name)}`);
+}
+
+/** WEB-005: run the repo's worldgen validator server-side. exitCode 1 in the
+ * response means errors were found — the call still resolves. */
+export function runWorldgenValidation(): Promise<WorldgenValidationResponse> {
+  return postJson('/api/validate/worldgen');
+}
+
+/** WEB-005: dry-run the hard-rule write guards against the file on disk. */
+export function runTableGuardCheck(path: string): Promise<TableGuardCheckResponse> {
+  return postJson(`/api/validate/table?path=${encodeURIComponent(path)}`);
 }

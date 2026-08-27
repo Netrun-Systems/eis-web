@@ -1,9 +1,15 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { fetchGitLog, fetchTableRows } from '../../api/client';
+import {
+  fetchGitLog,
+  fetchTableRows,
+  runTableGuardCheck,
+  runWorldgenValidation,
+} from '../../api/client';
 import { useApi } from '../../api/useApi';
-import type { ManifestTable } from '../../api/types';
+import type { Finding, ManifestTable, WorldgenValidationResponse } from '../../api/types';
 import { ClassificationBadge, ErrorBox, HazardChip, LoadingBox } from './badges';
+import { FindingCountsStrip, FindingListItem } from '../validation/findings';
 
 const PAGE_SIZE = 100;
 
@@ -14,11 +20,22 @@ export function TableDetailPage() {
 
   const rowsState = useApi(() => fetchTableRows(tablePath), [tablePath]);
   const logState = useApi(() => fetchGitLog(tablePath), [tablePath]);
+  // WEB-005: the hard-rule guards dry-run automatically for the open table.
+  const guardState = useApi(() => runTableGuardCheck(tablePath), [tablePath]);
   const [page, setPage] = useState(0);
 
-  // Landing on a different table always starts at page 1.
+  // WEB-005: on-demand full worldgen validation (Data/WorldGen tables only).
+  const isWorldGen = tablePath.startsWith('Data/WorldGen/');
+  const [wgResult, setWgResult] = useState<WorldgenValidationResponse | null>(null);
+  const [wgRunning, setWgRunning] = useState(false);
+  const [wgError, setWgError] = useState<unknown>(null);
+
+  // Landing on a different table always starts at page 1, with no stale
+  // validation run carried over.
   useEffect(() => {
     setPage(0);
+    setWgResult(null);
+    setWgError(null);
   }, [tablePath]);
 
   const entry = rowsState.data?.manifestEntry;
@@ -39,6 +56,47 @@ export function TableDetailPage() {
     return entry.column_types[index]?.ue5_type ?? null;
   };
 
+  // WEB-005: findings shown here = the auto guard dry-run + (when run) the
+  // worldgen findings whose table matches this one. The validator names
+  // tables by stem, so the match is against entry.stem.
+  const wgForThisTable = useMemo(
+    () =>
+      wgResult === null || entry === undefined
+        ? []
+        : wgResult.findings.filter((f) => f.table === entry.stem),
+    [wgResult, entry],
+  );
+  const wgOtherCount = wgResult === null ? 0 : wgResult.findings.length - wgForThisTable.length;
+  const findings = useMemo(
+    () => [...(guardState.data?.findings ?? []), ...wgForThisTable],
+    [guardState.data, wgForThisTable],
+  );
+
+  // Grid highlighting: every row whose column-0 value a finding names.
+  const flaggedKeys = useMemo(() => {
+    const s = new Set<string>();
+    for (const f of findings) if (f.row !== undefined) s.add(f.row);
+    return s;
+  }, [findings]);
+
+  // Jump-to-row: first data row carrying the finding's key, paged correctly.
+  const jumpToKey = (key: string) => {
+    const idx = (rowsState.data?.rows ?? []).findIndex((r) => (r[0] ?? '') === key);
+    if (idx >= 0) setPage(Math.floor(idx / PAGE_SIZE));
+  };
+
+  const runWg = () => {
+    setWgRunning(true);
+    setWgError(null);
+    runWorldgenValidation()
+      .then(setWgResult)
+      .catch((e) => {
+        setWgError(e);
+        setWgResult(null);
+      })
+      .finally(() => setWgRunning(false));
+  };
+
   return (
     <div className="max-w-6xl space-y-4">
       <div className="text-xs">
@@ -54,6 +112,19 @@ export function TableDetailPage() {
         <>
           <TableHeader entry={entry} />
           <GeneratedBanner entry={entry} />
+
+          <FindingsPanel
+            guardLoading={guardState.loading}
+            guardError={guardState.error}
+            findings={findings}
+            onJumpToKey={jumpToKey}
+            isWorldGen={isWorldGen}
+            wgRunning={wgRunning}
+            wgError={wgError}
+            wgResult={wgResult}
+            wgOtherCount={wgOtherCount}
+            onRunWg={runWg}
+          />
 
           <div className="overflow-x-auto rounded border border-dust-700">
             <table className="min-w-full border-collapse text-xs">
@@ -75,19 +146,31 @@ export function TableDetailPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-dust-700/60">
-                {pageRows.map((row, r) => (
-                  <tr key={clampedPage * PAGE_SIZE + r} className="hover:bg-dust-800/60">
-                    {row.map((cell, c) => (
-                      <td
-                        key={c}
-                        className="max-w-md truncate px-2 py-1 font-mono text-dust-300"
-                        title={cell}
-                      >
-                        {cell}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
+                {pageRows.map((row, r) => {
+                  const flagged = flaggedKeys.has(row[0] ?? '');
+                  return (
+                    <tr
+                      key={clampedPage * PAGE_SIZE + r}
+                      className={
+                        flagged
+                          ? 'bg-rust-tint/50 hover:bg-rust-tint'
+                          : 'hover:bg-dust-800/60'
+                      }
+                    >
+                      {row.map((cell, c) => (
+                        <td
+                          key={c}
+                          className={`max-w-md truncate px-2 py-1 font-mono ${
+                            flagged ? 'text-rust-light' : 'text-dust-300'
+                          }`}
+                          title={cell}
+                        >
+                          {cell}
+                        </td>
+                      ))}
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -218,6 +301,95 @@ function TableHeader({ entry }: { entry: ManifestTable }) {
         )}
       </dl>
     </header>
+  );
+}
+
+/** WEB-005: validation findings for the open table — the auto guard dry-run
+ * plus, for Data/WorldGen tables, an on-demand full validator run filtered to
+ * this table. Rendered above the grid; flagged rows are highlighted in it. */
+function FindingsPanel({
+  guardLoading,
+  guardError,
+  findings,
+  onJumpToKey,
+  isWorldGen,
+  wgRunning,
+  wgError,
+  wgResult,
+  wgOtherCount,
+  onRunWg,
+}: {
+  guardLoading: boolean;
+  guardError: unknown;
+  findings: Finding[];
+  onJumpToKey: (key: string) => void;
+  isWorldGen: boolean;
+  wgRunning: boolean;
+  wgError: unknown;
+  wgResult: WorldgenValidationResponse | null;
+  wgOtherCount: number;
+  onRunWg: () => void;
+}) {
+  const ordered = useMemo(() => {
+    const rank = { ERROR: 0, WARN: 1, INFO: 2 } as const;
+    return [...findings].sort((a, b) => rank[a.severity] - rank[b.severity]);
+  }, [findings]);
+
+  return (
+    <section className="space-y-2 rounded border border-dust-700 bg-dust-800 p-3">
+      <div className="flex flex-wrap items-center gap-2">
+        <h3 className="text-sm font-semibold text-dust-100">Validation</h3>
+        {isWorldGen && (
+          <button
+            type="button"
+            onClick={onRunWg}
+            disabled={wgRunning}
+            className="rounded border border-petrol-dark bg-petrol-tint px-2.5 py-1 text-xs text-petrol-light hover:bg-petrol-dark disabled:cursor-not-allowed disabled:text-dust-500"
+          >
+            {wgRunning ? 'Validating…' : 'Validate WorldGen'}
+          </button>
+        )}
+        {wgResult && (
+          <FindingCountsStrip
+            counts={wgResult.summaryCounts}
+            ranAt={wgResult.ranAt}
+            exitCode={wgResult.exitCode}
+          />
+        )}
+      </div>
+
+      {guardLoading && <LoadingBox label="Running guard checks" />}
+      {guardError != null && <ErrorBox error={guardError} />}
+      {wgError != null && <ErrorBox error={wgError} />}
+
+      {!guardLoading && guardError == null && ordered.length === 0 && (
+        <p className="text-sm text-dust-500">
+          No findings — hard-rule guard checks pass
+          {wgResult !== null ? '; the worldgen validator reports nothing for this table' : ''}.
+        </p>
+      )}
+
+      {ordered.length > 0 && (
+        <ul className="divide-y divide-dust-700/60">
+          {ordered.map((f, i) => (
+            <FindingListItem
+              key={`${f.source}-${f.code}-${f.row ?? ''}-${f.column ?? ''}-${i}`}
+              finding={f}
+              onJumpToRow={f.row !== undefined ? () => onJumpToKey(f.row as string) : undefined}
+            />
+          ))}
+        </ul>
+      )}
+
+      {wgResult !== null && wgOtherCount > 0 && (
+        <p className="text-xs text-dust-500">
+          <Link to="/" className="text-petrol-light hover:text-petrol hover:underline">
+            {wgOtherCount} finding{wgOtherCount === 1 ? '' : 's'} in other tables — see the
+            dashboard
+          </Link>
+        </p>
+      )}
+    </section>
   );
 }
 

@@ -43,6 +43,14 @@ export default {
           dark: '#6e3423', // hazard borders
           tint: '#3a241d', // hazard chip/banner background
         },
+        // WEB-005: WARN-severity findings — deliberately distinct from rust,
+        // which stays reserved for ERROR/hazard.
+        amber: {
+          light: '#d9b56c', // warning text on dark
+          DEFAULT: '#a8802e', // warning chips
+          dark: '#6e5423', // warning borders
+          tint: '#38301d', // warning chip/banner background
+        },
       },
       fontFamily: {
         mono: ['"JetBrains Mono"', 'Consolas', 'monospace'],

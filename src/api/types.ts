@@ -122,3 +122,43 @@ export interface ReportResponse {
   mtime: string;
   markdown: string;
 }
+
+/** WEB-005 — one validation finding (mirror of server/types.ts Finding).
+ * `table` is a stem for worldgen-validator findings (the validator names
+ * tables by stem); row/column are present only when the source knows them. */
+export type FindingSeverity = 'ERROR' | 'WARN' | 'INFO';
+export type FindingSource = 'worldgen-validator' | 'table-guards';
+
+export interface Finding {
+  source: FindingSource;
+  severity: FindingSeverity;
+  code: string;
+  table?: string;
+  row?: string;
+  column?: string;
+  message: string;
+  detail?: unknown;
+}
+
+export interface FindingSummaryCounts {
+  ERROR: number;
+  WARN: number;
+  INFO: number;
+}
+
+/** POST /api/validate/worldgen. exitCode 1 = the validator found errors —
+ * still a 200 result. */
+export interface WorldgenValidationResponse {
+  ranAt: string;
+  exitCode: number;
+  findings: Finding[];
+  summaryCounts: FindingSummaryCounts;
+}
+
+/** POST /api/validate/table — dry-run hard-rule guards on the on-disk file. */
+export interface TableGuardCheckResponse {
+  ranAt: string;
+  path: string;
+  findings: Finding[];
+  summaryCounts: FindingSummaryCounts;
+}

@@ -60,6 +60,16 @@ export const FIXTURE_TABLES: ManifestTable[] = [
     classification: 'legacy',
     flags: { legacy: { source: 'fixture legacy folder' } },
   }),
+  // WEB-005: a table whose ON-DISK content collides on column 0, for the
+  // dry-run guard endpoint (a miniature LootTables).
+  table({
+    path: 'Data/Inventory/Loot.csv',
+    folder: 'Inventory',
+    stem: 'Loot',
+    columns: ['RowName', 'LootId', 'Item'],
+    row_count: 6,
+    row_key: { column0: 'RowName', unique: false, rows_lost_on_import: 3 },
+  }),
 ];
 
 const FILES: Record<string, string> = {
@@ -70,6 +80,35 @@ const FILES: Record<string, string> = {
   'Data/PCG/RawParts.csv': 'RowName,PartId,Notes\nPART_1,PART_1,fine\nPART_2,PART_2,also fine\n',
   'Data/WorldGen/GenOut.csv': 'RowName,Value\nG_1,G_1\nG_2,G_2\n',
   'Data/Legacy_Import/Old.csv': 'Name,Value\nOLD_1,1\nOLD_2,2\n',
+  // WEB-005: colliding keys ON DISK — LOOT_A x3, LOOT_C x2 (3 rows lost).
+  'Data/Inventory/Loot.csv':
+    'RowName,LootId,Item\n' +
+    'LOOT_A,LOOT_A,Sword\n' +
+    'LOOT_A,LOOT_A,Shield\n' +
+    'LOOT_B,LOOT_B,Potion\n' +
+    'LOOT_A,LOOT_A,Gem\n' +
+    'LOOT_C,LOOT_C,Coin\n' +
+    'LOOT_C,LOOT_C,Ring\n',
+  // WEB-005: stand-in worldgen validator — same CLI contract as the real
+  // Scripts/validate_worldgen_metadata.py (--dir, --json <file>), emits one
+  // ERROR + one WARNING item and exits 1 (errors found), so tests can prove
+  // exit 1 is a result, not an HTTP failure.
+  'Scripts/validate_worldgen_metadata.py': [
+    'import json, sys',
+    'args = sys.argv[1:]',
+    'out = args[args.index("--json") + 1] if "--json" in args else None',
+    'payload = {"dir": "Data/WorldGen", "items": [',
+    '  {"severity": "ERROR", "rule": "V9-fixture-error", "table": "GenOut",',
+    '   "column": "Value", "row": "G_1", "detail": "fixture error finding"},',
+    '  {"severity": "WARNING", "rule": "V9-fixture-warning", "table": "GenOut",',
+    '   "column": None, "row": None, "detail": "fixture warning finding"},',
+    ']}',
+    'if out:',
+    '    with open(out, "w") as fh:',
+    '        json.dump(payload, fh)',
+    'sys.exit(1)',
+    '',
+  ].join('\n'),
   // WEB-004: the two allow-listed dashboard reports.
   'Documentation/World/WORLDGEN_BACKLOG.md':
     '# World-Gen Metadata — Still Needed\n\nFixture backlog body.\n',

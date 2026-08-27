@@ -6,7 +6,9 @@ import { readCsvFile } from './csv.ts';
 import { gitHeadShort, gitLogForFile, run } from './git.ts';
 import { listAllowedScripts, runAllowedScript } from './scripts.ts';
 import { writeTable } from './tableWrite.ts';
-import type { TableListEntry, WriteRequestBody } from './types.ts';
+import { countFindings, runGuardFindings } from './guards.ts';
+import { runWorldgenValidation } from './validation.ts';
+import type { TableGuardCheckResult, TableListEntry, WriteRequestBody } from './types.ts';
 
 export interface AppOptions {
   repoPath: string;
@@ -141,6 +143,37 @@ export function createApp(options: AppOptions): express.Express {
       body,
     );
     res.status(result.success ? 200 : statusForFailure(result.reason)).json(result);
+  }));
+
+  // WEB-005: the worldgen validator as a service. The validator exiting 1
+  // (errors found) is a RESULT — only spawn/parse problems reach the 5xx
+  // handler (runWorldgenValidation throws for those).
+  app.post('/api/validate/worldgen', asyncRoute(async (_req, res) => {
+    res.json(await runWorldgenValidation(repoPath));
+  }));
+
+  // WEB-005: the WEB-003 hard-rule guards in dry-run against the file
+  // currently on disk — same Finding[] shape, no write, no refusal semantics.
+  app.post('/api/validate/table', asyncRoute(async (req, res) => {
+    const callerPath = String(req.query.path ?? '');
+    const resolved = resolveManifestTable(repoPath, callerPath);
+    if (!resolved) {
+      res.status(404).json({
+        success: false,
+        reason: 'unknown_table',
+        detail: `path is not a manifest-listed table: ${callerPath}`,
+      });
+      return;
+    }
+    const { payload } = readCsvFile(resolved.absPath);
+    const findings = runGuardFindings(resolved.entry, payload);
+    const body: TableGuardCheckResult = {
+      ranAt: new Date().toISOString(),
+      path: resolved.relPath,
+      findings,
+      summaryCounts: countFindings(findings),
+    };
+    res.json(body);
   }));
 
   app.post('/api/run/:script', asyncRoute(async (req, res) => {

@@ -1,0 +1,86 @@
+{
+  "_comment": "Verbatim output of `python Scripts/validate_worldgen_metadata.py --dir Data/WorldGen --json` in the EISCORE repo, 2026-08-27 (0 errors / 2 warnings / 7 info), PLUS one hand-added ERROR item (rule fixture-added-error) so the ERROR mapping path is exercised — the live corpus currently has no errors.",
+  "dir": "Data/WorldGen",
+  "items": [
+    {
+      "severity": "ERROR",
+      "rule": "fixture-added-error",
+      "table": "Regions",
+      "column": "RegionID",
+      "row": "REG_Fixture",
+      "detail": "hand-added ERROR entry: not from a real run; exercises the ERROR mapping path"
+    },
+    {
+      "severity": "WARNING",
+      "rule": "V3-orphan-spacetype",
+      "table": "SpaceTypes",
+      "column": null,
+      "row": null,
+      "detail": "1 space type(s) are unreachable: named by no structure AND named by no other space's adjacency. Nothing can ever generate them: SPC_SecondaryCorridor"
+    },
+    {
+      "severity": "WARNING",
+      "rule": "V3-structure-no-assets",
+      "table": "StructureTypes",
+      "column": null,
+      "row": null,
+      "detail": "2 of 26 structure types have NO AssetRegistry row naming them via DefaultStructureType: STR_University, STR_Warehouse"
+    },
+    {
+      "severity": "INFO",
+      "rule": "V2-group-token-resolved",
+      "table": "AssetRegistry",
+      "column": "RegionAffinity",
+      "row": null,
+      "detail": "11 reference(s) use group token(s) that GroupTokens.csv expands: AllBuilt(12), AllRegions(13), AllSettled(7), AllSurface(11), AllUrban(3)"
+    },
+    {
+      "severity": "INFO",
+      "rule": "V2-group-token-resolved",
+      "table": "AssetRegistry",
+      "column": "NetworkAffinity",
+      "row": null,
+      "detail": "1 reference(s) use group token(s) that GroupTokens.csv expands: AllUtility(6)"
+    },
+    {
+      "severity": "INFO",
+      "rule": "V2-movement-mode",
+      "table": "AssetRegistry",
+      "column": "TraversalType",
+      "row": null,
+      "detail": "49 value(s) are movement modes rather than connections (Climb, Track, Vault, Vehicle, Walk, WalkCrossing). Legal: this column accepts either a CON_ row or a mode; Climb/Vault already exist in Data/World/TraversalProfiles.csv"
+    },
+    {
+      "severity": "INFO",
+      "rule": "V3-furniture-profile",
+      "table": "FurnitureProfiles",
+      "column": null,
+      "row": null,
+      "detail": "all 45 referenced profile(s) resolve across 45 row(s)"
+    },
+    {
+      "severity": "INFO",
+      "rule": "V2-group-token-resolved",
+      "table": "InfrastructureNetworks",
+      "column": "RegionAffinity",
+      "row": null,
+      "detail": "7 reference(s) use group token(s) that GroupTokens.csv expands: AllOffWorld(1), AllSettled(7), AllSurface(11), AllUrban(3)"
+    },
+    {
+      "severity": "INFO",
+      "rule": "V3-adjacency-only-spacetype",
+      "table": "SpaceTypes",
+      "column": null,
+      "row": null,
+      "detail": "17 space type(s) are named by no structure but ARE reached through adjacency -- expected for circulation: SPC_CommandCorridor, SPC_Comms, SPC_FarmPath, SPC_FarmRoad, SPC_OreChute, SPC_Penstock, SPC_PrimaryCorridor, SPC_PrimaryPassage, SPC_Reactor, SPC_Reception"
+    },
+    {
+      "severity": "INFO",
+      "rule": "V2-group-token-resolved",
+      "table": "StructureTypes",
+      "column": "RegionAffinity",
+      "row": null,
+      "detail": "1 reference(s) use group token(s) that GroupTokens.csv expands: AllRegions(13)"
+    }
+  ]
+}

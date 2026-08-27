@@ -1,11 +1,18 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { fetchHealth, fetchManifest, fetchReport } from '../api/client';
+import { fetchHealth, fetchManifest, fetchReport, runWorldgenValidation } from '../api/client';
 import { useApi } from '../api/useApi';
-import type { ManifestResponse, ManifestSummary } from '../api/types';
+import type {
+  Finding,
+  ManifestResponse,
+  ManifestSummary,
+  ManifestTable,
+  WorldgenValidationResponse,
+} from '../api/types';
 import { ErrorBox, LoadingBox } from './tables/badges';
 import { ManifestSummaryStrip } from './tables/ManifestSummaryStrip';
 import { Markdown } from './markdown/Markdown';
+import { FindingCountsStrip, FindingListItem, bySeverity } from './validation/findings';
 
 /** Live strip over /api/health (WEB-003). Shows the connected EISCORE repo +
  * HEAD, or how to start the API when the fetch fails. */
@@ -102,6 +109,108 @@ function ReportCard({ name, title }: { name: string; title: string }) {
   );
 }
 
+/** WEB-005: run the repo's worldgen validator and show its findings, grouped
+ * by severity — ERROR first (rust), then WARN (amber), INFO collapsed. Each
+ * finding links to its table's detail page when the stem resolves to a
+ * manifest path. */
+function ValidationCard({ tables }: { tables: ManifestTable[] }) {
+  const [running, setRunning] = useState(false);
+  const [result, setResult] = useState<WorldgenValidationResponse | null>(null);
+  const [error, setError] = useState<unknown>(null);
+
+  // The validator names tables by stem. Resolve stem -> detail-page path via
+  // the manifest, preferring the WorldGen folder when a stem is ambiguous.
+  const pathForStem = useMemo(() => {
+    const m = new Map<string, string>();
+    for (const t of tables) if (!m.has(t.stem)) m.set(t.stem, t.path);
+    for (const t of tables) if (t.folder === 'WorldGen') m.set(t.stem, t.path);
+    return m;
+  }, [tables]);
+
+  const run = () => {
+    setRunning(true);
+    setError(null);
+    runWorldgenValidation()
+      .then(setResult)
+      .catch((e) => {
+        setError(e);
+        setResult(null);
+      })
+      .finally(() => setRunning(false));
+  };
+
+  const linkFor = (f: Finding): string | undefined => {
+    const p = f.table !== undefined ? pathForStem.get(f.table) : undefined;
+    return p !== undefined ? `/tables/${p}` : undefined;
+  };
+
+  const renderGroup = (findings: Finding[]) => (
+    <ul className="divide-y divide-dust-700/60">
+      {findings.map((f, i) => (
+        <FindingListItem
+          key={`${f.code}-${f.table ?? ''}-${f.column ?? ''}-${i}`}
+          finding={f}
+          tableLinkTo={linkFor(f)}
+        />
+      ))}
+    </ul>
+  );
+
+  const errors = result === null ? [] : bySeverity(result.findings, 'ERROR');
+  const warns = result === null ? [] : bySeverity(result.findings, 'WARN');
+  const infos = result === null ? [] : bySeverity(result.findings, 'INFO');
+
+  return (
+    <section className="rounded border border-dust-700 bg-dust-800 p-3">
+      <div className="mb-2 flex flex-wrap items-center gap-3">
+        <h3 className="text-sm font-semibold text-dust-100">Validation</h3>
+        <button
+          type="button"
+          onClick={run}
+          disabled={running}
+          className="rounded border border-petrol-dark bg-petrol-tint px-3 py-1.5 text-sm text-petrol-light hover:bg-petrol-dark disabled:cursor-not-allowed disabled:text-dust-500"
+        >
+          {running ? 'Running…' : 'Run WorldGen validation'}
+        </button>
+        {result && (
+          <FindingCountsStrip
+            counts={result.summaryCounts}
+            ranAt={result.ranAt}
+            exitCode={result.exitCode}
+          />
+        )}
+      </div>
+
+      {error != null && <ErrorBox error={error} />}
+      {result === null && error == null && !running && (
+        <p className="text-sm text-dust-500">
+          Runs <code className="font-mono text-xs">Scripts/validate_worldgen_metadata.py</code>{' '}
+          server-side against <code className="font-mono text-xs">Data/WorldGen</code> and
+          renders its findings here.
+        </p>
+      )}
+
+      {result && (
+        <div className="space-y-2">
+          {result.findings.length === 0 && (
+            <p className="text-sm text-dust-500">No findings — the corpus validates clean.</p>
+          )}
+          {errors.length > 0 && renderGroup(errors)}
+          {warns.length > 0 && renderGroup(warns)}
+          {infos.length > 0 && (
+            <details>
+              <summary className="cursor-pointer text-xs text-dust-500 hover:text-dust-300">
+                {infos.length} info finding{infos.length === 1 ? '' : 's'}
+              </summary>
+              {renderGroup(infos)}
+            </details>
+          )}
+        </div>
+      )}
+    </section>
+  );
+}
+
 /** Red-flag card: every table the manifest says loses rows on import. */
 function RowLossCard({ summary }: { summary: ManifestSummary }) {
   const losers = summary.tables_losing_rows_on_import ?? [];
@@ -151,6 +260,8 @@ export function StatusPage() {
       )}
 
       <ManifestFreshnessCheck />
+
+      <ValidationCard tables={manifestState.data?.manifest.tables ?? []} />
 
       <ReportCard name="worldgen-backlog" title="World-Gen Backlog (WORLDGEN_BACKLOG.md)" />
       <ReportCard name="asset-gaps" title="Asset Gaps (ASSET_GAPS.md)" />

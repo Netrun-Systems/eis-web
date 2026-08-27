@@ -92,6 +92,55 @@ export interface GuardCheckResult {
   detail?: unknown;
 }
 
+/**
+ * WEB-005 — one validation finding, from either validation surface. Field
+ * names mirror what the sources actually give:
+ *   - the worldgen validator's JSON items are {severity, rule, table, column,
+ *     row, detail}: rule -> code, its `detail` string -> message, `table` is a
+ *     stem (e.g. "SpaceTypes") and stays a stem, null column/row are omitted.
+ *     Its severity literal is "WARNING", normalized to WARN here.
+ *   - table guards emit ERROR findings with row/column filled where the guard
+ *     knows them (row = the column-0 key for collisions); structured extras
+ *     (collision row numbers, densities, offending values) ride in `detail`.
+ */
+export type FindingSeverity = 'ERROR' | 'WARN' | 'INFO';
+export type FindingSource = 'worldgen-validator' | 'table-guards';
+
+export interface Finding {
+  source: FindingSource;
+  severity: FindingSeverity;
+  code: string;
+  table?: string;
+  row?: string;
+  column?: string;
+  message: string;
+  detail?: unknown;
+}
+
+export interface FindingSummaryCounts {
+  ERROR: number;
+  WARN: number;
+  INFO: number;
+}
+
+/** POST /api/validate/worldgen response. exitCode 1 means the validator found
+ * errors — a result, never an HTTP failure. */
+export interface WorldgenValidationResult {
+  ranAt: string;
+  exitCode: number;
+  findings: Finding[];
+  summaryCounts: FindingSummaryCounts;
+}
+
+/** POST /api/validate/table response — dry-run hard-rule guards against the
+ * file currently on disk. No process runs, so no exitCode. */
+export interface TableGuardCheckResult {
+  ranAt: string;
+  path: string;
+  findings: Finding[];
+  summaryCounts: FindingSummaryCounts;
+}
+
 export interface WriteSuccess {
   success: true;
   commit: string;
