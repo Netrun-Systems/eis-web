@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import {
   fetchGitLog,
@@ -7,13 +7,20 @@ import {
   runWorldgenValidation,
 } from '../../api/client';
 import { useApi } from '../../api/useApi';
-import type { Finding, ManifestTable, WorldgenValidationResponse } from '../../api/types';
+import type {
+  Finding,
+  ManifestTable,
+  TablePutSuccess,
+  WorldgenValidationResponse,
+} from '../../api/types';
 import { ClassificationBadge, ErrorBox, HazardChip, LoadingBox } from './badges';
 import { FindingCountsStrip, FindingListItem } from '../validation/findings';
+import { TableEditor } from './TableEditor';
 
 const PAGE_SIZE = 100;
 
-/** Read-only detail view for one manifest-listed table (WEB-004). */
+/** Detail view for one manifest-listed table (WEB-004); WEB-008 adds the
+ * writable grid for authored tables. */
 export function TableDetailPage() {
   const params = useParams();
   const tablePath = params['*'] ?? '';
@@ -23,6 +30,13 @@ export function TableDetailPage() {
   // WEB-005: the hard-rule guards dry-run automatically for the open table.
   const guardState = useApi(() => runTableGuardCheck(tablePath), [tablePath]);
   const [page, setPage] = useState(0);
+
+  // WEB-008: edit mode — offered on authored tables only. The server refuses
+  // generated/generated_unverified/legacy anyway; the UI does not offer.
+  const [editing, setEditing] = useState(false);
+  const [editorDirty, setEditorDirty] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState<TablePutSuccess | null>(null);
+  const onDirtyChange = useCallback((d: boolean) => setEditorDirty(d), []);
 
   // WEB-005: on-demand full worldgen validation (Data/WorldGen tables only).
   const isWorldGen = tablePath.startsWith('Data/WorldGen/');
@@ -36,6 +50,9 @@ export function TableDetailPage() {
     setPage(0);
     setWgResult(null);
     setWgError(null);
+    setEditing(false);
+    setEditorDirty(false);
+    setSaveSuccess(null);
   }, [tablePath]);
 
   const entry = rowsState.data?.manifestEntry;
@@ -97,10 +114,37 @@ export function TableDetailPage() {
       .finally(() => setWgRunning(false));
   };
 
+  // WEB-008: after any successful save — success box, grid re-fetch, dry-run
+  // guard re-check (WEB-005 endpoint) and git-history refresh.
+  const onSaved = (result: TablePutSuccess) => {
+    setSaveSuccess(result);
+    setEditing(false);
+    setEditorDirty(false);
+    rowsState.reload();
+    guardState.reload();
+    logState.reload();
+  };
+
+  const exitEditor = () => {
+    if (editorDirty && !window.confirm('You have unsaved edits — close the editor and lose them?'))
+      return;
+    setEditing(false);
+    setEditorDirty(false);
+  };
+
+  const confirmLeave = (e: React.MouseEvent) => {
+    if (editing && editorDirty && !window.confirm('You have unsaved edits — leave and lose them?'))
+      e.preventDefault();
+  };
+
   return (
     <div className="max-w-6xl space-y-4">
       <div className="text-xs">
-        <Link to="/tables" className="text-petrol-light hover:text-petrol hover:underline">
+        <Link
+          to="/tables"
+          onClick={confirmLeave}
+          className="text-petrol-light hover:text-petrol hover:underline"
+        >
           &larr; All tables
         </Link>
       </div>
@@ -112,6 +156,29 @@ export function TableDetailPage() {
         <>
           <TableHeader entry={entry} />
           <GeneratedBanner entry={entry} />
+
+          {/* WEB-008: Edit is offered on authored tables only. */}
+          {entry.classification === 'authored' && !editing && (
+            <div>
+              <button
+                type="button"
+                onClick={() => {
+                  setSaveSuccess(null);
+                  setEditing(true);
+                }}
+                className="rounded border border-petrol-dark bg-petrol-tint px-2.5 py-1 text-xs text-petrol-light hover:bg-petrol-dark"
+              >
+                Edit table
+              </button>
+            </div>
+          )}
+
+          {saveSuccess !== null && (
+            <div className="rounded border border-petrol-dark bg-petrol-tint px-3 py-2 text-sm text-petrol-light">
+              Saved — commit <code className="font-mono">{saveSuccess.commit}</code>
+              <span className="text-dust-300"> · {summarizeValidationReport(saveSuccess.validationReport)}</span>
+            </div>
+          )}
 
           <FindingsPanel
             guardLoading={guardState.loading}
@@ -126,6 +193,18 @@ export function TableDetailPage() {
             onRunWg={runWg}
           />
 
+          {editing ? (
+            <TableEditor
+              tablePath={tablePath}
+              entry={entry}
+              columns={rowsState.data.columns}
+              initialRows={rowsState.data.rows}
+              onDirtyChange={onDirtyChange}
+              onSaved={onSaved}
+              onExit={exitEditor}
+            />
+          ) : (
+            <>
           <div className="overflow-x-auto rounded border border-dust-700">
             <table className="min-w-full border-collapse text-xs">
               <thead>
@@ -196,6 +275,8 @@ export function TableDetailPage() {
               page {clampedPage + 1} / {pageCount} &middot; {totalRows} rows total
             </span>
           </div>
+            </>
+          )}
         </>
       )}
 
@@ -222,6 +303,26 @@ export function TableDetailPage() {
       </section>
     </div>
   );
+}
+
+/** One line for the success box out of whatever validationReport the PUT
+ * returned: the hard-rule guard checks, or the worldgen validator's JSON. */
+function summarizeValidationReport(report: unknown): string {
+  if (report === null || typeof report !== 'object') return 'validation report attached';
+  const r = report as {
+    source?: unknown;
+    checks?: { name?: unknown; passed?: unknown }[];
+    findings?: unknown[];
+    summary?: { errors?: unknown; warnings?: unknown };
+  };
+  if (Array.isArray(r.checks)) {
+    const passed = r.checks.filter((c) => c.passed === true).length;
+    return `hard-rule guards: ${passed}/${r.checks.length} passed`;
+  }
+  if (Array.isArray(r.findings)) {
+    return `worldgen validator: ${r.findings.length} finding${r.findings.length === 1 ? '' : 's'}`;
+  }
+  return 'validation report attached';
 }
 
 /** Manifest facts: path, classification + source note, generator, row key, FKs. */

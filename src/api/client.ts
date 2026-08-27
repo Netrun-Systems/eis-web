@@ -15,6 +15,8 @@ import type {
   ManifestResponse,
   ReportResponse,
   TableGuardCheckResponse,
+  TablePutBody,
+  TablePutResponse,
   TableRowsResponse,
   TablesResponse,
   WorldgenPutBody,
@@ -97,6 +99,39 @@ export function fetchManifest(check = false): Promise<ManifestResponse> {
 
 export function fetchTableRows(path: string): Promise<TableRowsResponse> {
   return getJson(`/api/tables/rows?path=${encodeURIComponent(path)}`);
+}
+
+/**
+ * WEB-008: save an authored table over the WEB-003 PUT contract. Like
+ * putWorldgenWeb, a refusal (409/400) RESOLVES with the failure body — the
+ * caller needs the full {reason, detail} (collision groups, diff stats) to
+ * render, not a one-line message. Only network/proxy failures throw.
+ */
+export async function putTableRows(path: string, body: TablePutBody): Promise<TablePutResponse> {
+  let res: Response;
+  try {
+    res = await fetch(`/api/tables/rows?path=${encodeURIComponent(path)}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+  } catch {
+    throw new ApiError(API_DOWN_MESSAGE, { connectionFailed: true, status: null });
+  }
+  let parsed: unknown = null;
+  try {
+    parsed = await res.json();
+  } catch {
+    /* non-JSON body handled below */
+  }
+  if (parsed === null || typeof parsed !== 'object') {
+    const connectionFailed = res.status >= 500;
+    throw new ApiError(connectionFailed ? API_DOWN_MESSAGE : `HTTP ${res.status}`, {
+      connectionFailed,
+      status: res.status,
+    });
+  }
+  return parsed as TablePutResponse;
 }
 
 export function fetchGitLog(path: string, n = 10): Promise<GitLogResponse> {

@@ -98,6 +98,33 @@ export interface TableRowsResponse {
   manifestEntry: ManifestTable;
 }
 
+/** WEB-008 — PUT /api/tables/rows body (mirror of server WriteRequestBody).
+ * Rows are string[][] aligned to columns; message defaults server-side to
+ * `eisweb: edit <stem> (<n> rows)`. */
+export interface TablePutBody {
+  columns: string[];
+  rows: string[][];
+  message?: string;
+  validate?: boolean;
+}
+
+export interface TablePutSuccess {
+  success: true;
+  commit: string;
+  validationReport: unknown;
+}
+
+/** Any WEB-003 refusal: reason is one of classification_refused | file_dirty |
+ * key_collision | semicolon_hazard | raw_read_comma | validation_failed |
+ * bad_request | git_error | write_failed | commit_failed. */
+export interface TablePutFailure {
+  success: false;
+  reason: string;
+  detail?: unknown;
+}
+
+export type TablePutResponse = TablePutSuccess | TablePutFailure;
+
 export interface GitLogEntry {
   hash: string;
   date: string;
