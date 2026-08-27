@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { fetchManifest, fetchTables } from '../../api/client';
 import { useApi } from '../../api/useApi';
 import type { Classification, TableListEntry } from '../../api/types';
+import { MethodContext } from '../method/MethodContext';
 import { ClassificationBadge, ErrorBox, HazardChip, LoadingBox } from './badges';
 import { ManifestSummaryStrip } from './ManifestSummaryStrip';
 
@@ -65,6 +66,8 @@ export function TablesPage() {
   return (
     <div className="max-w-5xl space-y-4">
       <h2 className="text-xl font-bold text-dust-100">Tables</h2>
+
+      <MethodContext surface="tables" />
 
       {manifestState.loading && <LoadingBox label="Loading manifest" />}
       {manifestState.error != null && <ErrorBox error={manifestState.error} />}

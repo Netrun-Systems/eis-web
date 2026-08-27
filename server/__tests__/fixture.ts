@@ -113,6 +113,9 @@ const FILES: Record<string, string> = {
   'Documentation/World/WORLDGEN_BACKLOG.md':
     '# World-Gen Metadata — Still Needed\n\nFixture backlog body.\n',
   'Documentation/World/ASSET_GAPS.md': '# Asset Gaps\n\nFixture gap report body.\n',
+  // WEB-014: the philosophy document (name contains a space, deliberately).
+  'Documentation/world-development philosophy.md':
+    '# Procedural Spatial Infrastructure\n\nFixture philosophy body.\n\n## 3. The dependency chain\n',
 };
 
 export function makeFixtureRepo(): Fixture {

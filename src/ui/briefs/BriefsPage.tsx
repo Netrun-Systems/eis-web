@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { checkBrief, describeApiError, fetchBriefs } from '../../api/client';
 import { useApi } from '../../api/useApi';
 import type { BriefCheckResponse, BriefListEntry } from '../../api/types';
+import { MethodContext } from '../method/MethodContext';
+import { StageIndicator, StagePrevNext } from '../method/StageIndicator';
 import { ErrorBox, LoadingBox } from '../tables/badges';
 import { VerdictBadge } from './CheckReport';
 
@@ -45,7 +47,10 @@ export function BriefsPage() {
     <div className="max-w-6xl space-y-4">
       <header className="flex flex-wrap items-end justify-between gap-2">
         <div className="space-y-1">
-          <h2 className="text-xl font-bold text-dust-100">Briefs</h2>
+          <div className="flex flex-wrap items-center gap-3">
+            <h2 className="text-xl font-bold text-dust-100">Briefs</h2>
+            <StageIndicator stageId="Brief" />
+          </div>
           <p className="text-sm text-dust-300">
             The designer&apos;s first artifact — a location brief, written before Unreal opens.
             &ldquo;Check&rdquo; asks{' '}
@@ -73,6 +78,8 @@ export function BriefsPage() {
           </Link>
         </div>
       </header>
+
+      <MethodContext surface="briefs" />
 
       {state.loading && <LoadingBox label="Loading briefs" />}
       {state.error != null && <ErrorBox error={state.error} />}
@@ -110,6 +117,8 @@ export function BriefsPage() {
           </table>
         </div>
       )}
+
+      <StagePrevNext stageId="Brief" />
     </div>
   );
 }

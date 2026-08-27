@@ -7,6 +7,9 @@ import type {
   WorldgenPutResponse,
   WorldgenWebResponse,
 } from '../../api/types';
+import { surfaceKeyForStem } from '../../content/method';
+import { MethodContext } from '../method/MethodContext';
+import { StageIndicator, StagePrevNext } from '../method/StageIndicator';
 import { ErrorBox, LoadingBox } from '../tables/badges';
 import { FindingCountsStrip, FindingListItem } from '../validation/findings';
 import { RowForm, FkMultiPicker } from './RowForm';
@@ -23,16 +26,21 @@ export function VocabularyStemPage() {
   const stem = params.stem ?? '';
   const state = useApi(() => fetchWorldgenWeb(stem), [stem]);
 
+  const surfaceKey = surfaceKeyForStem(stem);
+
   return (
     <div className="max-w-6xl space-y-4">
-      <div className="text-xs">
+      <div className="flex flex-wrap items-center gap-3 text-xs">
         <Link to="/vocabulary" className="text-petrol-light hover:text-petrol hover:underline">
           &larr; All vocabularies
         </Link>
+        <StageIndicator stageId={stem} />
       </div>
+      {surfaceKey !== null && <MethodContext surface={surfaceKey} />}
       {state.loading && <LoadingBox label={`Loading ${stem}`} />}
       {state.error != null && <ErrorBox error={state.error} />}
       {state.data && <StemEditor key={stem} data={state.data} reload={state.reload} />}
+      <StagePrevNext stageId={stem} />
     </div>
   );
 }

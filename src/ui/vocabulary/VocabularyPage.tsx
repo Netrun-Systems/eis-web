@@ -1,37 +1,56 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { fetchWorldgenSources } from '../../api/client';
 import { useApi } from '../../api/useApi';
 import type { WorldgenSourceEntry } from '../../api/types';
+import { METHOD_STAGES } from '../../content/method';
+import { MethodContext } from '../method/MethodContext';
 import { ErrorBox, LoadingBox } from '../tables/badges';
 
 /**
  * WEB-006 — stem picker for the vocabulary editor. One card per normalized
  * world-gen table, showing who owns how many rows of it (base package,
- * script-authored ext, EISWeb web fragments).
+ * script-authored ext, EISWeb web fragments). WEB-014 orders the cards by
+ * the §3 authoring order and numbers them as stages.
  */
 export function VocabularyPage() {
   const state = useApi(() => fetchWorldgenSources(), []);
+
+  // §3 dependency order, then anything the method doesn't number (none today).
+  const ordered = useMemo(() => {
+    const stageOrder = new Map(
+      METHOD_STAGES.filter((s) => s.stem !== undefined).map((s, i) => [s.stem as string, i]),
+    );
+    return [...(state.data?.stems ?? [])].sort(
+      (a, b) => (stageOrder.get(a.stem) ?? 99) - (stageOrder.get(b.stem) ?? 99),
+    );
+  }, [state.data]);
 
   return (
     <div className="max-w-6xl space-y-4">
       <header className="space-y-1">
         <h2 className="text-xl font-bold text-dust-100">Vocabulary</h2>
         <p className="text-sm text-dust-300">
-          The world-generation vocabulary tables. Rows added here are written to web-owned source
-          fragments (<code className="font-mono text-xs">*.web.csv</code> /{' '}
+          The world-generation vocabulary tables, in authoring order. Rows added here are written
+          to web-owned source fragments (<code className="font-mono text-xs">*.web.csv</code> /{' '}
           <code className="font-mono text-xs">*.web.patch.csv</code>), then the generator chain
           re-runs and the result is committed — the generated tables are never edited directly.
         </p>
       </header>
+
+      <MethodContext surface="vocabulary-root" />
 
       {state.loading && <LoadingBox label="Loading world-gen sources" />}
       {state.error != null && <ErrorBox error={state.error} />}
 
       {state.data && (
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {state.data.stems.map((s) => (
-            <StemCard key={s.stem} entry={s} />
+          {ordered.map((s) => (
+            <StemCard
+              key={s.stem}
+              entry={s}
+              stageNo={METHOD_STAGES.findIndex((m) => m.stem === s.stem) + 1}
+            />
           ))}
         </div>
       )}
@@ -39,7 +58,7 @@ export function VocabularyPage() {
   );
 }
 
-function StemCard({ entry }: { entry: WorldgenSourceEntry }) {
+function StemCard({ entry, stageNo }: { entry: WorldgenSourceEntry; stageNo: number }) {
   const { stem, base, fragments } = entry;
   const count = (n: number | null) => (n === null ? '—' : String(n));
   return (
@@ -48,7 +67,12 @@ function StemCard({ entry }: { entry: WorldgenSourceEntry }) {
       className="block rounded border border-dust-700 bg-dust-800 p-3 hover:border-petrol-dark hover:bg-dust-800/60"
     >
       <div className="flex items-baseline justify-between gap-2">
-        <span className="font-semibold text-dust-100">{stem}</span>
+        <span className="flex items-baseline gap-1.5 font-semibold text-dust-100">
+          {stageNo > 0 && (
+            <span className="font-mono text-[10px] text-petrol-light">{stageNo}</span>
+          )}
+          {stem}
+        </span>
         <span className="font-mono text-xs text-dust-500">
           {base.exists ? `${count(base.rowCount)} rows` : 'not generated'}
         </span>

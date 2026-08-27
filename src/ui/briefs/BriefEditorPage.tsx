@@ -13,6 +13,7 @@ import {
   stripCommentMarker,
   toCommentLine,
 } from '../../lib/briefFormat';
+import { StageIndicator } from '../method/StageIndicator';
 import { ErrorBox, LoadingBox } from '../tables/badges';
 import { BriefCheckReport } from './CheckReport';
 
@@ -67,10 +68,11 @@ export function BriefEditorPage() {
 
   return (
     <div className="max-w-6xl space-y-4">
-      <div className="text-xs">
+      <div className="flex flex-wrap items-center gap-3 text-xs">
         <Link to="/briefs" className="text-petrol-light hover:text-petrol hover:underline">
           &larr; All briefs
         </Link>
+        <StageIndicator stageId="Brief" />
       </div>
       {state.loading && <LoadingBox label={isNew ? 'Preparing editor' : `Loading ${name}`} />}
       {state.error != null && <ErrorBox error={state.error} />}

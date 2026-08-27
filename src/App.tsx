@@ -10,13 +10,19 @@ import { VocabularyPage } from './ui/vocabulary/VocabularyPage';
 import { VocabularyStemPage } from './ui/vocabulary/VocabularyStemPage';
 import { BriefsPage } from './ui/briefs/BriefsPage';
 import { BriefEditorPage } from './ui/briefs/BriefEditorPage';
+import { WorkflowPage } from './ui/workflow/WorkflowPage';
+import { PhilosophyPage } from './ui/philosophy/PhilosophyPage';
 
 export function App() {
   return (
     <BrowserRouter>
       <TouchLayout>
         <Routes>
-          <Route path="/" element={<StatusPage />} />
+          {/* WEB-014: the app lands on the method, not on a table dump. */}
+          <Route path="/" element={<Navigate to="/workflow" replace />} />
+          <Route path="/workflow" element={<WorkflowPage />} />
+          <Route path="/philosophy" element={<PhilosophyPage />} />
+          <Route path="/data" element={<StatusPage />} />
           <Route path="/tables" element={<TablesPage />} />
           <Route path="/tables/*" element={<TableDetailPage />} />
           <Route path="/vocabulary" element={<VocabularyPage />} />
@@ -25,7 +31,7 @@ export function App() {
           <Route path="/briefs/:name" element={<BriefEditorPage />} />
           <Route path="/world" element={<WorldCanvas />} />
           <Route path="/csv" element={<CSVEditor />} />
-          <Route path="*" element={<Navigate to="/" />} />
+          <Route path="*" element={<Navigate to="/workflow" />} />
         </Routes>
       </TouchLayout>
     </BrowserRouter>

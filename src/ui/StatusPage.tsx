@@ -12,11 +12,13 @@ import type {
 import { ErrorBox, LoadingBox } from './tables/badges';
 import { ManifestSummaryStrip } from './tables/ManifestSummaryStrip';
 import { Markdown } from './markdown/Markdown';
+import { MethodContext } from './method/MethodContext';
 import { FindingCountsStrip, FindingListItem, bySeverity } from './validation/findings';
 
 /** Live strip over /api/health (WEB-003). Shows the connected EISCORE repo +
- * HEAD, or how to start the API when the fetch fails. */
-function ApiHealthStrip() {
+ * HEAD, or how to start the API when the fetch fails. Shared with the
+ * WEB-014 workflow landing page. */
+export function ApiHealthStrip() {
   const { data: health, error, loading } = useApi(() => fetchHealth(), []);
 
   if (error != null) return <ErrorBox error={error} />;
@@ -161,7 +163,8 @@ function ValidationCard({ tables }: { tables: ManifestTable[] }) {
   const infos = result === null ? [] : bySeverity(result.findings, 'INFO');
 
   return (
-    <section className="rounded border border-dust-700 bg-dust-800 p-3">
+    <section className="space-y-2 rounded border border-dust-700 bg-dust-800 p-3">
+      <MethodContext surface="validation" />
       <div className="mb-2 flex flex-wrap items-center gap-3">
         <h3 className="text-sm font-semibold text-dust-100">Validation</h3>
         <button
@@ -243,14 +246,26 @@ function RowLossCard({ summary }: { summary: ManifestSummary }) {
   );
 }
 
-/** WEB-004 dashboard: health, manifest summary, staleness gate, the two repo
- * reports, and the row-loss red flags. */
+/** WEB-004 dashboard, rehomed at /data by WEB-014 ("Inspect the data"):
+ * health, manifest summary, staleness gate, the repo reports, and the
+ * row-loss red flags. The app now lands on /workflow — the method — and this
+ * page is where the raw corpus state lives. */
 export function StatusPage() {
   const manifestState = useApi(() => fetchManifest(), []);
 
   return (
     <div className="max-w-4xl space-y-4">
-      <h2 className="text-xl font-bold text-dust-100">Dashboard</h2>
+      <header className="space-y-1">
+        <h2 className="text-xl font-bold text-dust-100">Data</h2>
+        <p className="text-sm text-dust-300">
+          The state of the corpus: manifest summary, freshness, validation findings and the
+          repo&apos;s generated reports. The authoring walk-through lives at{' '}
+          <Link to="/workflow" className="text-petrol-light hover:text-petrol hover:underline">
+            /workflow
+          </Link>
+          .
+        </p>
+      </header>
       <ApiHealthStrip />
 
       {manifestState.loading && <LoadingBox label="Loading manifest" />}

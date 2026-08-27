@@ -31,6 +31,9 @@ export interface AppOptions {
 export const REPORT_ALLOW_LIST: ReadonlyMap<string, string> = new Map([
   ['worldgen-backlog', 'Documentation/World/WORLDGEN_BACKLOG.md'],
   ['asset-gaps', 'Documentation/World/ASSET_GAPS.md'],
+  // WEB-014: the canonical methodology document, served to the /philosophy
+  // reader. The filename really does contain a space.
+  ['world-philosophy', 'Documentation/world-development philosophy.md'],
 ]);
 
 /** Boot-time verification: the configured path must be a git repo (worktrees

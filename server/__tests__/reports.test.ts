@@ -55,6 +55,17 @@ describe('GET /api/reports/:name', () => {
     const body = (await res.json()) as { success: boolean; reason: string; allowed: string[] };
     expect(body.success).toBe(false);
     expect(body.reason).toBe('unknown_report');
-    expect(body.allowed.sort()).toEqual(['asset-gaps', 'worldgen-backlog']);
+    expect(body.allowed.sort()).toEqual(['asset-gaps', 'world-philosophy', 'worldgen-backlog']);
+  });
+
+  // WEB-014: the philosophy doc — the one allow-listed path with a space in
+  // its filename — serves through the same route.
+  it('serves the world-philosophy document (filename with a space)', async () => {
+    const res = await fetch(`${baseUrl}/api/reports/world-philosophy`);
+    expect(res.status).toBe(200);
+    const body = (await res.json()) as { name: string; path: string; markdown: string };
+    expect(body.name).toBe('world-philosophy');
+    expect(body.path).toBe('Documentation/world-development philosophy.md');
+    expect(body.markdown).toContain('Procedural Spatial Infrastructure');
   });
 });
