@@ -15,6 +15,12 @@ import { PhilosophyPage } from './ui/philosophy/PhilosophyPage';
 import { DamOverviewPage } from './ui/dam/DamOverviewPage';
 import { DamKitPage } from './ui/dam/DamKitPage';
 import { DamPacksPage } from './ui/dam/DamPacksPage';
+import { PeoplePage } from './ui/people/PeoplePage';
+import { PersonPage } from './ui/people/PersonPage';
+import { QuestsPage } from './ui/story/QuestsPage';
+import { QuestPage } from './ui/story/QuestPage';
+import { ItemsPage } from './ui/story/ItemsPage';
+import { LootPage } from './ui/loot/LootPage';
 
 export function App() {
   return (
@@ -32,6 +38,13 @@ export function App() {
           <Route path="/vocabulary/:stem" element={<VocabularyStemPage />} />
           <Route path="/briefs" element={<BriefsPage />} />
           <Route path="/briefs/:name" element={<BriefEditorPage />} />
+          {/* WEB-011: people & story */}
+          <Route path="/people" element={<PeoplePage />} />
+          <Route path="/people/:rowname" element={<PersonPage />} />
+          <Route path="/quests" element={<QuestsPage />} />
+          <Route path="/quests/:rowname" element={<QuestPage />} />
+          <Route path="/items" element={<ItemsPage />} />
+          <Route path="/loot" element={<LootPage />} />
           <Route path="/dam" element={<DamOverviewPage />} />
           <Route path="/dam/kit" element={<DamKitPage />} />
           <Route path="/dam/packs" element={<DamPacksPage />} />

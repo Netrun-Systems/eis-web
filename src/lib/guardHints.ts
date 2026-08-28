@@ -37,13 +37,26 @@ export interface SemicolonHazardHint {
   column: string;
   index: number;
   density: number;
+  /** WEB-011: true when the manifest already flags this column
+   * semicolon_hazard — pre-existing damage; the save is allowed (WARN),
+   * only a NEW hazard refuses. Mirror of server splitSemicolonHazards. */
+  preexisting: boolean;
 }
 
-/** Mirror of server collectSemicolonHazards: a column whose non-empty values
- * are >= 80% ';'-dense re-infers as TArray<FString> and silently fails to
- * import. Threshold 0.8, non-empty values only — exactly the server's rule. */
-export function findSemicolonHazards(columns: string[], rows: string[][]): SemicolonHazardHint[] {
+/** Mirror of server collectSemicolonHazards + splitSemicolonHazards: a column
+ * whose non-empty values are >= 80% ';'-dense re-infers as TArray<FString>
+ * and silently fails to import. Threshold 0.8, non-empty values only —
+ * exactly the server's rule. Pass the manifest column_types to mark
+ * manifest-flagged columns as pre-existing (save allowed). */
+export function findSemicolonHazards(
+  columns: string[],
+  rows: string[][],
+  columnTypes?: { name: string; semicolon_hazard: boolean }[],
+): SemicolonHazardHint[] {
   if (rows.length === 0) return [];
+  const flagged = new Set(
+    (columnTypes ?? []).filter((c) => c.semicolon_hazard).map((c) => c.name),
+  );
   const hazards: SemicolonHazardHint[] = [];
   columns.forEach((col, ci) => {
     let withSemicolon = 0;
@@ -56,7 +69,12 @@ export function findSemicolonHazards(columns: string[], rows: string[][]): Semic
       }
     }
     if (nonEmpty > 0 && withSemicolon / nonEmpty >= 0.8) {
-      hazards.push({ column: col, index: ci, density: withSemicolon / nonEmpty });
+      hazards.push({
+        column: col,
+        index: ci,
+        density: withSemicolon / nonEmpty,
+        preexisting: flagged.has(col),
+      });
     }
   });
   return hazards;

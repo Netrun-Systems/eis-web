@@ -44,7 +44,7 @@ describe('findSemicolonHazards — 0.8 density over non-empty values, as the ser
       ['d', 'x;y'],
       ['e', 'plain'],
     ]);
-    expect(at80).toEqual([{ column: 'V', index: 1, density: 0.8 }]);
+    expect(at80).toEqual([{ column: 'V', index: 1, density: 0.8, preexisting: false }]);
 
     // 3 of 4 non-empty = 75% -> no hazard.
     const at75 = findSemicolonHazards(columns, [
@@ -59,7 +59,7 @@ describe('findSemicolonHazards — 0.8 density over non-empty values, as the ser
   it('ignores empty values in the density denominator, like the server', () => {
     // 1 of 1 non-empty = 100% even though 3 of 4 rows are empty.
     const hazards = findSemicolonHazards(['K', 'V'], [['a', 'x;y'], ['b', ''], ['c', ''], ['d', '']]);
-    expect(hazards).toEqual([{ column: 'V', index: 1, density: 1 }]);
+    expect(hazards).toEqual([{ column: 'V', index: 1, density: 1, preexisting: false }]);
   });
 });
 

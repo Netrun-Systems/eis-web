@@ -320,7 +320,11 @@ export type SurfaceKey =
   | 'briefs'
   | 'tables'
   | 'validation'
-  | 'world-canvas';
+  | 'world-canvas'
+  | 'people'
+  | 'quests'
+  | 'items'
+  | 'loot';
 
 export interface SurfaceContext {
   title: string;
@@ -597,6 +601,112 @@ export const METHOD_CONTEXT: Record<SurfaceKey, SurfaceContext> = {
       cite: cite('§2', 's2'),
     },
     readMore: [cite('§2', 's2'), cite('§6', 's6'), cite('§16', 's16')],
+  },
+
+  // -------------------------------------------------------------------------
+  // WEB-011 — the people-and-story surfaces. These tables are INSTANCE data
+  // in §2's split (what exists here, edited constantly), not world-gen
+  // vocabulary; the method claims cited below are the document's, the table
+  // facts are measured from the CSVs.
+  // -------------------------------------------------------------------------
+  people: {
+    title: 'NPCs are instance data — the §2 split, applied to people',
+    lead:
+      'The 138 rows of NPCs.csv answer "who exists here", not "what kinds of person can ' +
+      'exist" — that is §2’s instance side, edited constantly, while the vocabularies it ' +
+      'references (Roles, Groups, the deprecated HeadPool) are authored rarely. This form ' +
+      'edits one NPC at a time, but the server contract is table-level: a save PUTs the whole ' +
+      'table with just that row changed.',
+    rules: [
+      {
+        text:
+          'Column 0 (NPC_ID) is the DataTable row key and must stay unique — a repeated value ' +
+          'means later rows silently overwrite earlier ones on import.',
+        cite: cite('§18', 's18'),
+      },
+      {
+        text:
+          'Eleven of the 83 columns are ≥80% ;-dense and already re-infer as TArray<FString>, ' +
+          'which the CSV importer cannot populate — pre-existing damage, flagged per field ' +
+          'here; migrating those columns to | is the real fix.',
+        cite: cite('§18', 's18'),
+      },
+    ],
+    quote: {
+      text:
+        'The test: if adding a second location of the same kind requires editing the ' +
+        'vocabulary, the split is wrong.',
+      cite: cite('§2', 's2'),
+    },
+    readMore: [cite('§2', 's2'), cite('§18', 's18')],
+  },
+
+  quests: {
+    title: 'Quests are instance data with a raw-read sidecar',
+    lead:
+      'Quests.csv (130 rows) is instance data — what story exists here — and edits like any ' +
+      'authored table. Its objectives live in QuestObjectives.csv, which the C++ side raw-reads ' +
+      'with a quoteless ParseIntoArray(","): one comma in any field silently shifts every later ' +
+      'column, so objectives render read-only here and carry the no-commas rule.',
+    rules: [
+      {
+        text:
+          'Silence is the failure mode — a shifted objective row does not error, it just ' +
+          'targets the wrong thing. Loud, specific findings beat quiet corruption.',
+        cite: cite('Part VIII', 'part-viii'),
+      },
+    ],
+    readMore: [cite('§2', 's2'), cite('Part VIII', 'part-viii')],
+  },
+
+  items: {
+    title: 'Items ride the grid, not a form',
+    lead:
+      'Item.csv is 542 rows × 14 columns of instance data — wide enough to want facets, flat ' +
+      'enough that the writable grid already fits it. This page is composition over the ' +
+      'existing table substrate: filter and read here, edit in the table editor. No new ' +
+      'machinery was built for it, deliberately.',
+    rules: [
+      {
+        text:
+          'Column 0 (ItemID) is the row key; the same non-unique-key silent overwrite applies ' +
+          'here as everywhere.',
+        cite: cite('§18', 's18'),
+      },
+    ],
+    readMore: [cite('§2', 's2'), cite('§18', 's18')],
+  },
+
+  loot: {
+    title: 'LootTables — the §18 lesson, still live in the data',
+    lead:
+      'LootTables.csv keeps 37 of its 517 rows on import TODAY: column 0 (LootTableID) is ' +
+      'meant as a group key, so 37 keys repeat across 517 rows and later rows silently ' +
+      'overwrite earlier ones — 480 rows lost with only a warning. This is the largest ' +
+      'surviving instance of the non-unique-key failure the WG-103 audit catalogued. The ' +
+      'suffix proposal below is the fix path: applied into the dirty state for review, ' +
+      'never auto-saved.',
+    rules: [
+      {
+        text:
+          'Column 0 becomes the DataTable row key and is never written to a property — ' +
+          'non-unique column 0 means later rows overwrite earlier ones with only a warning.',
+        cite: cite('§18', 's18'),
+      },
+      {
+        text:
+          'Non-unique row key is silent failure mode #1: a partly-populated table still ' +
+          'generates, so nothing looks broken until someone counts.',
+        cite: cite('Part VIII', 'part-viii'),
+      },
+      {
+        text:
+          'This table is also raw-read by C++ (quoteless ParseIntoArray(",")) — commas are ' +
+          'refused outright in the editor.',
+        cite: cite('§18', 's18'),
+      },
+    ],
+    readMore: [cite('§18', 's18'), cite('Part VIII', 'part-viii')],
   },
 };
 

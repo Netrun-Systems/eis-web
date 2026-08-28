@@ -24,6 +24,16 @@ const PAGE_SIZE = 100;
  * stay authoritative), dirty tracking with Save/Discard, and the charter
  * §5.4 type re-inference confirm before PUT.
  */
+/** WEB-011 — the composition seam for pages that wrap the editor (the /loot
+ * fix path): live access to the edit rows plus a bulk mutation that lands in
+ * the DIRTY state like any hand edit (reviewable, discardable, never saved
+ * on its own). */
+export interface TableEditorApi {
+  rows: EditRow[];
+  original: string[][];
+  applyBulk: (fn: (rows: EditRow[]) => EditRow[]) => void;
+}
+
 export function TableEditor({
   tablePath,
   entry,
@@ -32,6 +42,7 @@ export function TableEditor({
   onDirtyChange,
   onSaved,
   onExit,
+  extraPanel,
 }: {
   tablePath: string;
   entry: ManifestTable;
@@ -40,6 +51,8 @@ export function TableEditor({
   onDirtyChange: (dirty: boolean) => void;
   onSaved: (result: TablePutSuccess) => void;
   onExit: () => void;
+  /** WEB-011: rendered between the guard hints and the grid. */
+  extraPanel?: (api: TableEditorApi) => React.ReactNode;
 }) {
   // The loaded snapshot — Discard restores this; dirty is measured against it.
   const original = useMemo(
@@ -90,8 +103,8 @@ export function TableEditor({
   const dupGroups = useMemo(() => findDuplicateKeys(currentCells), [currentCells]);
   const dupKeys = useMemo(() => new Set(dupGroups.map((g) => g.key)), [dupGroups]);
   const semicolonHazards = useMemo(
-    () => findSemicolonHazards(columns, currentCells),
-    [columns, currentCells],
+    () => findSemicolonHazards(columns, currentCells, entry.column_types),
+    [columns, currentCells, entry.column_types],
   );
   const hazardColIndexes = useMemo(
     () => new Set(semicolonHazards.map((h) => h.index)),
@@ -250,14 +263,27 @@ export function TableEditor({
           {semicolonHazards.map((h) => (
             <div key={h.column}>
               Column <code className="font-mono">{h.column}</code> is{' '}
-              {Math.round(h.density * 100)}% ;-dense — at &gt;=80% it re-infers as
-              TArray&lt;FString&gt; and silently fails to import (use | for multi-values); the save
-              will be refused.
+              {Math.round(h.density * 100)}% ;-dense —{' '}
+              {h.preexisting ? (
+                <>
+                  pre-existing (manifest-flagged): it already re-infers as TArray&lt;FString&gt;
+                  and silently fails to import in the shipped data. Saves are allowed; migrating
+                  the column to | is the fix.
+                </>
+              ) : (
+                <>
+                  at &gt;=80% it re-infers as TArray&lt;FString&gt; and silently fails to import
+                  (use | for multi-values); the save will be refused.
+                </>
+              )}
             </div>
           ))}
           {commaBlocked && <div>{RAW_READ_COMMA_HINT}</div>}
         </div>
       )}
+
+      {/* WEB-011: page-supplied panel over the live edit state (/loot). */}
+      {extraPanel !== undefined && extraPanel({ rows, original, applyBulk: mutateRows })}
 
       {/* The editable grid */}
       <div className="overflow-x-auto rounded border border-dust-200 dark:border-dust-700">

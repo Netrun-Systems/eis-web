@@ -46,6 +46,15 @@ const NAV_GROUPS: NavGroup[] = [
     items: [{ to: '/briefs', label: 'Briefs' }],
   },
   {
+    label: 'People & story',
+    items: [
+      { to: '/people', label: 'NPCs' },
+      { to: '/quests', label: 'Quests' },
+      { to: '/items', label: 'Items' },
+      { to: '/loot', label: 'Loot' },
+    ],
+  },
+  {
     label: 'Assets',
     items: [
       { to: '/dam', label: 'Overview', end: true },

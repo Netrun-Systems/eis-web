@@ -82,6 +82,35 @@ export interface SemicolonHazardColumn {
   density: number;
 }
 
+/**
+ * WEB-011 — split hazards into NEW versus PRE-EXISTING. A column the manifest
+ * already flags `semicolon_hazard` was ≥80% `;`-dense in the shipped data:
+ * the damage predates the edit (NPCs.csv carries 11 such columns), and
+ * refusing every save of such a table would freeze it — including the edits
+ * that fix it. Pre-existing hazards therefore WARN; only a hazard this edit
+ * would INTRODUCE refuses. The PUT-refuses-iff-any-ERROR-finding invariant is
+ * preserved.
+ */
+export interface SemicolonHazardSplit {
+  newHazards: SemicolonHazardColumn[];
+  preexisting: SemicolonHazardColumn[];
+}
+
+export function splitSemicolonHazards(
+  entry: ManifestTable,
+  payload: TablePayload,
+): SemicolonHazardSplit {
+  const flagged = new Set(
+    entry.column_types.filter((c) => c.semicolon_hazard).map((c) => c.name),
+  );
+  const newHazards: SemicolonHazardColumn[] = [];
+  const preexisting: SemicolonHazardColumn[] = [];
+  for (const h of collectSemicolonHazards(payload)) {
+    (flagged.has(h.column) ? preexisting : newHazards).push(h);
+  }
+  return { newHazards, preexisting };
+}
+
 /** Rule 3b — semicolon hazard: a column ≥80% `;`-dense re-infers as
  * TArray<FString>, which the CSV importer cannot populate. */
 export function collectSemicolonHazards(payload: TablePayload): SemicolonHazardColumn[] {
@@ -227,7 +256,24 @@ export function runHardRuleGuards(
     if (f && !failure) failure = f;
   };
   record('column0_unique', checkKeyCollisions(payload));
-  record('semicolon_hazard', checkSemicolonHazard(payload));
+  // WEB-011: only NEW hazards refuse; manifest-flagged ones are pre-existing
+  // damage and land as WARN findings on the dry-run surface instead.
+  const split = splitSemicolonHazards(entry, payload);
+  const semicolonFailure =
+    split.newHazards.length === 0 ? null : semicolonHazardFailure(split.newHazards);
+  checks.push({
+    name: 'semicolon_hazard',
+    passed: semicolonFailure === null,
+    detail:
+      semicolonFailure?.detail ??
+      (split.preexisting.length > 0
+        ? {
+            note: `${split.preexisting.length} pre-existing ;-dense column(s) (manifest-flagged) — save allowed`,
+            preexisting: split.preexisting,
+          }
+        : undefined),
+  });
+  if (semicolonFailure && !failure) failure = semicolonFailure;
   record('raw_read_comma_ban', checkRawReadCommas(entry, payload));
   return { failure, checks };
 }
@@ -261,7 +307,8 @@ export function runGuardFindings(entry: ManifestTable, payload: TablePayload): F
     });
   }
 
-  for (const h of collectSemicolonHazards(payload)) {
+  const split = splitSemicolonHazards(entry, payload);
+  for (const h of split.newHazards) {
     findings.push({
       source: 'table-guards',
       severity: 'ERROR',
@@ -273,6 +320,20 @@ export function runGuardFindings(entry: ManifestTable, payload: TablePayload): F
         're-infers as TArray<FString> and silently fails to import. Multi-values must ' +
         'be |-separated, never ;.',
       detail: { density: h.density },
+    });
+  }
+  for (const h of split.preexisting) {
+    findings.push({
+      source: 'table-guards',
+      severity: 'WARN',
+      code: 'semicolon_hazard_preexisting',
+      table: entry.stem,
+      column: h.column,
+      message:
+        `Column ${h.column} is ${Math.round(h.density * 100)}% ;-dense — pre-existing ` +
+        '(manifest-flagged): it already re-infers as TArray<FString> and silently fails to ' +
+        'import in the shipped data. Saves are allowed; migrating the column to | is the fix.',
+      detail: { density: h.density, preexisting: true },
     });
   }
 
